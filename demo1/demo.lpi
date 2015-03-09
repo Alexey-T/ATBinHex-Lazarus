@@ -49,7 +49,6 @@
       <Unit2>
         <Filename Value="..\atbinhex\atbinhex.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ATBinHex"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\atbinhex\atxcodepages.pas"/>

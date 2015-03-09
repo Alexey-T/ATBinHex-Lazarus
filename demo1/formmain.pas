@@ -14,6 +14,7 @@ type
   TfmMain = class(TForm)
     bOpen: TButton;
     bFont: TButton;
+    bGoto: TButton;
     chkEn: TCheckBox;
     chkWrap: TCheckBox;
     chkUnpr: TCheckBox;
@@ -29,6 +30,7 @@ type
     bUni: TRadioButton;
     bUniHex: TRadioButton;
     edBin: TSpinEdit;
+    procedure bGotoClick(Sender: TObject);
     procedure bOpenClick(Sender: TObject);
     procedure bUniChange(Sender: TObject);
     procedure bUniHexChange(Sender: TObject);
@@ -98,6 +100,22 @@ begin
   with OpenDialog1 do
     if Execute then
       Open(Filename);
+end;
+
+procedure TfmMain.bGotoClick(Sender: TObject);
+var
+  S: string;
+  N: integer;
+begin
+  S:= InputBox('Go to', 'Offset:', '0');
+  if S='' then Exit;
+  N:= StrToInt(S);
+  if N>fs.Size-10 then
+  begin
+    ShowMessage('Too big pos, max is '+IntToStr(fs.Size));
+    Exit
+  end;
+  bh.Scroll(N, 3, 3);
 end;
 
 procedure TfmMain.Open(const Filename: string);

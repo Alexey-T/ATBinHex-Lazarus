@@ -22,7 +22,7 @@ object fmMain: TfmMain
       Left = 7
       Height = 25
       Top = 11
-      Width = 107
+      Width = 97
       Caption = 'open...'
       OnClick = bOpenClick
       TabOrder = 0
@@ -30,12 +30,12 @@ object fmMain: TfmMain
     object GroupBox1: TGroupBox
       Left = 7
       Height = 144
-      Top = 76
+      Top = 112
       Width = 149
       Caption = 'mode'
       ClientHeight = 124
       ClientWidth = 145
-      TabOrder = 2
+      TabOrder = 3
       object bText: TRadioButton
         Left = 7
         Height = 19
@@ -86,7 +86,7 @@ object fmMain: TfmMain
       Left = 7
       Height = 25
       Top = 40
-      Width = 107
+      Width = 97
       Caption = 'font...'
       OnClick = bFontClick
       TabOrder = 1
@@ -94,18 +94,18 @@ object fmMain: TfmMain
     object edBin: TSpinEdit
       Left = 10
       Height = 23
-      Top = 236
+      Top = 264
       Width = 54
       MaxValue = 160
       MinValue = 40
       OnChange = edBinChange
-      TabOrder = 3
+      TabOrder = 4
       Value = 80
     end
     object Label1: TLabel
       Left = 72
       Height = 15
-      Top = 238
+      Top = 266
       Width = 66
       Caption = 'binary width'
       ParentColor = False
@@ -113,42 +113,51 @@ object fmMain: TfmMain
     object chkUnpr: TCheckBox
       Left = 7
       Height = 19
-      Top = 316
+      Top = 344
       Width = 103
       Caption = 'unprinted chars'
       OnChange = chkUnprChange
-      TabOrder = 6
+      TabOrder = 7
     end
     object chkGutter: TCheckBox
       Left = 7
       Height = 19
-      Top = 292
+      Top = 320
       Width = 52
       Caption = 'gutter'
       Checked = True
       OnChange = chkGutterChange
       State = cbChecked
-      TabOrder = 5
+      TabOrder = 6
     end
     object chkWrap: TCheckBox
       Left = 7
       Height = 19
-      Top = 268
+      Top = 296
       Width = 46
       Caption = 'wrap'
       OnChange = chkWrapChange
-      TabOrder = 4
+      TabOrder = 5
     end
     object chkEn: TCheckBox
       Left = 7
       Height = 19
-      Top = 340
+      Top = 368
       Width = 62
       Caption = 'enabled'
       Checked = True
       OnChange = chkEnChange
       State = cbChecked
-      TabOrder = 7
+      TabOrder = 8
+    end
+    object bGoto: TButton
+      Left = 7
+      Height = 25
+      Top = 70
+      Width = 97
+      Caption = 'go to...'
+      OnClick = bGotoClick
+      TabOrder = 2
     end
   end
   object OpenDialog1: TOpenDialog
