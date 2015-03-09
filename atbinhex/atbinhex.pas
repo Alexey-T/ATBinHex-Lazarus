@@ -10,8 +10,8 @@
 {$BOOLEVAL OFF}    //Short boolean evaluation required
 {$RANGECHECKS OFF} //For assignment compatability between DWORD and Longint
 
-{$I ATBinHexOptions.inc}   //ATBinHex options
-{$R ATBinHexResources.res} //ATBinHex resources
+{$I atbinhexoptions.inc}   //ATBinHex options
+{$R atbinhexresources.res} //ATBinHex resources
 
 {$mode delphi}
 
@@ -5156,4 +5156,4 @@ initialization
 finalization
   FreeAndNil(FBitmapNiceScroll);
 
-end.
+end.

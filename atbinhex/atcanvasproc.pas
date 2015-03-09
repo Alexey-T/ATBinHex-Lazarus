@@ -121,14 +121,13 @@ begin
 end;
 {$else}
 procedure CanvasInvertRect(C: TCanvas; const R: TRect);
-var
-  i, j: integer;
 begin
-  for j:= R.Top to R.Bottom-1 do
-    for i:= R.Left to R.Right-1 do
-      C.Pixels[i, j]:= C.Pixels[i, j] xor $FFFFFF;
+  C.Brush.Style:= bsSolid;
+  C.Pen.Mode:= pmNot;
+  C.Rectangle(R);
+  C.Pen.Mode:= pmCopy;
 end;
 {$endif}
 
 end.
-
+

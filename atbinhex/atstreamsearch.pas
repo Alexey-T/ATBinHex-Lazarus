@@ -14,7 +14,6 @@ unit ATStreamSearch;
 interface
 
 uses
-  Windows,
   Classes,
   {$IFDEF REGEX}
   DIRegEx,
@@ -512,7 +511,7 @@ begin
 
     if FCharSize = 2 then
       begin
-        SBufferW := SetStringW(Buffer, BytesRead, AEncoding = vencUnicodeBE);
+        SBufferW := SetStringW(@Buffer, BytesRead, AEncoding = vencUnicodeBE);
         StringPos := SFindTextW(AText, SBufferW, AForward, AWholeWords, ACaseSens, BytesRead < cBlockSize);
       end
     else
@@ -663,4 +662,4 @@ begin
   RegisterComponents('Samples', [TATStreamSearch]);
 end;
 
-end.
+end.
