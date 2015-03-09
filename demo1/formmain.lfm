@@ -1,0 +1,143 @@
+object fmMain: TfmMain
+  Left = 378
+  Height = 432
+  Top = 261
+  Width = 708
+  Caption = 'ATBinHex demo'
+  ClientHeight = 432
+  ClientWidth = 708
+  OnCreate = FormCreate
+  LCLVersion = '1.5'
+  object Panel1: TPanel
+    Left = 538
+    Height = 432
+    Top = 0
+    Width = 170
+    Align = alRight
+    ClientHeight = 432
+    ClientWidth = 170
+    TabOrder = 0
+    object bOpen: TButton
+      Left = 7
+      Height = 25
+      Top = 11
+      Width = 107
+      Caption = 'open...'
+      OnClick = bOpenClick
+      TabOrder = 0
+    end
+    object GroupBox1: TGroupBox
+      Left = 7
+      Height = 148
+      Top = 76
+      Width = 149
+      Caption = 'mode'
+      ClientHeight = 128
+      ClientWidth = 145
+      TabOrder = 1
+      object bText: TRadioButton
+        Left = 7
+        Height = 19
+        Top = 0
+        Width = 39
+        Caption = 'text'
+        OnChange = bTextChange
+        TabOrder = 0
+      end
+      object bBin: TRadioButton
+        Left = 7
+        Height = 19
+        Top = 24
+        Width = 53
+        Caption = 'binary'
+        OnChange = bBinChange
+        TabOrder = 1
+      end
+      object bHex: TRadioButton
+        Left = 7
+        Height = 19
+        Top = 48
+        Width = 38
+        Caption = 'hex'
+        OnChange = bHexChange
+        TabOrder = 2
+      end
+      object bUni: TRadioButton
+        Left = 7
+        Height = 19
+        Top = 76
+        Width = 63
+        Caption = 'unicode'
+        OnChange = bUniChange
+        TabOrder = 3
+      end
+      object bUniHex: TRadioButton
+        Left = 7
+        Height = 19
+        Top = 100
+        Width = 86
+        Caption = 'unicode/hex'
+        OnChange = bUniHexChange
+        TabOrder = 4
+      end
+    end
+    object bFont: TButton
+      Left = 7
+      Height = 25
+      Top = 40
+      Width = 107
+      Caption = 'font...'
+      OnClick = bFontClick
+      TabOrder = 2
+    end
+    object edBin: TSpinEdit
+      Left = 10
+      Height = 23
+      Top = 236
+      Width = 54
+      MaxValue = 160
+      MinValue = 40
+      OnChange = edBinChange
+      TabOrder = 3
+      Value = 80
+    end
+    object Label1: TLabel
+      Left = 72
+      Height = 15
+      Top = 238
+      Width = 66
+      Caption = 'binary width'
+      ParentColor = False
+    end
+    object chkUnpr: TCheckBox
+      Left = 7
+      Height = 19
+      Top = 268
+      Width = 103
+      Caption = 'unprinted chars'
+      OnChange = chkUnprChange
+      TabOrder = 4
+    end
+    object chkGutter: TCheckBox
+      Left = 7
+      Height = 19
+      Top = 292
+      Width = 52
+      Caption = 'gutter'
+      Checked = True
+      OnChange = chkGutterChange
+      State = cbChecked
+      TabOrder = 5
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    left = 480
+    top = 16
+  end
+  object FontDialog1: TFontDialog
+    MinFontSize = 0
+    MaxFontSize = 0
+    left = 472
+    top = 52
+  end
+end
