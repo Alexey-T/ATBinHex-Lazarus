@@ -14,6 +14,7 @@ type
   TfmMain = class(TForm)
     bOpen: TButton;
     bFont: TButton;
+    chkWrap: TCheckBox;
     chkUnpr: TCheckBox;
     chkGutter: TCheckBox;
     FontDialog1: TFontDialog;
@@ -33,6 +34,7 @@ type
     procedure bFontClick(Sender: TObject);
     procedure chkGutterChange(Sender: TObject);
     procedure chkUnprChange(Sender: TObject);
+    procedure chkWrapChange(Sender: TObject);
     procedure edBinChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure bTextChange(Sender: TObject);
@@ -137,6 +139,11 @@ end;
 procedure TfmMain.chkUnprChange(Sender: TObject);
 begin
   bh.TextNonPrintable:= chkUnpr.Checked;
+end;
+
+procedure TfmMain.chkWrapChange(Sender: TObject);
+begin
+  bh.TextWrap:= chkWrap.Checked;
 end;
 
 procedure TfmMain.edBinChange(Sender: TObject);

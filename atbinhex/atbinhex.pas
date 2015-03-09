@@ -1775,6 +1775,7 @@ var
   var
     Len, YHeight: Integer;
     nStart, nEnd: Int64;
+    InvRect: TRect;
   begin
     if AHilight then
       HilightLine(ALine, AX, AY, AFilePos);
@@ -1794,7 +1795,7 @@ var
     if StringExtent(FBitmap.Canvas, ALine, Dx, OutputOptions) then
     begin
       if ASelectAll then
-        CanvasInvertRect(FBitmap.Canvas, Rect(AX, AY, AX + Dx[Length(ALine)], AY + YHeight))
+        InvRect:= Rect(AX, AY, AX + Dx[Length(ALine)], AY + YHeight)
       else
       begin
         nStart := (FSelStart - AFilePos) div CharSize;
@@ -1803,8 +1804,11 @@ var
         nEnd:= (FSelStart + FSelLength - AFilePos) div CharSize;
         I64LimitMax(nEnd, Length(ALine));
 
-        CanvasInvertRect(FBitmap.Canvas, Rect(AX + Dx[nStart], AY, AX + Dx[nEnd], AY + YHeight))
+        InvRect:= Rect(AX + Dx[nStart], AY, AX + Dx[nEnd], AY + YHeight);
       end;
+
+      CanvasInvertRect(FBitmap.Canvas, InvRect);
+      Invalidate;
     end;
   end;
 
@@ -2330,6 +2334,7 @@ begin
     finally
       Unlock;
     end;
+  Invalidate;
 end;
 
 procedure TATBinHex.HideScrollbars;
@@ -5156,4 +5161,4 @@ initialization
 finalization
   FreeAndNil(FBitmapNiceScroll);
 
-end.
+end.

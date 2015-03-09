@@ -10,7 +10,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="14" Y="4"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="25"/>
       </Unit0>
       <Unit1>
         <Filename Value="formmain.pas"/>
@@ -18,40 +18,42 @@
         <ComponentName Value="fmMain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="formmain"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="95"/>
-        <CursorPos X="9" Y="109"/>
-        <UsageCount Value="24"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="140"/>
+        <CursorPos X="33" Y="146"/>
+        <UsageCount Value="25"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\atbinhex\atbinhex.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <UsageCount Value="23"/>
+        <UnitName Value="ATBinHex"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="2329"/>
+        <CursorPos X="14" Y="2337"/>
+        <UsageCount Value="24"/>
+        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\atbinhex\atxcodepages.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="23"/>
+        <UsageCount Value="24"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\atbinhex\atxclipboard.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="32" Y="13"/>
-        <UsageCount Value="23"/>
+        <UsageCount Value="24"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\atbinhex\atcanvasproc.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ATCanvasProc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="118"/>
-        <CursorPos X="19" Y="133"/>
-        <UsageCount Value="23"/>
+        <CursorPos X="29" Y="128"/>
+        <UsageCount Value="24"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\atbinhex\atxsproc.pas"/>
@@ -59,7 +61,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="519"/>
         <CursorPos X="32" Y="524"/>
-        <UsageCount Value="23"/>
+        <UsageCount Value="24"/>
       </Unit6>
       <Unit7>
         <Filename Value="..\atbinhex\atstreamsearch.pas"/>
@@ -67,7 +69,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="507"/>
         <CursorPos X="33" Y="513"/>
-        <UsageCount Value="23"/>
+        <UsageCount Value="24"/>
       </Unit7>
       <Unit8>
         <Filename Value="..\atbinhex\atstringproc.pas"/>
@@ -75,7 +77,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="12"/>
         <CursorPos Y="28"/>
-        <UsageCount Value="23"/>
+        <UsageCount Value="24"/>
       </Unit8>
       <Unit9>
         <Filename Value="..\atbinhex\atviewermsg.pas"/>
@@ -83,7 +85,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="33"/>
         <CursorPos X="25" Y="40"/>
-        <UsageCount Value="23"/>
+        <UsageCount Value="24"/>
       </Unit9>
       <Unit10>
         <Filename Value="..\atbinhex\atxshex.pas"/>
@@ -91,7 +93,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="36"/>
         <CursorPos X="28" Y="45"/>
-        <UsageCount Value="23"/>
+        <UsageCount Value="24"/>
       </Unit10>
       <Unit11>
         <Filename Value="..\atbinhex\atxutf8detect.pas"/>
@@ -136,11 +138,87 @@
         <UsageCount Value="10"/>
       </Unit16>
     </Units>
-    <JumpHistory Count="1">
+    <JumpHistory Count="22" HistoryIndex="21">
       <Position1>
-        <Filename Value="formmain.pas"/>
-        <Caret Line="134" Column="13" TopLine="134"/>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="1961" Column="19" TopLine="1955"/>
       </Position1>
+      <Position2>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="3239" Column="3" TopLine="3264"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="2904" Column="3" TopLine="2900"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="3275" TopLine="3261"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="3272" TopLine="3261"/>
+      </Position8>
+      <Position9>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="3261" TopLine="3253"/>
+      </Position9>
+      <Position10>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+      </Position10>
+      <Position11>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="493" Column="76" TopLine="479"/>
+      </Position11>
+      <Position12>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="492" Column="59" TopLine="484"/>
+      </Position12>
+      <Position13>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="34" Column="38" TopLine="23"/>
+      </Position13>
+      <Position14>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+      </Position14>
+      <Position15>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="25" TopLine="11"/>
+      </Position15>
+      <Position16>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="491" Column="15" TopLine="484"/>
+      </Position16>
+      <Position17>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+      </Position17>
+      <Position18>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="219" Column="76" TopLine="207"/>
+      </Position18>
+      <Position19>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+      </Position19>
+      <Position20>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="2336" TopLine="2323"/>
+      </Position20>
+      <Position21>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="4354" TopLine="4349"/>
+      </Position21>
+      <Position22>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+      </Position22>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>

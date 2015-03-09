@@ -121,13 +121,16 @@ begin
 end;
 {$else}
 procedure CanvasInvertRect(C: TCanvas; const R: TRect);
+var
+  Mode: TPenMode;
 begin
-  C.Brush.Style:= bsSolid;
-  C.Pen.Mode:= pmNot;
+  Mode:= C.Pen.Mode;
+  C.Pen.Mode:= pmXor;
   C.Rectangle(R);
-  C.Pen.Mode:= pmCopy;
+  C.Pen.Mode:= Mode;
+  C.Rectangle(Rect(0, 0, 0, 0));
 end;
 {$endif}
 
 end.
-
+
