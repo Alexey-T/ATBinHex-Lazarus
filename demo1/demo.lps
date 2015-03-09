@@ -19,7 +19,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="formmain"/>
-        <IsVisibleTab Value="True"/>
         <TopLine Value="135"/>
         <CursorPos X="13" Y="138"/>
         <UsageCount Value="25"/>
@@ -30,10 +29,12 @@
         <Filename Value="..\atbinhex\atbinhex.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ATBinHex"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="3302"/>
-        <CursorPos Y="3311"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="1445"/>
+        <CursorPos X="5" Y="1452"/>
         <UsageCount Value="24"/>
+        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\atbinhex\atxcodepages.pas"/>
@@ -139,7 +140,7 @@
         <UsageCount Value="10"/>
       </Unit16>
     </Units>
-    <JumpHistory Count="2" HistoryIndex="1">
+    <JumpHistory Count="8" HistoryIndex="7">
       <Position1>
         <Filename Value="formmain.pas"/>
         <Caret Line="146" Column="33" TopLine="140"/>
@@ -148,6 +149,29 @@
         <Filename Value="formmain.pas"/>
         <Caret Line="153" Column="33" TopLine="147"/>
       </Position2>
+      <Position3>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="3311" TopLine="3302"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="162" TopLine="153"/>
+      </Position5>
+      <Position6>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="580" TopLine="572"/>
+      </Position6>
+      <Position7>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="162" Column="7" TopLine="160"/>
+      </Position7>
+      <Position8>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <Caret Line="581" Column="7" TopLine="573"/>
+      </Position8>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>

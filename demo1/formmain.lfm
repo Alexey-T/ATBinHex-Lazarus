@@ -28,11 +28,11 @@ object fmMain: TfmMain
     end
     object GroupBox1: TGroupBox
       Left = 7
-      Height = 148
+      Height = 144
       Top = 76
       Width = 149
       Caption = 'mode'
-      ClientHeight = 128
+      ClientHeight = 124
       ClientWidth = 145
       TabOrder = 2
       object bText: TRadioButton
@@ -65,7 +65,7 @@ object fmMain: TfmMain
       object bUni: TRadioButton
         Left = 7
         Height = 19
-        Top = 76
+        Top = 72
         Width = 63
         Caption = 'unicode'
         OnChange = bUniChange
@@ -74,7 +74,7 @@ object fmMain: TfmMain
       object bUniHex: TRadioButton
         Left = 7
         Height = 19
-        Top = 100
+        Top = 96
         Width = 86
         Caption = 'unicode/hex'
         OnChange = bUniHexChange
