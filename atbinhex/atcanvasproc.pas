@@ -126,6 +126,7 @@ var
 begin
   Mode:= C.Pen.Mode;
   C.Pen.Mode:= pmXor;
+  C.Pen.Color:= clWhite;
   C.Rectangle(R);
   C.Pen.Mode:= Mode;
   C.Rectangle(Rect(0, 0, 0, 0));

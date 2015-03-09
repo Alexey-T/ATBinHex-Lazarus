@@ -62,6 +62,7 @@
       <Unit5>
         <Filename Value="..\atbinhex\atcanvasproc.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ATCanvasProc"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\atbinhex\atxsproc.pas"/>
