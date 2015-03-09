@@ -22,6 +22,7 @@ interface
 uses
   Messages, SysUtils, Classes, Controls, Graphics,
   ExtCtrls,
+  LMessages,
   {$ifdef NOTIF} ATFileNotification, {$endif}
   {$ifdef NOTIF} ATFileNotificationSimple, {$endif}
   {$ifdef SEARCH} ATStreamSearch, {$endif}
@@ -489,8 +490,8 @@ type
     procedure Paint; override;
     procedure WMGetDlgCode(var Message: TMessage); message WM_GETDLGCODE;
     procedure WMEraseBkgnd(var Message: TMessage); message WM_ERASEBKGND;
-    procedure WMVScroll(var Message: TWMVScroll); message WM_VSCROLL;
-    procedure WMHScroll(var Message: TWMHScroll); message WM_HSCROLL;
+    procedure WMVScroll(var Message: TLMVScroll); message LM_VSCROLL;
+    procedure WMHScroll(var Message: TLMHScroll); message LM_HSCROLL;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -3231,7 +3232,7 @@ begin
   Message.Result := 1;
 end;
 
-procedure TATBinHex.WMVScroll(var Message: TWMVScroll);
+procedure TATBinHex.WMVScroll(var Message: TLMVScroll);
 var
   ACols: Integer;
   AMax, ANew: Int64;
@@ -3276,9 +3277,10 @@ begin
 
   Message.Result := 0;
   DoScroll;
+  Invalidate;
 end;
 
-procedure TATBinHex.WMHScroll(var Message: TWMHScroll);
+procedure TATBinHex.WMHScroll(var Message: TLMHScroll);
 begin
   case Message.ScrollCode of
     SB_TOP:
@@ -3305,7 +3307,6 @@ begin
   end;
 
   Message.Result := 0;
-
   DoScroll;
 end;
 
