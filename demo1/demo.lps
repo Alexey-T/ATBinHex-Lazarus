@@ -18,20 +18,22 @@
         <ComponentName Value="fmMain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="140"/>
-        <CursorPos X="33" Y="146"/>
+        <UnitName Value="formmain"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="135"/>
+        <CursorPos X="13" Y="138"/>
         <UsageCount Value="25"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\atbinhex\atbinhex.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ATBinHex"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="3266"/>
-        <CursorPos X="14" Y="3280"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="3302"/>
+        <CursorPos Y="3311"/>
         <UsageCount Value="24"/>
-        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\atbinhex\atxcodepages.pas"/>
@@ -137,6 +139,15 @@
         <UsageCount Value="10"/>
       </Unit16>
     </Units>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory Count="2" HistoryIndex="1">
+      <Position1>
+        <Filename Value="formmain.pas"/>
+        <Caret Line="146" Column="33" TopLine="140"/>
+      </Position1>
+      <Position2>
+        <Filename Value="formmain.pas"/>
+        <Caret Line="153" Column="33" TopLine="147"/>
+      </Position2>
+    </JumpHistory>
   </ProjectSession>
 </CONFIG>

@@ -14,6 +14,7 @@ type
   TfmMain = class(TForm)
     bOpen: TButton;
     bFont: TButton;
+    chkEn: TCheckBox;
     chkWrap: TCheckBox;
     chkUnpr: TCheckBox;
     chkGutter: TCheckBox;
@@ -32,6 +33,7 @@ type
     procedure bUniChange(Sender: TObject);
     procedure bUniHexChange(Sender: TObject);
     procedure bFontClick(Sender: TObject);
+    procedure chkEnChange(Sender: TObject);
     procedure chkGutterChange(Sender: TObject);
     procedure chkUnprChange(Sender: TObject);
     procedure chkWrapChange(Sender: TObject);
@@ -128,6 +130,12 @@ begin
       bh.Font:= Font;
       bh.Redraw;
     end;
+end;
+
+procedure TfmMain.chkEnChange(Sender: TObject);
+begin
+  bh.Enabled:= chkEn.Checked;
+  bh.Redraw;
 end;
 
 procedure TfmMain.chkGutterChange(Sender: TObject);

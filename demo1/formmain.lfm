@@ -138,6 +138,17 @@ object fmMain: TfmMain
       OnChange = chkWrapChange
       TabOrder = 4
     end
+    object chkEn: TCheckBox
+      Left = 7
+      Height = 19
+      Top = 340
+      Width = 62
+      Caption = 'enabled'
+      Checked = True
+      OnChange = chkEnChange
+      State = cbChecked
+      TabOrder = 7
+    end
   end
   object OpenDialog1: TOpenDialog
     left = 480

@@ -3308,6 +3308,7 @@ begin
 
   Message.Result := 0;
   DoScroll;
+  Invalidate;
 end;
 
 procedure TATBinHex.KeyDown(var Key: Word; Shift: TShiftState);
