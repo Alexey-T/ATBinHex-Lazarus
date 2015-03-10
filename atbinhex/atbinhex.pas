@@ -1808,7 +1808,7 @@ var
         InvRect:= Rect(AX + Dx[nStart], AY, AX + Dx[nEnd], AY + YHeight);
       end;
 
-      CanvasInvertRect(FBitmap.Canvas, InvRect);
+      CanvasInvertRect(FBitmap.Canvas, InvRect, clBlack);
       Invalidate;
     end;
   end;

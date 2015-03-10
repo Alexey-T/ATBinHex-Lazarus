@@ -14,7 +14,7 @@ function CanvasTextSpaces(const S: atString; ATabSize: integer): real;
 function CanvasTextWidth(C: TCanvas; const S: atString; ATabSize: integer; ACharSize: TPoint): integer;
 
 function CanvasFontSizes(C: TCanvas): TSize;
-procedure CanvasInvertRect(C: TCanvas; const R: TRect);
+procedure CanvasInvertRect(C: TCanvas; const R: TRect; AColor: TColor);
 
 
 implementation
@@ -115,25 +115,40 @@ end;
 *)
 
 {$ifdef win_fast}
-procedure CanvasInvertRect(C: TCanvas; const R: TRect);
+procedure CanvasInvertRect(C: TCanvas; const R: TRect; AColor: TColor);
 begin
   Windows.InvertRect(C.Handle, R);
 end;
 {$else}
 
-procedure CanvasInvertRect(C: TCanvas; const R: TRect);
 var
-  N: TColor;
+  _Pen: TPen = nil;
+
+procedure CanvasInvertRect(C: TCanvas; const R: TRect; AColor: TColor);
+var
+  X: integer;
+  AM: TAntialiasingMode;
 begin
-  N:= C.Brush.Color;
-  C.Pen.Color:= clWhite;
-  C.Brush.Color:= clWhite;
-  C.Pen.Width:= 1;
-  C.Pen.Mode:= pmXor;
-  C.Rectangle(R);
-  C.Pen.Mode:= pmCopy;
-  C.Rectangle(Rect(0, 0, 0, 0)); //update pen.mode
-  C.Brush.Color:= N;
+  if not Assigned(_Pen) then
+    _Pen:= TPen.Create;
+
+  AM:= C.AntialiasingMode;
+  _Pen.Assign(C.Pen);
+
+  X:= (R.Left+R.Right) div 2;
+  C.Pen.Mode:= pmNotXor;
+  C.Pen.Style:= psSolid;
+  C.Pen.Color:= AColor;
+  C.AntialiasingMode:= amOff;
+  C.Pen.EndCap:= pecFlat;
+  C.Pen.Width:= R.Right-R.Left;
+
+  C.MoveTo(X, R.Top);
+  C.LineTo(X, R.Bottom);
+
+  C.Pen.Assign(_Pen);
+  C.AntialiasingMode:= AM;
+  C.Rectangle(0, 0, 0, 0); //apply pen
 end;
 
 {$endif}
