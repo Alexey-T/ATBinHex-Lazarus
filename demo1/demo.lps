@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="9"/>
     <BuildModes Active="Default"/>
-    <Units Count="17">
+    <Units Count="19">
       <Unit0>
         <Filename Value="demo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -18,19 +18,20 @@
         <ComponentName Value="fmMain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="formmain"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
         <TopLine Value="105"/>
         <CursorPos X="45" Y="118"/>
         <UsageCount Value="25"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\atbinhex\atbinhex.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ATBinHex"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="1445"/>
-        <CursorPos X="5" Y="1452"/>
+        <TopLine Value="5150"/>
+        <CursorPos X="27" Y="5156"/>
         <UsageCount Value="24"/>
       </Unit2>
       <Unit3>
@@ -49,13 +50,11 @@
       <Unit5>
         <Filename Value="..\atbinhex\atcanvasproc.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ATCanvasProc"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
-        <TopLine Value="121"/>
-        <CursorPos Y="137"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
+        <TopLine Value="123"/>
+        <CursorPos Y="138"/>
         <UsageCount Value="24"/>
-        <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\atbinhex\atxsproc.pas"/>
@@ -139,24 +138,23 @@
         <CursorPos Y="2225"/>
         <UsageCount Value="10"/>
       </Unit16>
+      <Unit17>
+        <Filename Value="E:\lazarus15\lazarus\lcl\graphics.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1212"/>
+        <CursorPos X="33" Y="1225"/>
+        <UsageCount Value="10"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="..\atbinhex\atbinhex_package.pas"/>
+        <UnitName Value="atbinhex_package"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="10"/>
+      </Unit18>
     </Units>
-    <JumpHistory Count="4" HistoryIndex="3">
-      <Position1>
-        <Filename Value="formmain.pas"/>
-        <Caret Line="146" Column="33" TopLine="140"/>
-      </Position1>
-      <Position2>
-        <Filename Value="formmain.pas"/>
-        <Caret Line="153" Column="33" TopLine="147"/>
-      </Position2>
-      <Position3>
-        <Filename Value="formmain.pas"/>
-        <Caret Line="138" Column="13" TopLine="135"/>
-      </Position3>
-      <Position4>
-        <Filename Value="formmain.pas"/>
-        <Caret Line="145" Column="13" TopLine="142"/>
-      </Position4>
-    </JumpHistory>
+    <General>
+      <ActiveWindowIndexAtStart Value="-1"/>
+    </General>
+    <JumpHistory HistoryIndex="-1"/>
   </ProjectSession>
 </CONFIG>

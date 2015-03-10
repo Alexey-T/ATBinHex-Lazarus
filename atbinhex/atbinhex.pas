@@ -5153,7 +5153,7 @@ end;
 { Registration }
 procedure Register;
 begin
-  RegisterComponents('Samples', [TATBinHex]);
+  RegisterComponents('Misc', [TATBinHex]);
 end;
 
 { Initialization }

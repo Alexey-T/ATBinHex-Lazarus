@@ -120,6 +120,7 @@ begin
   Windows.InvertRect(C.Handle, R);
 end;
 {$else}
+
 procedure CanvasInvertRect(C: TCanvas; const R: TRect);
 var
   N: TColor;
@@ -134,6 +135,7 @@ begin
   C.Rectangle(Rect(0, 0, 0, 0)); //update pen.mode
   C.Brush.Color:= N;
 end;
+
 {$endif}
 
 end.
