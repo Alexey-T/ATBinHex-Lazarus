@@ -1,21 +1,21 @@
 object fmMain: TfmMain
   Left = 378
-  Height = 432
+  Height = 441
   Top = 261
   Width = 779
   Caption = 'ATBinHex demo'
-  ClientHeight = 432
+  ClientHeight = 441
   ClientWidth = 779
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '1.5'
-  object Panel1: TPanel
+  object PanelOpt: TPanel
     Left = 609
-    Height = 432
+    Height = 441
     Top = 0
     Width = 170
     Align = alRight
-    ClientHeight = 432
+    ClientHeight = 441
     ClientWidth = 170
     TabOrder = 0
     object bOpen: TButton
@@ -30,7 +30,7 @@ object fmMain: TfmMain
     object GroupBox1: TGroupBox
       Left = 7
       Height = 144
-      Top = 112
+      Top = 100
       Width = 149
       Caption = 'mode'
       ClientHeight = 124
@@ -94,8 +94,8 @@ object fmMain: TfmMain
     object edBin: TSpinEdit
       Left = 10
       Height = 23
-      Top = 264
-      Width = 54
+      Top = 248
+      Width = 59
       MaxValue = 160
       MinValue = 40
       OnChange = edBinChange
@@ -103,9 +103,9 @@ object fmMain: TfmMain
       Value = 80
     end
     object Label1: TLabel
-      Left = 72
+      Left = 80
       Height = 15
-      Top = 266
+      Top = 252
       Width = 66
       Caption = 'binary width'
       ParentColor = False
@@ -117,38 +117,38 @@ object fmMain: TfmMain
       Width = 103
       Caption = 'unprinted chars'
       OnChange = chkUnprChange
-      TabOrder = 7
+      TabOrder = 8
     end
     object chkGutter: TCheckBox
       Left = 7
       Height = 19
-      Top = 320
+      Top = 324
       Width = 52
       Caption = 'gutter'
       Checked = True
       OnChange = chkGutterChange
       State = cbChecked
-      TabOrder = 6
+      TabOrder = 7
     end
     object chkWrap: TCheckBox
       Left = 7
       Height = 19
-      Top = 296
+      Top = 304
       Width = 46
       Caption = 'wrap'
       OnChange = chkWrapChange
-      TabOrder = 5
+      TabOrder = 6
     end
     object chkEn: TCheckBox
       Left = 7
       Height = 19
-      Top = 368
+      Top = 364
       Width = 62
       Caption = 'enabled'
       Checked = True
       OnChange = chkEnChange
       State = cbChecked
-      TabOrder = 8
+      TabOrder = 9
     end
     object bGoto: TButton
       Left = 7
@@ -158,6 +158,36 @@ object fmMain: TfmMain
       Caption = 'go to...'
       OnClick = bGotoClick
       TabOrder = 2
+    end
+    object chkEnSel: TCheckBox
+      Left = 7
+      Height = 19
+      Top = 384
+      Width = 79
+      Caption = 'enabled sel'
+      Checked = True
+      OnChange = chkEnSelChange
+      State = cbChecked
+      TabOrder = 10
+    end
+    object edTabsize: TSpinEdit
+      Left = 10
+      Height = 23
+      Top = 275
+      Width = 59
+      MaxValue = 12
+      MinValue = 2
+      OnChange = edTabsizeChange
+      TabOrder = 5
+      Value = 8
+    end
+    object Label2: TLabel
+      Left = 79
+      Height = 15
+      Top = 280
+      Width = 39
+      Caption = 'tab size'
+      ParentColor = False
     end
   end
   object OpenDialog1: TOpenDialog

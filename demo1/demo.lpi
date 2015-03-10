@@ -44,10 +44,12 @@
         <ComponentName Value="fmMain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="formmain"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\atbinhex\atbinhex.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ATBinHex"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\atbinhex\atxcodepages.pas"/>
@@ -60,7 +62,6 @@
       <Unit5>
         <Filename Value="..\atbinhex\atcanvasproc.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ATCanvasProc"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\atbinhex\atxsproc.pas"/>

@@ -23,5 +23,6 @@
 *.mes
 *.o
 *.or
+*.lps
 
 */lib/

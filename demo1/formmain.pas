@@ -15,6 +15,7 @@ type
     bOpen: TButton;
     bFont: TButton;
     bGoto: TButton;
+    chkEnSel: TCheckBox;
     chkEn: TCheckBox;
     chkWrap: TCheckBox;
     chkUnpr: TCheckBox;
@@ -22,24 +23,28 @@ type
     FontDialog1: TFontDialog;
     GroupBox1: TGroupBox;
     Label1: TLabel;
+    Label2: TLabel;
     OpenDialog1: TOpenDialog;
-    Panel1: TPanel;
+    PanelOpt: TPanel;
     bText: TRadioButton;
     bBin: TRadioButton;
     bHex: TRadioButton;
     bUni: TRadioButton;
     bUniHex: TRadioButton;
     edBin: TSpinEdit;
+    edTabsize: TSpinEdit;
     procedure bGotoClick(Sender: TObject);
     procedure bOpenClick(Sender: TObject);
     procedure bUniChange(Sender: TObject);
     procedure bUniHexChange(Sender: TObject);
     procedure bFontClick(Sender: TObject);
     procedure chkEnChange(Sender: TObject);
+    procedure chkEnSelChange(Sender: TObject);
     procedure chkGutterChange(Sender: TObject);
     procedure chkUnprChange(Sender: TObject);
     procedure chkWrapChange(Sender: TObject);
     procedure edBinChange(Sender: TObject);
+    procedure edTabsizeChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure bTextChange(Sender: TObject);
     procedure bBinChange(Sender: TObject);
@@ -156,6 +161,11 @@ begin
   bh.Redraw;
 end;
 
+procedure TfmMain.chkEnSelChange(Sender: TObject);
+begin
+  bh.TextEnableSel:= chkEnSel.Checked;
+end;
+
 procedure TfmMain.chkGutterChange(Sender: TObject);
 begin
   bh.TextGutter:= chkGutter.Checked;
@@ -175,6 +185,12 @@ end;
 procedure TfmMain.edBinChange(Sender: TObject);
 begin
   bh.TextWidth:= edBin.Value;
+  bh.Redraw;
+end;
+
+procedure TfmMain.edTabsizeChange(Sender: TObject);
+begin
+  bh.TextTabSize:= edTabsize.Value;
   bh.Redraw;
 end;
 
