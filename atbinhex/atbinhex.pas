@@ -157,6 +157,9 @@ var
   TextRepTo3: char = '.';
 
 type
+
+  { TATBinHex }
+
   TATBinHex = class(TCustomControl)
   private
     FFileName: UnicodeString;
@@ -485,8 +488,8 @@ type
     procedure DoClickURL(const AMousePos: Int64);
 
   protected
+    procedure DoOnResize; override;
     procedure DblClick; override;
-    procedure Resize; override;
     procedure Paint; override;
     procedure WMGetDlgCode(var Message: TMessage); message WM_GETDLGCODE;
     procedure WMEraseBkgnd(var Message: TMessage); message WM_ERASEBKGND;
@@ -2464,20 +2467,6 @@ begin
   SetScrollInfo(Handle, SB_HORZ, si, True);
 end;
 
-procedure TATBinHex.Resize;
-begin
-  //Notepad feature: when control increases height and
-  //file was at the end, then file is scrolled again to the end.
-  if cResizeFollowTail then
-    if (ClientHeight > FClientHeight) and FViewAtEnd then
-      PosEnd;
-
-  //Update last height
-  FClientHeight := ClientHeight;
-
-  Redraw;
-end;
-
 procedure TATBinHex.Paint;
 begin
   Canvas.Draw(0, 0, FBitmap);
@@ -3899,7 +3888,7 @@ begin
     end;
 end;
 
-procedure TATBinHex.UpdateMenu;
+procedure TATBinHex.UpdateMenu(Sender: TObject);
 var
   En: Boolean;
 begin
@@ -4936,7 +4925,9 @@ begin
 end;
 
 
-procedure TATBinHex.DoDrawLine;
+procedure TATBinHex.DoDrawLine(ACanvas: TCanvas; const AStr: UnicodeString;
+  const APos: Int64; const ARect: TRect; const ATextPnt: TPoint;
+  var ADone: Boolean);
 begin
   if Assigned(FOnDrawLine) then
     FOnDrawLine(
@@ -4949,7 +4940,8 @@ begin
       ADone);
 end;
 
-procedure TATBinHex.DoDrawLine2;
+procedure TATBinHex.DoDrawLine2(ACanvas: TCanvas; const AStr: UnicodeString;
+  const APnt: TPoint; const AOptions: TATBinHexOutputOptions);
 begin
   if Assigned(FOnDrawLine2) then
     FOnDrawLine2(
@@ -4974,6 +4966,21 @@ begin
       FOnClickURL(Self, S);
     end;
   end;
+end;
+
+procedure TATBinHex.DoOnResize;
+begin
+  //Notepad feature: when control increases height and
+  //file was at the end, then file is scrolled again to the end.
+  if cResizeFollowTail then
+    if (ClientHeight > FClientHeight) and FViewAtEnd then
+      PosEnd;
+
+  //Update last height
+  FClientHeight := ClientHeight;
+
+  Redraw;
+  inherited DoOnResize;
 end;
 
 
