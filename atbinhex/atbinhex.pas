@@ -507,7 +507,7 @@ type
     function Open(const AFileName: UnicodeString; ARedraw: Boolean = True): Boolean;
     function OpenStream(AStream: TStream; ARedraw: Boolean = True): Boolean;
     procedure Reload;
-    procedure Redraw;
+    procedure Redraw(DoPaint: Boolean = True);
 
     {$ifdef SEARCH}
     function FindFirst(const AText: UnicodeString; AOptions: TATStreamSearchOptions;
@@ -2284,7 +2284,7 @@ begin
 end;
 
 
-procedure TATBinHex.Redraw;
+procedure TATBinHex.Redraw(DoPaint: Boolean);
 begin
   if FEnabled2 then //Enabled2 enables control redrawing
     try
@@ -2295,7 +2295,8 @@ begin
       begin
         HideScrollbars;
         DrawEmptyTo(FBitmap, ClientWidth, ClientHeight, False);
-        Paint;
+        if DoPaint then
+          Paint;
         Exit;
       end;
 
@@ -2331,7 +2332,8 @@ begin
       //Update scrollbars and force paint
       UpdateVertScrollbar;
       UpdateHorzScrollbar;
-      Paint;
+      if DoPaint then
+        Paint;
     finally
       Unlock;
     end;
@@ -4978,8 +4980,7 @@ begin
 
   //Update last height
   FClientHeight := ClientHeight;
-
-  Redraw;
+  Redraw(False);
   inherited DoOnResize;
 end;
 
