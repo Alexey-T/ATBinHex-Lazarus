@@ -7,13 +7,15 @@ unit atbinhex_package;
 interface
 
 uses
-  ATBinHex, LazarusPackageIntf;
+  ATBinHex, atbinhex_register, ATCanvasProc, ATStreamSearch, ATStringProc, 
+  ATViewerMsg, ATxClipboard, ATxCodepages, ATxSHex, ATxSProc, 
+  LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
-  RegisterUnit('ATBinHex', @ATBinHex.Register);
+  RegisterUnit('atbinhex_register', @atbinhex_register.Register);
 end;
 
 initialization

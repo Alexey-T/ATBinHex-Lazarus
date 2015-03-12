@@ -650,9 +650,6 @@ type
 
 function TextIncreaseFontSize(AFont: TFont; ACanvas: TCanvas; AIncrement: Boolean): Boolean;
 
-procedure Register;
-
-
 implementation
 
 uses
@@ -5147,13 +5144,6 @@ begin
     Cursors[crNiceScrollLeft]  := LoadCursor(HInstance, 'AB_MOVE_L');
     Cursors[crNiceScrollRight] := LoadCursor(HInstance, 'AB_MOVE_R');
   end;
-end;
-
-
-{ Registration }
-procedure Register;
-begin
-  RegisterComponents('Misc', [TATBinHex]);
 end;
 
 { Initialization }

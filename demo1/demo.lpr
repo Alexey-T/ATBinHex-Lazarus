@@ -7,9 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, formmain,
-  ATCanvasProc, atstreamsearch, atstringproc, atviewermsg,
-  ATxClipboard, ATxCodepages, ATxSHex, ATxSProc, ATBinHex;
+  Forms, formmain;
 
 {$R *.res}
 
