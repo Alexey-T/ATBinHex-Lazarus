@@ -9,6 +9,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
+        <IncludeFiles Value="."/>
         <OtherUnitFiles Value="."/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
@@ -16,12 +17,56 @@
     <Description Value="ATBinHex"/>
     <License Value="MPL"/>
     <Version Major="1"/>
-    <Files Count="1">
+    <Files Count="12">
       <Item1>
         <Filename Value="atbinhex.pas"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="ATBinHex"/>
       </Item1>
+      <Item2>
+        <Filename Value="atbinhex_register.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="atbinhex_register"/>
+      </Item2>
+      <Item3>
+        <Filename Value="atbinhexoptions.inc"/>
+        <Type Value="Include"/>
+      </Item3>
+      <Item4>
+        <Filename Value="atcanvasproc.pas"/>
+        <UnitName Value="ATCanvasProc"/>
+      </Item4>
+      <Item5>
+        <Filename Value="atstreamsearch.pas"/>
+        <UnitName Value="ATStreamSearch"/>
+      </Item5>
+      <Item6>
+        <Filename Value="atstreamsearchoptions.inc"/>
+        <Type Value="Include"/>
+      </Item6>
+      <Item7>
+        <Filename Value="atstringproc.pas"/>
+        <UnitName Value="ATStringProc"/>
+      </Item7>
+      <Item8>
+        <Filename Value="atviewermsg.pas"/>
+        <UnitName Value="ATViewerMsg"/>
+      </Item8>
+      <Item9>
+        <Filename Value="atxclipboard.pas"/>
+        <UnitName Value="ATxClipboard"/>
+      </Item9>
+      <Item10>
+        <Filename Value="atxcodepages.pas"/>
+        <UnitName Value="ATxCodepages"/>
+      </Item10>
+      <Item11>
+        <Filename Value="atxshex.pas"/>
+        <UnitName Value="ATxSHex"/>
+      </Item11>
+      <Item12>
+        <Filename Value="atxsproc.pas"/>
+        <UnitName Value="ATxSProc"/>
+      </Item12>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>
