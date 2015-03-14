@@ -36,7 +36,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="demo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -49,6 +49,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="formmain"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="..\atbinhex\atbinhex.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ATBinHex"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

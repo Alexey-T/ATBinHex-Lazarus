@@ -522,7 +522,8 @@ end;
 
 function SetStringW(Buf: Pointer; Len: Integer; SwapUnicode: boolean): UnicodeString;
 begin
-  SetString(Result, Buf, Len);
+  SetLength(Result, Len div 2);
+  Move(Buf^, Result[1], Len);
   if SwapUnicode then
     Result:= SSwapEndian(Result);
 end;
