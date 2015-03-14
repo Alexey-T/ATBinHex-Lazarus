@@ -23,6 +23,7 @@ uses
   Messages, SysUtils, Classes, Controls, Graphics,
   ExtCtrls,
   LMessages,
+  Math,
   {$ifdef NOTIF} ATFileNotification, {$endif}
   {$ifdef NOTIF} ATFileNotificationSimple, {$endif}
   {$ifdef SEARCH} ATStreamSearch, {$endif}
@@ -895,7 +896,7 @@ begin
   end;
 
   if AOptions.ShowNonPrintable then
-    SReplaceAllW(Result, ' ', chSp);
+    Result := StringReplace(Result, ' ', chSp, [rfReplaceAll]);
 
   TabOptions.TabSize := AOptions.TabSize;
   TabOptions.TabPosition := 0;
@@ -1028,7 +1029,7 @@ function StringWrapPosition(
 var
   i: Integer;
 begin
-  for i := IMin(AMaxLen + 1, Length(S)) downto 1 do
+  for i := Min(AMaxLen + 1, Length(S)) downto 1 do
     if IsSeparator(S[i]) then
       begin Result := i; Exit end;
   Result := AMaxLen;
@@ -1135,7 +1136,7 @@ type
 
 procedure TStrPositions.AddHex(APos, AX, ANum, ALen: Integer);
 begin
-  FHexNum := IMin(ANum, cHexMaxDigits);
+  FHexNum := Min(ANum, cHexMaxDigits);
   FHexLen := ALen;
   if (APos >= Low(FHex)) and (APos <= High(FHex)) then
     FHex[APos] := AX;
@@ -1910,7 +1911,7 @@ begin
         vbmodeUnicode:
           begin
             APos := FViewPos;
-            for i := 1 to IMin(ALines + 1, cMaxLines) do
+            for i := 1 to Min(ALines + 1, cMaxLines) do
             begin
               //Find line
               APosEnd := FindLinePos(APos, vdirDown, LineW);
@@ -2018,7 +2019,7 @@ begin
 
         vbmodeHex:
           begin
-            for i := 1 to IMin(ALines + 1, cMaxLines) do
+            for i := 1 to Min(ALines + 1, cMaxLines) do
             begin
               ACurrentPos := FViewPos + (i - 1) * ATextWidthHex;
               APos := ACurrentPos - FBufferPos;
@@ -2127,7 +2128,7 @@ begin
 
         vbmodeUHex:
           begin
-            for i := 1 to IMin(ALines + 1, cMaxLines) do
+            for i := 1 to Min(ALines + 1, cMaxLines) do
             begin
               ACurrentPos := FViewPos + (i - 1) * ATextWidthUHex * 2;
               APos := ACurrentPos - FBufferPos;
@@ -2236,7 +2237,7 @@ begin
 
         vbmodeBinary:
           begin
-            for i := 1 to IMin(ALines + 1, cMaxLines) do
+            for i := 1 to Min(ALines + 1, cMaxLines) do
             begin
               ACurrentPos := FViewPos + (i - 1) * ATextWidth;
               APos := ACurrentPos - FBufferPos;
@@ -2441,7 +2442,7 @@ begin
   end
   else
   begin
-    AWidth := IMax(HPosWidth, FHViewPos + ClientWidth);
+    AWidth := Max(HPosWidth, FHViewPos + ClientWidth);
 
     {$ifdef SCROLL}
     //Remember max width, so scrollbar won't disappear
@@ -2628,7 +2629,7 @@ begin
       if ActiveLinesShow then
         if (FBufferPos <= FLinesBufSize) then
         begin
-          ABufSize := I64Min(
+          ABufSize := Min(
             FLinesBufSize,
             FBufferPos + FBufferAllocSize);
           CountLines(ABufSize);
@@ -3439,9 +3440,9 @@ begin
   if FSelLength > 0 then
   begin
     if AMaxSize > 0 then
-      ABlockSize := I64Min(FSelLength, AMaxSize)
+      ABlockSize := Min(FSelLength, AMaxSize)
     else
-      ABlockSize := I64Min(FSelLength, FMaxClipboardDataSizeMb * 1024 * 1024);
+      ABlockSize := Min(FSelLength, FMaxClipboardDataSizeMb * 1024 * 1024);
 
     SetLength(ABuffer, ABlockSize);
 
@@ -3640,7 +3641,7 @@ begin
           //Shift+click
           if cSelectionByShiftClick then
             SetSelection(
-              I64Max(I64Min(AMouseStartNew, FMouseStartShift), 0),
+              Max(Min(AMouseStartNew, FMouseStartShift), 0),
               Abs(AMouseStartNew - FMouseStartShift),
               False);
         end

@@ -64,8 +64,7 @@ begin
   ResStr := '';
   Result := False;
 
-  S := HexStr;
-  SReplaceAll(S, ' ', '');
+  S := StringReplace(HexStr, ' ', '', [rfReplaceAll]);
 
   if (Length(S) mod 2) > 0 then Exit;
 
