@@ -1,4 +1,4 @@
-  unit atbinhex_register;
+unit atbinhex_register;
 
 {$mode objfpc}{$H+}
 
@@ -10,6 +10,8 @@ uses
 procedure Register;
 
 implementation
+
+{$R atbinhex.dcr}
 
 { Registration }
 procedure Register;
