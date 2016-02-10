@@ -151,6 +151,9 @@ begin
   C.Rectangle(0, 0, 0, 0); //apply pen
 end;
 
+finalization
+  _Pen.Free;
+
 {$endif}
 
 end.
