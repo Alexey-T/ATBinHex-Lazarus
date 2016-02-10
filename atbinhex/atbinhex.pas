@@ -587,6 +587,15 @@ type
     //we need to disable it during printing.
     property Enabled2: Boolean read FEnabled2 write SetEnabled2;
   published
+    //inherited properties
+    property Align;
+    property Anchors;
+    property BorderSpacing;
+    property BorderStyle;
+    property Font;
+    property ParentColor;
+    property TabOrder;
+
     property TextLineSpacing: integer read FLineSp write FLineSp default 0;
     property TextEnableSel: Boolean read FEnableSel write FEnableSel default True;
     property FontOEM: TFont read FFontOEM write SetFontOEM;
