@@ -1,4 +1,4 @@
-unit ATViewerMsg;
+unit atbinhex_msg;
 
 interface
 

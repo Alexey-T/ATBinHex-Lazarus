@@ -1,4 +1,4 @@
-unit ATxCodepages;
+unit atbinhex_encoding;
 
 interface
 

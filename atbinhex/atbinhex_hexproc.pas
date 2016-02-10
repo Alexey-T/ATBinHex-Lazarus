@@ -1,4 +1,4 @@
-unit ATxSHex;
+unit atbinhex_hexproc;
 
 interface
 
@@ -16,7 +16,7 @@ function HexToIntDef(const S: string; const Default: Int64): Int64;
 implementation
 
 uses
-  SysUtils, ATxSProc;
+  SysUtils, atbinhex_strproc;
 
 function SHexDigitToInt(Hex: char; var Int: LongWord): Boolean;
 var

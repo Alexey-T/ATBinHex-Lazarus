@@ -28,36 +28,36 @@
         <UnitName Value="atbinhex_register"/>
       </Item2>
       <Item3>
-        <Filename Value="atcanvasproc.pas"/>
-        <UnitName Value="ATCanvasProc"/>
+        <Filename Value="atbinhex_canvasproc.pas"/>
+        <UnitName Value="atbinhex_canvasproc"/>
       </Item3>
       <Item4>
         <Filename Value="atstreamsearch.pas"/>
         <UnitName Value="ATStreamSearch"/>
       </Item4>
       <Item5>
-        <Filename Value="atstringproc.pas"/>
-        <UnitName Value="ATStringProc"/>
+        <Filename Value="atbinhex_stringproc.pas"/>
+        <UnitName Value="atbinhex_stringproc"/>
       </Item5>
       <Item6>
-        <Filename Value="atviewermsg.pas"/>
-        <UnitName Value="ATViewerMsg"/>
+        <Filename Value="atbinhex_msg.pas"/>
+        <UnitName Value="atbinhex_msg"/>
       </Item6>
       <Item7>
-        <Filename Value="atxclipboard.pas"/>
-        <UnitName Value="ATxClipboard"/>
+        <Filename Value="atbinhex_clipboard.pas"/>
+        <UnitName Value="atbinhex_clipboard"/>
       </Item7>
       <Item8>
-        <Filename Value="atxcodepages.pas"/>
-        <UnitName Value="ATxCodepages"/>
+        <Filename Value="atbinhex_encoding.pas"/>
+        <UnitName Value="atbinhex_encoding"/>
       </Item8>
       <Item9>
-        <Filename Value="atxshex.pas"/>
-        <UnitName Value="ATxSHex"/>
+        <Filename Value="atbinhex_hexproc.pas"/>
+        <UnitName Value="atbinhex_hexproc"/>
       </Item9>
       <Item10>
-        <Filename Value="atxsproc.pas"/>
-        <UnitName Value="ATxSProc"/>
+        <Filename Value="atbinhex_strproc.pas"/>
+        <UnitName Value="atbinhex_strproc"/>
       </Item10>
     </Files>
     <RequiredPkgs Count="1">

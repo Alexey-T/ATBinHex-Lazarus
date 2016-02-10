@@ -7,9 +7,9 @@ unit atbinhex_package;
 interface
 
 uses
-  ATBinHex, atbinhex_register, ATCanvasProc, ATStreamSearch, ATStringProc, 
-  ATViewerMsg, ATxClipboard, ATxCodepages, ATxSHex, ATxSProc, 
-  LazarusPackageIntf;
+  ATBinHex, atbinhex_register, atbinhex_canvasproc, ATStreamSearch, 
+  atbinhex_stringproc, atbinhex_msg, atbinhex_clipboard, atbinhex_encoding, 
+  atbinhex_hexproc, atbinhex_strproc, LazarusPackageIntf;
 
 implementation
 

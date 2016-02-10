@@ -1,9 +1,9 @@
-unit ATxSProc;
+unit atbinhex_strproc;
 
 interface
 
 uses
-  SysUtils, ATStringProc;
+  SysUtils, atbinhex_stringproc;
 
 function SetStringW(Buf: Pointer; Len: Integer; SwapUnicode: boolean): UnicodeString;
 function SFileExtensionMatch(const FN, ExtList: string): boolean;

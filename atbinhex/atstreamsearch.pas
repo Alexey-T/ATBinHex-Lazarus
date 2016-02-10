@@ -21,7 +21,7 @@ uses
   {$IFDEF TNT}
   TntClasses,
   {$ENDIF}
-  ATxCodepages;
+  atbinhex_encoding;
 
 type
   TATStreamSearchOption = (
@@ -146,7 +146,7 @@ uses
   {$IFDEF REGEX}
   DIRegEx_Api, DIRegEx_SearchStream, DIUtils,
   {$ENDIF}
-  SysUtils, ATxSProc;
+  SysUtils, atbinhex_strproc;
 
 { Constants }
 
@@ -662,4 +662,4 @@ begin
   RegisterComponents('Samples', [TATStreamSearch]);
 end;
 
-end.
+end.

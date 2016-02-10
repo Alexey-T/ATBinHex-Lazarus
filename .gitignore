@@ -26,3 +26,5 @@
 *.lps
 
 */lib/
+*/backup/
+demo

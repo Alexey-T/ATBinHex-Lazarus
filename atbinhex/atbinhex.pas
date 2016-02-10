@@ -29,7 +29,7 @@ uses
   {$ifdef SEARCH} ATStreamSearch, {$endif}
   {$ifdef PRINT} Dialogs, {$endif}
   {$ifdef REGEX} DIRegEx, {$endif}
-  ATxCodepages,
+  atbinhex_encoding,
   Menus;
 
 
@@ -675,9 +675,12 @@ uses
   {$ifdef PREVIEW} ATPrintPreview, ATxPrintProc, {$endif}
   {$ifdef TEST} TntStdCtrls, {$endif}
   {$ifdef TNT} TntClasses, {$endif}
-  ATxSProc, ATxSHex, ATxClipboard, ATViewerMsg,
-  ATStringProc,
-  ATCanvasProc;
+  atbinhex_strproc,
+  atbinhex_hexproc,
+  atbinhex_clipboard,
+  atbinhex_msg,
+  atbinhex_stringproc,
+  atbinhex_canvasproc;
 
 
 { Important constants: change with care }

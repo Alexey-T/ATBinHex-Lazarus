@@ -1,4 +1,4 @@
-unit ATStringProc;
+unit atbinhex_stringproc;
 
 {$mode delphi}
 

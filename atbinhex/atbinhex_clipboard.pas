@@ -1,9 +1,9 @@
-unit ATxClipboard;
+unit atbinhex_clipboard;
 
 interface
 
 uses
-  ATxCodepages;
+  atbinhex_encoding;
 
 function SCopyToClipboard(const S: AnsiString; Enc: TATEncoding = vencANSI): Boolean;
 function SCopyToClipboardW(const S: UnicodeString): Boolean;
