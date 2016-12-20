@@ -15,7 +15,7 @@
       </SearchPaths>
     </CompilerOptions>
     <Description Value="Viewer control, for files and streams, of unlimited size. Modes: text with var-length, text with fixed length, hex, unicode, hex-unicode."/>
-    <License Value="MPL, LGPL"/>
+    <License Value="MPL 2.0, LGPL"/>
     <Version Major="1"/>
     <Files Count="10">
       <Item1>
