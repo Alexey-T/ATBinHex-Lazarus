@@ -14,8 +14,8 @@
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Description Value="ATBinHex"/>
-    <License Value="MPL"/>
+    <Description Value="Viewer control, for files and streams, of unlimited size. Modes: text with var-length, text with fixed length, hex, unicode, hex-unicode."/>
+    <License Value="MPL, LGPL"/>
     <Version Major="1"/>
     <Files Count="10">
       <Item1>
@@ -62,7 +62,7 @@
     </Files>
     <RequiredPkgs Count="1">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="LCL"/>
       </Item1>
     </RequiredPkgs>
     <UsageOptions>

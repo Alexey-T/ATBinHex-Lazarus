@@ -1,21 +1,21 @@
 object fmMain: TfmMain
-  Left = 378
-  Height = 441
-  Top = 261
-  Width = 779
+  Left = 226
+  Height = 454
+  Top = 264
+  Width = 884
   Caption = 'ATBinHex demo'
-  ClientHeight = 441
-  ClientWidth = 779
+  ClientHeight = 454
+  ClientWidth = 884
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.7'
   object PanelOpt: TPanel
-    Left = 609
-    Height = 441
+    Left = 714
+    Height = 454
     Top = 0
     Width = 170
     Align = alRight
-    ClientHeight = 441
+    ClientHeight = 454
     ClientWidth = 170
     TabOrder = 0
     object bOpen: TButton
@@ -33,50 +33,51 @@ object fmMain: TfmMain
       Top = 100
       Width = 149
       Caption = 'mode'
-      ClientHeight = 124
+      ClientHeight = 125
       ClientWidth = 145
       TabOrder = 3
       object bText: TRadioButton
         Left = 7
-        Height = 19
+        Height = 24
         Top = 0
-        Width = 39
+        Width = 54
         Caption = 'text'
+        Checked = True
         OnChange = bTextChange
         TabOrder = 0
       end
       object bBin: TRadioButton
         Left = 7
-        Height = 19
+        Height = 24
         Top = 24
-        Width = 53
+        Width = 68
         Caption = 'binary'
         OnChange = bBinChange
         TabOrder = 1
       end
       object bHex: TRadioButton
         Left = 7
-        Height = 19
+        Height = 24
         Top = 48
-        Width = 38
+        Width = 50
         Caption = 'hex'
         OnChange = bHexChange
         TabOrder = 2
       end
       object bUni: TRadioButton
         Left = 7
-        Height = 19
+        Height = 24
         Top = 72
-        Width = 63
+        Width = 79
         Caption = 'unicode'
         OnChange = bUniChange
         TabOrder = 3
       end
       object bUniHex: TRadioButton
         Left = 7
-        Height = 19
+        Height = 24
         Top = 96
-        Width = 86
+        Width = 109
         Caption = 'unicode/hex'
         OnChange = bUniHexChange
         TabOrder = 4
@@ -93,7 +94,7 @@ object fmMain: TfmMain
     end
     object edBin: TSpinEdit
       Left = 10
-      Height = 23
+      Height = 27
       Top = 248
       Width = 59
       MaxValue = 160
@@ -104,26 +105,26 @@ object fmMain: TfmMain
     end
     object Label1: TLabel
       Left = 80
-      Height = 15
+      Height = 17
       Top = 252
-      Width = 66
+      Width = 83
       Caption = 'binary width'
       ParentColor = False
     end
     object chkUnpr: TCheckBox
       Left = 7
-      Height = 19
+      Height = 24
       Top = 344
-      Width = 103
+      Width = 131
       Caption = 'unprinted chars'
       OnChange = chkUnprChange
       TabOrder = 8
     end
     object chkGutter: TCheckBox
       Left = 7
-      Height = 19
+      Height = 24
       Top = 324
-      Width = 52
+      Width = 68
       Caption = 'gutter'
       Checked = True
       OnChange = chkGutterChange
@@ -132,18 +133,18 @@ object fmMain: TfmMain
     end
     object chkWrap: TCheckBox
       Left = 7
-      Height = 19
+      Height = 24
       Top = 304
-      Width = 46
+      Width = 60
       Caption = 'wrap'
       OnChange = chkWrapChange
       TabOrder = 6
     end
     object chkEn: TCheckBox
       Left = 7
-      Height = 19
+      Height = 24
       Top = 364
-      Width = 62
+      Width = 80
       Caption = 'enabled'
       Checked = True
       OnChange = chkEnChange
@@ -161,9 +162,9 @@ object fmMain: TfmMain
     end
     object chkEnSel: TCheckBox
       Left = 7
-      Height = 19
+      Height = 24
       Top = 384
-      Width = 79
+      Width = 102
       Caption = 'enabled sel'
       Checked = True
       OnChange = chkEnSelChange
@@ -172,7 +173,7 @@ object fmMain: TfmMain
     end
     object edTabsize: TSpinEdit
       Left = 10
-      Height = 23
+      Height = 27
       Top = 275
       Width = 59
       MaxValue = 12
@@ -183,9 +184,9 @@ object fmMain: TfmMain
     end
     object Label2: TLabel
       Left = 79
-      Height = 15
+      Height = 17
       Top = 280
-      Width = 39
+      Width = 52
       Caption = 'tab size'
       ParentColor = False
     end
