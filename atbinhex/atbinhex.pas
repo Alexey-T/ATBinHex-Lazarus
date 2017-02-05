@@ -596,8 +596,11 @@ type
     property Anchors;
     property BorderSpacing;
     property BorderStyle;
+    property Color;
     property Font;
     property ParentColor;
+    property ParentShowHint;
+    property ShowHint;
     property TabOrder;
 
     property TextLineSpacing: integer read FLineSp write FLineSp default 0;
