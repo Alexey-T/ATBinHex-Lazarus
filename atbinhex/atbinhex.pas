@@ -257,7 +257,6 @@ type
     FMaxLength: Integer;
     FMaxLengths: array[TATBinHexMode] of Integer;
     FMaxClipboardDataSizeMb: Integer;
-    FFontOEM: TFont;
     FFontFooter: TFont;
     FFontGutter: TFont;
     FHexOffsetLen: Integer;
@@ -327,7 +326,6 @@ type
     procedure SetTextEncoding(const AValue: string);
     procedure SetSearchIndentVert(AValue: Integer);
     procedure SetSearchIndentHorz(AValue: Integer);
-    procedure SetFontOEM(AValue: TFont);
     procedure SetFontFooter(AValue: TFont);
     procedure SetFontGutter(AValue: TFont);
     procedure SetLinesBufSize(AValue: Integer);
@@ -607,7 +605,6 @@ type
 
     property TextLineSpacing: integer read FLineSp write FLineSp default 0;
     property TextEnableSel: Boolean read FEnableSel write FEnableSel default True;
-    property FontOEM: TFont read FFontOEM write SetFontOEM;
     property FontFooter: TFont read FFontFooter write SetFontFooter;
     property FontGutter: TFont read FFontGutter write SetFontGutter;
     property Mode: TATBinHexMode read FMode write SetMode default vbmodeText;
@@ -1478,14 +1475,6 @@ begin
   FSearchStarted := False;
   {$endif}
 
-  FFontOEM := TFont.Create;
-  with FFontOEM do
-  begin
-    Name := 'Terminal';
-    Size := 9;
-    Color := clWindowText;
-  end;
-
   FFontFooter := TFont.Create;
   with FFontFooter do
   begin
@@ -1637,7 +1626,6 @@ begin
   FreeData;
   FStrings.Free;
   FBitmap.Free;
-  FFontOEM.Free;
   FFontFooter.Free;
   FFontGutter.Free;
 
@@ -1696,7 +1684,7 @@ begin
   FillChar(Result, SizeOf(Result), 0);
   Result.ShowNonPrintable := FTextNonPrintable;
   Result.ShowCR := AShowCR;
-  Result.IsFontOem := ActiveFont = FFontOEM;
+  Result.IsFontOem := false; //ActiveFont = FFontOEM;
   Result.IsFontFixed := FFontMonospaced;
   Result.TabSize := FTabSize;
 end;
@@ -3225,11 +3213,6 @@ begin
   ILimitMax(FSearchIndentHorz, cMaxSearchIndent);
 end;
 
-procedure TATBinHex.SetFontOEM(AValue: TFont);
-begin
-  FFontOEM.Assign(AValue);
-end;
-
 procedure TATBinHex.SetFontFooter(AValue: TFont);
 begin
   FFontFooter.Assign(AValue);
@@ -4359,10 +4342,7 @@ end;
 
 function TATBinHex.ActiveFont: TFont;
 begin
-  if (not IsModeUnicode) and FTextOemSpecial then
-    Result := FFontOEM
-  else
-    Result := Font;
+  Result := Font;
 end;
 
 procedure TATBinHex.Lock;
