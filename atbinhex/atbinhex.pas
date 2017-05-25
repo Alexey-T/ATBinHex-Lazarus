@@ -84,7 +84,6 @@ type
   TATBinHexOutputOptions = record
     ShowNonPrintable,      //"Show non-printable" mode is on
     ShowCR,                //Current line has CR (not wrapped)
-    IsFontOem,             //Current font is FontOEM, not Font
     IsFontFixed: Boolean;  //Current font has fixed width
     TabSize: Integer;      //"Tab size" value
   end;
@@ -895,18 +894,9 @@ var
 begin
   Result := S;
 
-  if AOptions.IsFontOem then
-  begin
-    chSp := cCharNonPrintSpaceOEM;
-    chTab := cCharNonPrintTabOEM;
-    chCR := cCharNonPrintCROEM;
-  end
-  else
-  begin
-    chSp := cCharNonPrintSpace;
-    chTab := cCharNonPrintTab;
-    chCR := cCharNonPrintCR;
-  end;
+  chSp := cCharNonPrintSpace;
+  chTab := cCharNonPrintTab;
+  chCR := cCharNonPrintCR;
 
   if AOptions.ShowNonPrintable then
     Result := StringReplace(Result, ' ', chSp, [rfReplaceAll]);
@@ -1684,7 +1674,6 @@ begin
   FillChar(Result, SizeOf(Result), 0);
   Result.ShowNonPrintable := FTextNonPrintable;
   Result.ShowCR := AShowCR;
-  Result.IsFontOem := false; //ActiveFont = FFontOEM;
   Result.IsFontFixed := FFontMonospaced;
   Result.TabSize := FTabSize;
 end;
