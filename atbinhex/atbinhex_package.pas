@@ -4,12 +4,13 @@
 
 unit atbinhex_package;
 
+{$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  ATBinHex, atbinhex_register, atbinhex_canvasproc, ATStreamSearch, 
-  atbinhex_stringproc, atbinhex_msg, atbinhex_clipboard, atbinhex_encoding, 
-  atbinhex_hexproc, atbinhex_strproc, LazarusPackageIntf;
+  ATBinHex, atbinhex_register, atbinhex_canvasproc, atbinhex_stringproc, 
+  atbinhex_msg, atbinhex_clipboard, atbinhex_encoding, atbinhex_hexproc, 
+  atbinhex_strproc, LazarusPackageIntf;
 
 implementation
 

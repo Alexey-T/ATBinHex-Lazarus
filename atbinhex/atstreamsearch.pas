@@ -42,8 +42,12 @@ type
     var AContinueSearching: Boolean) of object;
 
 type
+
+  { TATStreamSearch }
+
   TATStreamSearch = class(TComponent)
   private
+    FSavedEncoding: string;
     FStream: TStream;
     FStreamOwner: Boolean;
     FFileName: WideString;
@@ -54,7 +58,6 @@ type
 
     FSavStart,
     FSavLen: Int64;
-    FSavEnc: TATEncoding;
     FSavText: Widestring;
     FSavOpt: TATStreamsearchoptions;
 
@@ -65,7 +68,6 @@ type
     FCharSize: Integer;
 
     FSavedText: WideString;
-    FSavedEncoding: TATEncoding;
     FSavedOptions: TATStreamSearchOptions;
     //FSearchForValidUTF16: Boolean;
 
@@ -73,7 +75,7 @@ type
     procedure InitSavedOptions;
     function InitProgressFields(
       const AStartPos: Int64;
-      AEncoding: TATEncoding): Boolean;
+      const AEncoding: string): Boolean;
     procedure DoProgress(
       const ACurrentPos, AMaximalPos: Int64;
       var AContinueSearching: Boolean);
@@ -98,12 +100,12 @@ type
     function TextFind(
       const AText: WideString;
       const AStartPos: Int64;
-      AEncoding: TATEncoding;
+      const AEncoding: string;
       AOptions: TATStreamSearchOptions): Int64;
     function TextFindFirst(
       const AText: WideString;
       const AStartPos: Int64;
-      AEncoding: TATEncoding;
+      const AEncoding: string;
       AOptions: TATStreamSearchOptions): Boolean;
     function TextFindNext(AFindPrevious: Boolean = False): Boolean;
 
@@ -116,13 +118,13 @@ type
     property FileName: WideString read FFileName write SetFileName;
     property Stream: TStream read FStream write SetStream;
     property SavedText: Widestring read FSavedText;
-    property SavedEncoding: TATEncoding read FSavedEncoding;
+    property SavedEncoding: string read FSavedEncoding;
     property SavedOptions: TATStreamSearchOptions read FSavedOptions;
 
     function FindFirst(
       const AText: WideString;
       const AStartPos: Int64;
-      AEncoding: TATEncoding;
+      const AEncoding: string;
       AOptions: TATStreamSearchOptions): Boolean;
     function FindNext(AFindPrevious: Boolean = False): Boolean;
 
@@ -257,9 +259,8 @@ begin
   FStream := AStream;
 end;
 
-function TATStreamSearch.InitProgressFields(
-  const AStartPos: Int64;
-  AEncoding: TATEncoding): Boolean;
+function TATStreamSearch.InitProgressFields(const AStartPos: Int64;
+  const AEncoding: string): Boolean;
 begin
   Assert(Assigned(FStream));
   FStreamStart := AStartPos;

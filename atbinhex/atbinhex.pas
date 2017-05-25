@@ -23,13 +23,11 @@ uses
   Messages, SysUtils, Classes, Controls, Graphics,
   ExtCtrls,
   LMessages,
-  Math,
+  ATBinHex_Encoding,
   {$ifdef NOTIF} ATFileNotification, {$endif}
   {$ifdef NOTIF} ATFileNotificationSimple, {$endif}
   {$ifdef SEARCH} ATStreamSearch, {$endif}
-  {$ifdef PRINT} Dialogs, {$endif}
-  {$ifdef REGEX} DIRegEx, {$endif}
-  atbinhex_encoding,
+  Math,
   Menus;
 
 
@@ -194,6 +192,7 @@ type
     FTimerAutoScroll: TTimer;
     FTimerNiceScroll: TTimer;
     FStrings: TObject;
+    FTextEncoding: string;
 
     FMenu: TPopupMenu;
     FMenuItemCopy: TMenuItem;
@@ -204,8 +203,7 @@ type
     FMenuItemEncMenu: TMenuItem;
     FMenuItemSep1: TMenuItem;
     FMenuItemSep2: TMenuItem;
-    FMenuCodepages: TPopupMenu;
-    FMenuCodepagesUn: TPopupMenu;
+    FMenuEnc: TPopupMenu;
 
     {$ifdef NOTIF}
     FNotif: TATFileNotification;
@@ -228,7 +226,6 @@ type
     FSelStart: Int64;
     FSelLength: Int64;
     FMode: TATBinHexMode;
-    FEncoding: TATEncoding;
     FUrlArray: TATUrlArray;
     FFindArray: TATFindArray;
     FUrlShow: Boolean;
@@ -311,10 +308,10 @@ type
     function PosBefore(const APos: Int64; ALineType: TATLineType; ADir: TATDirection): Int64;
     procedure ReadUnicodeFmt;
     procedure HideScrollbars;
+    procedure UpdateMenuEncodings(AMenu: TMenuItem);
     procedure UpdateVertScrollbar;
     procedure UpdateHorzScrollbar;
     procedure SetMode(AMode: TATBinHexMode);
-    procedure SetTextEncoding(AValue: TATEncoding);
     procedure SetTextWidthTo(AValue: Integer; var AField: Integer);
     procedure SetTextWidthHexTo(AValue: Integer; var AField: Integer);
     procedure SetTextWidthUHexTo(AValue: Integer; var AField: Integer);
@@ -327,6 +324,7 @@ type
     procedure SetTextWrap(AValue: Boolean);
     procedure SetTextNonPrintable(AValue: Boolean);
     procedure SetTextUrlHilight(AValue: Boolean);
+    procedure SetTextEncoding(const AValue: string);
     procedure SetSearchIndentVert(AValue: Integer);
     procedure SetSearchIndentHorz(AValue: Integer);
     procedure SetFontOEM(AValue: TFont);
@@ -404,6 +402,7 @@ type
     function GetTextPopupCaption(AIndex: TATPopupCommand): AnsiString;
     procedure SetTextPopupCaption(AIndex: TATPopupCommand; const AValue: AnsiString);
     procedure SetTabSize(AValue: Integer);
+    procedure DoAddEncodingItem(AMenu: TMenuItem; Sub, SName: string);
 
     procedure InitURLs;
     procedure FindURLs(ABufSize: DWORD);
@@ -587,6 +586,9 @@ type
     property FileReadOK: Boolean read FFileOK;
     property FileUnicodeFormat: TATUnicodeFormat read FFileUnicodeFmt write SetFileUnicodeFmt;
 
+    property TextEncoding: string read FTextEncoding write SetTextEncoding;
+    procedure TextEncodingsMenu(AX, AY: Integer);
+
     //Enabled2 is the same as Enabled, but also enables control redrawing:
     //we need to disable it during printing.
     property Enabled2: Boolean read FEnabled2 write SetEnabled2;
@@ -609,7 +611,6 @@ type
     property FontFooter: TFont read FFontFooter write SetFontFooter;
     property FontGutter: TFont read FFontGutter write SetFontGutter;
     property Mode: TATBinHexMode read FMode write SetMode default vbmodeText;
-    property TextEncoding: TATEncoding read FEncoding write SetTextEncoding default vencANSI;
     property TextWidth: Integer read FTextWidth write SetTextWidth default 80;
     property TextWidthHex: Integer read FTextWidthHex write SetTextWidthHex default 16;
     property TextWidthUHex: Integer read FTextWidthUHex write SetTextWidthUHex default 8;
@@ -1369,6 +1370,7 @@ begin
   FillChar(FBuffer^, FBufferAllocSize, 0);
 end;
 
+
 constructor TATBinHex.Create(AOwner: TComponent);
 var
   N: TATBinHexMode;
@@ -1390,7 +1392,6 @@ begin
 
   //Init fields
   FMode := vbmodeText;
-  FEncoding := vencANSI;
   FTextWidth := 80;
   FTextWidthHex := 16;
   FTextWidthUHex := 8;
@@ -1565,8 +1566,9 @@ begin
   FMenuItemEncMenu:= TMenuItem.Create(Self);
   with FMenuItemEncMenu do
   begin
-    Caption := 'Encoding...';
-    OnClick := MenuItemEncMenuClick;
+    Caption := 'Encoding';
+    UpdateMenuEncodings(FMenuItemEncMenu);
+    //OnClick := MenuItemEncMenuClick;
   end;
 
   FMenuItemSep1 := TMenuItem.Create(Self);
@@ -1595,8 +1597,7 @@ begin
     OnPopup := UpdateMenu;
   end;
 
-  FMenuCodepages := nil;
-  FMenuCodepagesUn := nil;
+  FMenuEnc := nil;
   PopupMenu := FMenu;
 
   //Init notification objects
@@ -2299,6 +2300,19 @@ begin
   end;
 end;
 
+procedure TATBinHex.TextEncodingsMenu(AX, AY: Integer);
+begin
+  if IsModeUnicode then exit;
+  //was in Delphi version, menu to choose UTF16 LE/BE, deleted here
+
+  if not Assigned(FMenuEnc) then
+  begin
+    FMenuEnc := TPopupMenu.Create(Self);
+    UpdateMenuEncodings(FMenuEnc.Items);
+  end;
+  FMenuEnc.Popup(AX, AY);
+end;
+
 
 procedure TATBinHex.Redraw(DoPaint: Boolean);
 begin
@@ -2542,7 +2556,7 @@ begin
     if IsModeUnicode then
       Result := SetStringW(@S[1], Length(S), IsUnicodeBE)
     else
-      Result := SCodepageToUnicode(S, FEncoding);
+      Result := SCodepageToUnicode(S, FTextEncoding);
 end;
 
 procedure TATBinHex.DblClick;
@@ -3112,11 +3126,11 @@ begin
     Redraw;
 end;
 
-procedure TATBinHex.SetTextEncoding(AValue: TATEncoding);
+procedure TATBinHex.SetTextEncoding(const AValue: string);
 begin
-  if AValue <> FEncoding then
+  if AValue <> FTextEncoding then
   begin
-    FEncoding := AValue;
+    FTextEncoding := AValue;
     Redraw;
   end;
 end;
@@ -3437,7 +3451,7 @@ begin
         StrA := SToHex(StrA)
       else
         SReplaceZeros(StrA);
-      SCopyToClipboard(StrA, FEncoding);
+      SCopyToClipboard(StrA);
     end;
   except
     MsgError(MsgViewerErrCannotCopyData);
@@ -3477,7 +3491,7 @@ begin
   Assert(not IsModeUnicode, 'SelText is called in Unicode mode');
 
   Result := GetSelTextRaw;
-  Result := SCodepageToUnicode(Result, FEncoding);
+  Result := SCodepageToUnicode(Result, FTextEncoding);
 end;
 
 function TATBinHex.GetSelTextShort: AnsiString;
@@ -3485,7 +3499,7 @@ begin
   Assert(not IsModeUnicode, 'SelText is called in Unicode mode');
 
   Result := GetSelTextRaw(cMaxShortLength * CharSize);
-  Result := SCodepageToUnicode(Result, FEncoding);
+  Result := SCodepageToUnicode(Result, FTextEncoding);
 end;
 
 function TATBinHex.GetSelTextW: UnicodeString;
@@ -3890,7 +3904,11 @@ begin
 end;
 
 procedure TATBinHex.MenuItemEncMenuClick(Sender: TObject);
+var
+  P: TPoint;
 begin
+  P := Mouse.CursorPos;
+  TextEncodingsMenu(P.X, P.Y);
 end;
 
 procedure TATBinHex.MenuItemSelectLineClick(Sender: TObject);
@@ -3916,7 +3934,7 @@ begin
   FMenuItemCopyLink.Enabled := En and IsPosURL(MousePosition(FMousePopupPos.X, FMousePopupPos.Y, True));
   FMenuItemSelectLine.Enabled := En and FEnableSel;
   FMenuItemSelectAll.Enabled := En and FEnableSel and not ((FSelStart = 0) and (FSelLength >= NormalizedPos(FFileSize)));
-  FMenuItemEncMenu.Enabled := false; //En;
+  FMenuItemEncMenu.Enabled := not IsModeUnicode;
 
   FMenuItemCopy.Visible := vpCmdCopy in FPopupCommands;
   FMenuItemCopyHex.Visible := vpCmdCopyHex in FPopupCommands;
@@ -4303,20 +4321,17 @@ end;
 //decode string from GetChar encoding
 function TATBinHex.DecodeString(const S: UnicodeString): UnicodeString;
 var
-  SS: AnsiString;
+  S2: AnsiString;
   i: integer;
 begin
   if IsModeUnicode then
     Result := S
   else
   begin
-    SS := '';
+    S2 := '';
     for i := 1 to Length(S) do
-      SS := SS + AnsiChar(Ord(S[i]));
-    if (FEncoding = vencOEM) and FTextOemSpecial then
-      Result := SCodepageToUnicode(SS, vencANSI)
-    else
-      Result := SCodepageToUnicode(SS, FEncoding);
+      S2 := S2 + AnsiChar(Ord(S[i]));
+    Result := SCodepageToUnicode(S2, FTextEncoding);
   end;
 end;
 
@@ -4344,7 +4359,7 @@ end;
 
 function TATBinHex.ActiveFont: TFont;
 begin
-  if (not IsModeUnicode) and (FEncoding = vEncOEM) and FTextOemSpecial then
+  if (not IsModeUnicode) and FTextOemSpecial then
     Result := FFontOEM
   else
     Result := Font;
@@ -4640,7 +4655,7 @@ procedure TATBinHex.EncodingMenuItemClick(Sender: TObject);
 begin
   if Sender is TMenuItem then
   begin
-    SetTextEncoding(TATEncoding((Sender as TMenuItem).Tag));
+    TextEncoding := (Sender as TMenuItem).Caption;
     DoOptionsChange;
   end;
 end;
@@ -5169,6 +5184,50 @@ begin
     Cursors[crNiceScrollRight] := LoadCursor(HInstance, 'AB_MOVE_R');
   end;
 end;
+
+
+procedure TATBinHex.DoAddEncodingItem(AMenu: TMenuItem; Sub, SName: string);
+var
+  mi, miSub: TMenuItem;
+  n: integer;
+begin
+  miSub:= nil;
+  if Sub='eu' then Sub:= 'European' else
+   if Sub='as' then Sub:= 'Asian' else
+    if Sub='mi' then Sub:= 'Misc';
+
+  if Sub<>'' then
+  begin
+    n:= AMenu.IndexOfCaption(Sub);
+    if n<0 then
+    begin
+      mi:= TMenuItem.Create(Self);
+      mi.Caption:= Sub;
+      AMenu.Add(mi);
+      n:= AMenu.IndexOfCaption(Sub);
+    end;
+    miSub:= AMenu.Items[n]
+  end;
+
+  if miSub=nil then miSub:= AMenu;
+  mi:= TMenuItem.Create(Self);
+  mi.Caption:= SName;
+  mi.OnClick:= EncodingMenuItemClick;
+
+  miSub.Add(mi);
+end;
+
+procedure TATBinHex.UpdateMenuEncodings(AMenu: TMenuItem);
+var
+  i: integer;
+begin
+  AMenu.Clear;
+  for i:= Low(AppEncodings) to High(AppEncodings) do
+  begin
+    DoAddEncodingItem(AMenu, AppEncodings[i].Sub, AppEncodings[i].Name);
+  end;
+end;
+
 
 { Initialization }
 initialization

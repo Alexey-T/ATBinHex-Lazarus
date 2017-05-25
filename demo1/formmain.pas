@@ -130,7 +130,7 @@ begin
     bh.OpenStream(nil);
     FreeAndNil(fs);
   end;
-  fs:= TFileStream.Create(Filename, fmOpenRead);
+  fs:= TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);
   bh.OpenStream(fs);
   bh.Redraw;
 end;

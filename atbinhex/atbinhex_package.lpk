@@ -17,7 +17,7 @@
     <Description Value="Viewer control, for files and streams, of unlimited size. Modes: text with var-length, text with fixed length, hex, unicode, hex-unicode."/>
     <License Value="MPL 2.0, LGPL"/>
     <Version Major="1"/>
-    <Files Count="10">
+    <Files Count="9">
       <Item1>
         <Filename Value="atbinhex.pas"/>
         <UnitName Value="ATBinHex"/>
@@ -32,33 +32,29 @@
         <UnitName Value="atbinhex_canvasproc"/>
       </Item3>
       <Item4>
-        <Filename Value="atstreamsearch.pas"/>
-        <UnitName Value="ATStreamSearch"/>
-      </Item4>
-      <Item5>
         <Filename Value="atbinhex_stringproc.pas"/>
         <UnitName Value="atbinhex_stringproc"/>
-      </Item5>
-      <Item6>
+      </Item4>
+      <Item5>
         <Filename Value="atbinhex_msg.pas"/>
         <UnitName Value="atbinhex_msg"/>
-      </Item6>
-      <Item7>
+      </Item5>
+      <Item6>
         <Filename Value="atbinhex_clipboard.pas"/>
         <UnitName Value="atbinhex_clipboard"/>
-      </Item7>
-      <Item8>
+      </Item6>
+      <Item7>
         <Filename Value="atbinhex_encoding.pas"/>
         <UnitName Value="atbinhex_encoding"/>
-      </Item8>
-      <Item9>
+      </Item7>
+      <Item8>
         <Filename Value="atbinhex_hexproc.pas"/>
         <UnitName Value="atbinhex_hexproc"/>
-      </Item9>
-      <Item10>
+      </Item8>
+      <Item9>
         <Filename Value="atbinhex_strproc.pas"/>
         <UnitName Value="atbinhex_strproc"/>
-      </Item10>
+      </Item9>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>

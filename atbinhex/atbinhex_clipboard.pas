@@ -5,7 +5,7 @@ interface
 uses
   atbinhex_encoding;
 
-function SCopyToClipboard(const S: AnsiString; Enc: TATEncoding = vencANSI): Boolean;
+function SCopyToClipboard(const S: AnsiString): Boolean;
 function SCopyToClipboardW(const S: UnicodeString): Boolean;
 
 
@@ -15,7 +15,7 @@ uses
   SysUtils,
   Clipbrd;
 
-function SCopyToClipboard(const S: AnsiString; Enc: TATEncoding = vencANSI): Boolean;
+function SCopyToClipboard(const S: AnsiString): Boolean;
 begin
   Clipboard.AsText:= S;
   Result:= true;
