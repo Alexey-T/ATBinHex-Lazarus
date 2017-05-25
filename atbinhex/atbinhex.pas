@@ -394,7 +394,6 @@ type
     procedure MenuItemCopyLinkClick(Sender: TObject);
     procedure MenuItemSelectLineClick(Sender: TObject);
     procedure MenuItemSelectAllClick(Sender: TObject);
-    procedure MenuItemEncMenuClick(Sender: TObject);
     procedure UpdateMenu(Sender: TObject);
     function GetTextPopupCaption(AIndex: TATPopupCommand): AnsiString;
     procedure SetTextPopupCaption(AIndex: TATPopupCommand; const AValue: AnsiString);
@@ -459,7 +458,6 @@ type
     property MouseNiceScroll: Boolean read FMouseNiceScroll write SetMouseNiceScroll;
     procedure ExitProc(Sender: TObject);
     procedure EncodingMenuItemClick(Sender: TObject);
-    procedure EncodingMenuUnItemClick(Sender: TObject);
     procedure SetFileUnicodeFmt(AValue: TATUnicodeFormat);
     procedure SetTextOemSpecial(AValue: Boolean);
     function CountLines(ABufSize: Integer): Boolean;
@@ -1374,8 +1372,8 @@ begin
   ControlStyle := ControlStyle + [csOpaque];
 
   Font.Name := 'Courier New';
-  Font.Size := 10;
-  Font.Color := clWindowText;
+  Font.Size := 9;
+  Font.Color := clBlack;
 
   //Init fields
   FMode := vbmodeText;
@@ -3875,14 +3873,6 @@ begin
   SelectAll;
 end;
 
-procedure TATBinHex.MenuItemEncMenuClick(Sender: TObject);
-var
-  P: TPoint;
-begin
-  P := Mouse.CursorPos;
-  TextEncodingsMenu(P.X, P.Y);
-end;
-
 procedure TATBinHex.MenuItemSelectLineClick(Sender: TObject);
 var
   P: Int64;
@@ -4625,15 +4615,6 @@ begin
   if Sender is TMenuItem then
   begin
     TextEncoding := (Sender as TMenuItem).Caption;
-    DoOptionsChange;
-  end;
-end;
-
-procedure TATBinHex.EncodingMenuUnItemClick(Sender: TObject);
-begin
-  if Sender is TMenuItem then
-  begin
-    SetFileUnicodeFmt(cUnicodeFormatList[Boolean((Sender as TMenuItem).Tag)]);
     DoOptionsChange;
   end;
 end;
