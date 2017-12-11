@@ -2435,6 +2435,8 @@ begin
     (IsFileEmpty) or // - File is empty
     (IsModeVariable and FTextWrap) or
                      // - Variable modes when TextWrap is on
+    (FMode = vbmodeHex) or
+    (FMode = vbmodeUHex) or
     ((FMode = vbmodeBinary) and FTextWidthFit and FFontMonospaced);
                      // - Binary mode when TextWidthFit is on and font is monospaced
 
