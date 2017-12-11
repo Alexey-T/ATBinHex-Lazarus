@@ -3347,8 +3347,24 @@ begin
     Exit
   end;
 
+  //Home: same
+  if (Key = VK_HOME) and (Shift = []) and not IsModeVariable then
+  begin
+    PosBegin;
+    Key := 0;
+    Exit
+  end;
+
   //Ctrl+End: end of file
   if (Key = VK_END) and (Shift = [ssCtrl]) then
+  begin
+    PosEnd;
+    Key := 0;
+    Exit
+  end;
+
+  //End: same
+  if (Key = VK_END) and (Shift = []) and not IsModeVariable then
   begin
     PosEnd;
     Key := 0;
