@@ -343,9 +343,10 @@ type
     function ColsNumUHexFit(ABitmap: TBitmap = nil): Integer;
     function ColsNum(ABitmap: TBitmap = nil): Integer;
     function PosBad(const APos: Int64): Boolean;
+    procedure PosFixCRLF(var APos: Int64);
+  public
     function PosMax: Int64;
     function PosLast: Int64;
-    procedure PosFixCRLF(var APos: Int64);
     procedure PosAt(const APos: Int64; ARedraw: Boolean = True);
     procedure PosDec(const N: Int64);
     procedure PosInc(const N: Int64);
@@ -353,11 +354,11 @@ type
     procedure PosLineDown(ALines: Integer = 1); overload;
     procedure PosLineUp(AViewAtEnd: Boolean; ALines: Integer); overload;
     procedure PosLineDown(AViewAtEnd: Boolean; ALines: Integer); overload;
+    procedure PosBegin;
+    procedure PosEnd;
+    procedure PosEndTry;
     procedure PosPageUp;
     procedure PosPageDown;
-    procedure PosBegin;
-    procedure PosEndTry;
-    procedure PosEnd;
     procedure HPosAt(APos: Integer; ARedraw: Boolean = True);
     procedure HPosInc(N: Integer);
     procedure HPosDec(N: Integer);
@@ -369,6 +370,7 @@ type
     procedure HPosPageRight;
     function HPosWidth: Integer;
     function HPosMax: Integer;
+  private
     function LineWithCR(const APos: Int64; const ALine: UnicodeString): Boolean;
     function LineWithGutterDot(const APos: Int64): Boolean;
     function OutputOptions(AShowCR: Boolean = False): TATBinHexOutputOptions;
