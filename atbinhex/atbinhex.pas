@@ -296,6 +296,8 @@ type
     {$endif}
 
     procedure AllocBuffer;
+    function GetVertScroll_MaxPos: Int64;
+    function GetVertScroll_PageSize: Int64;
     function SourceAssigned: Boolean;
     function ReadSource(const APos: Int64; ABuffer: Pointer; ABufferSize: DWORD; var AReadSize: DWORD): Boolean;
     procedure ReadBuffer(const APos: Int64 = -1);
@@ -2361,6 +2363,18 @@ begin
   SetScrollInfo(Handle, SB_HORZ, si, True);
 end;
 
+function TATBinHex.GetVertScroll_MaxPos: Int64;
+begin
+  Result := FFileSize div ColsNum;
+  I64LimitMin(Result, 4); //Limit for small files
+  I64LimitMax(Result, MAXSHORT);
+end;
+
+function TATBinHex.GetVertScroll_PageSize: Int64;
+begin
+  Result:= LinesNum*ColsNum;
+end;
+
 procedure TATBinHex.UpdateVertScrollbar;
 var
   AHide: Boolean;
@@ -2371,7 +2385,7 @@ begin
   //Calculate "page size":
   ACols := ColsNum;
   ALines := LinesNum;
-  APageSize := ALines * ACols;
+  APageSize := GetVertScroll_PageSize;
 
   //debug
   ////Application.MainForm.Caption :=
@@ -2392,9 +2406,7 @@ begin
   end
   else
   begin
-    AMax := FFileSize div ACols;
-    I64LimitMin(AMax, 4); //Limit for small files
-    I64LimitMax(AMax, MAXSHORT);
+    AMax := GetVertScroll_MaxPos;
 
     APos := AMax * FViewPos div FFileSize;
     I64LimitMax(APos, AMax);
@@ -3252,6 +3264,17 @@ begin
     SB_THUMBPOSITION,
     SB_THUMBTRACK:
       begin
+        //if scrolled to end, do PosEnd, to make OK on huge files
+        if not IsModeVariable then
+        begin
+          AMax := GetVertScroll_MaxPos-GetVertScroll_PageSize;
+          if (AMax>0) and (Message.Pos>=AMax) then
+          begin
+            PosEnd;
+            Exit;
+          end;
+        end;
+
         ACols := ColsNum;
         AMax := FFileSize div ACols;
         I64LimitMin(AMax, 1);
