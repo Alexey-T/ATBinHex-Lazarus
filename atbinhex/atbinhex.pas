@@ -3334,6 +3334,7 @@ begin
   if (Key = VK_NEXT) and (Shift = []) then
   begin
     PosPageDown;
+    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3342,6 +3343,7 @@ begin
   if (Key = VK_PRIOR) and (Shift = []) then
   begin
     PosPageUp;
+    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3350,6 +3352,7 @@ begin
   if (Key = VK_DOWN) and (Shift = []) then
   begin
     PosLineDown;
+    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3358,6 +3361,7 @@ begin
   if (Key = VK_UP) and (Shift = []) then
   begin
     PosLineUp;
+    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3366,6 +3370,7 @@ begin
   if (Key = VK_HOME) and (Shift = [ssCtrl]) then
   begin
     PosBegin;
+    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3374,6 +3379,7 @@ begin
   if (Key = VK_END) and (Shift = [ssCtrl]) then
   begin
     PosEnd;
+    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3382,6 +3388,7 @@ begin
   if (Key = VK_LEFT) and (Shift = []) then
   begin
     HPosLeft;
+    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3390,6 +3397,7 @@ begin
   if (Key = VK_RIGHT) and (Shift = []) then
   begin
     HPosRight;
+    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3401,6 +3409,7 @@ begin
       HPosBegin
     else
       PosBegin;
+    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3412,6 +3421,7 @@ begin
       HPosEnd
     else
       PosEnd;
+    DoScroll;
     Key := 0;
     Exit
   end;
