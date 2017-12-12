@@ -2811,6 +2811,8 @@ begin
 
     if ARedraw then
       Redraw;
+
+    DoScroll;
   end;
 end;
 
