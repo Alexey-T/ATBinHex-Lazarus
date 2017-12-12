@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Spin, ATBinHex;
+  StdCtrls, Spin, ComCtrls, ATBinHex;
 
 type
   { TfmMain }
@@ -33,6 +33,7 @@ type
     bUniHex: TRadioButton;
     edBin: TSpinEdit;
     edTabsize: TSpinEdit;
+    StatusBar1: TStatusBar;
     procedure bGotoClick(Sender: TObject);
     procedure bOpenClick(Sender: TObject);
     procedure bUniChange(Sender: TObject);
@@ -52,6 +53,8 @@ type
   private
     { private declarations }
     procedure Open(const Filename: string);
+    procedure ViewerOptionsChange(Sender: TObject);
+    procedure ViewerScroll(Sender: TObject);
   public
     { public declarations }
     bh: TATBinHex;
@@ -76,6 +79,9 @@ begin
   bh:= TATBinHex.Create(Self);
   bh.Parent:= Self;
   bh.Align:= alClient;
+  bh.Font.Size:= 10;
+  bh.OnScroll:=@ViewerScroll;
+  bh.OnOptionsChange:=@ViewerOptionsChange;
 
   bh.TextGutter:= true;
   bh.TextGutterLinesStep:= 10;
@@ -133,6 +139,16 @@ begin
   fs:= TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);
   bh.OpenStream(fs);
   bh.Redraw;
+end;
+
+procedure TfmMain.ViewerOptionsChange(Sender: TObject);
+begin
+  StatusBar1.Panels[1].Text:= bh.TextEncoding;
+end;
+
+procedure TfmMain.ViewerScroll(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Text:= IntToStr(bh.PosPercent)+'%';
 end;
 
 procedure TfmMain.bUniChange(Sender: TObject);

@@ -1,21 +1,21 @@
 object fmMain: TfmMain
-  Left = 226
+  Left = 410
   Height = 454
-  Top = 264
+  Top = 166
   Width = 884
   Caption = 'ATBinHex demo'
   ClientHeight = 454
   ClientWidth = 884
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object PanelOpt: TPanel
     Left = 714
-    Height = 454
+    Height = 438
     Top = 0
     Width = 170
     Align = alRight
-    ClientHeight = 454
+    ClientHeight = 438
     ClientWidth = 170
     TabOrder = 0
     object bOpen: TButton
@@ -33,51 +33,52 @@ object fmMain: TfmMain
       Top = 100
       Width = 149
       Caption = 'mode'
-      ClientHeight = 125
-      ClientWidth = 145
+      ClientHeight = 129
+      ClientWidth = 147
       TabOrder = 3
       object bText: TRadioButton
         Left = 7
-        Height = 24
+        Height = 23
         Top = 0
-        Width = 54
+        Width = 50
         Caption = 'text'
         Checked = True
         OnChange = bTextChange
         TabOrder = 0
+        TabStop = True
       end
       object bBin: TRadioButton
         Left = 7
-        Height = 24
+        Height = 23
         Top = 24
-        Width = 68
+        Width = 64
         Caption = 'binary'
         OnChange = bBinChange
         TabOrder = 1
       end
       object bHex: TRadioButton
         Left = 7
-        Height = 24
+        Height = 23
         Top = 48
-        Width = 50
+        Width = 48
         Caption = 'hex'
         OnChange = bHexChange
         TabOrder = 2
       end
       object bUni: TRadioButton
         Left = 7
-        Height = 24
+        Height = 23
         Top = 72
-        Width = 79
+        Width = 74
         Caption = 'unicode'
         OnChange = bUniChange
         TabOrder = 3
       end
       object bUniHex: TRadioButton
         Left = 7
-        Height = 24
+        Height = 23
         Top = 96
-        Width = 109
+        Width = 100
         Caption = 'unicode/hex'
         OnChange = bUniHexChange
         TabOrder = 4
@@ -94,7 +95,7 @@ object fmMain: TfmMain
     end
     object edBin: TSpinEdit
       Left = 10
-      Height = 27
+      Height = 31
       Top = 248
       Width = 59
       MaxValue = 160
@@ -105,26 +106,26 @@ object fmMain: TfmMain
     end
     object Label1: TLabel
       Left = 80
-      Height = 17
+      Height = 14
       Top = 252
-      Width = 83
+      Width = 76
       Caption = 'binary width'
       ParentColor = False
     end
     object chkUnpr: TCheckBox
       Left = 7
-      Height = 24
+      Height = 23
       Top = 344
-      Width = 131
+      Width = 123
       Caption = 'unprinted chars'
       OnChange = chkUnprChange
       TabOrder = 8
     end
     object chkGutter: TCheckBox
       Left = 7
-      Height = 24
+      Height = 23
       Top = 324
-      Width = 68
+      Width = 64
       Caption = 'gutter'
       Checked = True
       OnChange = chkGutterChange
@@ -133,18 +134,18 @@ object fmMain: TfmMain
     end
     object chkWrap: TCheckBox
       Left = 7
-      Height = 24
+      Height = 23
       Top = 304
-      Width = 60
+      Width = 56
       Caption = 'wrap'
       OnChange = chkWrapChange
       TabOrder = 6
     end
     object chkEn: TCheckBox
       Left = 7
-      Height = 24
+      Height = 23
       Top = 364
-      Width = 80
+      Width = 74
       Caption = 'enabled'
       Checked = True
       OnChange = chkEnChange
@@ -162,9 +163,9 @@ object fmMain: TfmMain
     end
     object chkEnSel: TCheckBox
       Left = 7
-      Height = 24
+      Height = 23
       Top = 384
-      Width = 102
+      Width = 94
       Caption = 'enabled sel'
       Checked = True
       OnChange = chkEnSelChange
@@ -173,7 +174,7 @@ object fmMain: TfmMain
     end
     object edTabsize: TSpinEdit
       Left = 10
-      Height = 27
+      Height = 31
       Top = 275
       Width = 59
       MaxValue = 12
@@ -184,12 +185,33 @@ object fmMain: TfmMain
     end
     object Label2: TLabel
       Left = 79
-      Height = 17
+      Height = 14
       Top = 280
-      Width = 52
+      Width = 46
       Caption = 'tab size'
       ParentColor = False
     end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 16
+    Top = 438
+    Width = 884
+    Panels = <    
+      item
+        Alignment = taCenter
+        Text = 'pos'
+        Width = 200
+      end    
+      item
+        Alignment = taCenter
+        Text = 'encoding'
+        Width = 200
+      end    
+      item
+        Width = 50
+      end>
+    SimplePanel = False
   end
   object OpenDialog1: TOpenDialog
     left = 480

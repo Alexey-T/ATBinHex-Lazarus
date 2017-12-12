@@ -3633,6 +3633,7 @@ begin
   if (Shift = []) then
     PosLineUp(Mouse.WheelScrollLines);
 
+  DoScroll;
   Handled := True;
 end;
 
@@ -3648,6 +3649,7 @@ begin
   if (Shift = []) then
     PosLineDown(Mouse.WheelScrollLines);
 
+  DoScroll;
   Handled := True;
 end;
 
