@@ -10,7 +10,7 @@ interface
 uses
   ATBinHex, atbinhex_register, atbinhex_canvasproc, atbinhex_stringproc, 
   atbinhex_msg, atbinhex_clipboard, atbinhex_encoding, atbinhex_hexproc, 
-  atbinhex_strproc, LazarusPackageIntf;
+  atbinhex_strproc, ATStreamSearch, LazarusPackageIntf;
 
 implementation
 

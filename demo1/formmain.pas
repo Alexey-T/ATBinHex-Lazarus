@@ -6,15 +6,19 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Spin, ComCtrls, ATBinHex;
+  StdCtrls, Spin, ComCtrls,
+  ATBinHex,
+  ATStreamSearch;
 
 type
   { TfmMain }
 
   TfmMain = class(TForm)
-    bOpen: TButton;
-    bFont: TButton;
-    bGoto: TButton;
+    btnOpen: TButton;
+    btnFont: TButton;
+    btnGoto: TButton;
+    btnFind: TButton;
+    btnFindNext: TButton;
     chkEnSel: TCheckBox;
     chkEn: TCheckBox;
     chkWrap: TCheckBox;
@@ -34,11 +38,13 @@ type
     edBin: TSpinEdit;
     edTabsize: TSpinEdit;
     StatusBar1: TStatusBar;
-    procedure bGotoClick(Sender: TObject);
-    procedure bOpenClick(Sender: TObject);
+    procedure btnFindClick(Sender: TObject);
+    procedure btnFindNextClick(Sender: TObject);
+    procedure btnGotoClick(Sender: TObject);
+    procedure btnOpenClick(Sender: TObject);
     procedure bUniChange(Sender: TObject);
     procedure bUniHexChange(Sender: TObject);
-    procedure bFontClick(Sender: TObject);
+    procedure btnFontClick(Sender: TObject);
     procedure chkEnChange(Sender: TObject);
     procedure chkEnSelChange(Sender: TObject);
     procedure chkGutterChange(Sender: TObject);
@@ -59,6 +65,7 @@ type
     { public declarations }
     V: TATBinHex;
     fs: TFileStream;
+    srch: TATStreamSearch;
   end;
 
 var
@@ -89,6 +96,8 @@ begin
   fn:= ExtractFilePath(Application.ExeName)+'formmain.pas';
   if FileExists(fn) then
     OpenFile(fn);
+
+  srch:= TATStreamSearch.Create(Self, 1);
 end;
 
 procedure TfmMain.bTextChange(Sender: TObject);
@@ -106,14 +115,14 @@ begin
   V.Mode:= vbmodeHex;
 end;
 
-procedure TfmMain.bOpenClick(Sender: TObject);
+procedure TfmMain.btnOpenClick(Sender: TObject);
 begin
   with OpenDialog1 do
     if Execute then
       OpenFile(Filename);
 end;
 
-procedure TfmMain.bGotoClick(Sender: TObject);
+procedure TfmMain.btnGotoClick(Sender: TObject);
 var
   S: string;
   N: Int64;
@@ -130,6 +139,30 @@ begin
   V.PosAt(N);
 end;
 
+procedure TfmMain.btnFindClick(Sender: TObject);
+var
+  S: string;
+begin
+  S:= InputBox('Find', 'String:', '');
+  if S='' then exit;
+
+  srch.Stream:= fs;
+  if not srch.FindFirst(S, 0, '', []) then
+    ShowMessage('Not found')
+  else
+    V.SetSelection(srch.FoundStart, srch.FoundLength, true);
+
+  btnFindNext.Enabled:= true;
+end;
+
+procedure TfmMain.btnFindNextClick(Sender: TObject);
+begin
+  if not srch.FindNext(false) then
+    ShowMessage('Not found')
+  else
+    V.SetSelection(srch.FoundStart, srch.FoundLength, true);
+end;
+
 procedure TfmMain.OpenFile(const Filename: string);
 begin
   if Assigned(fs) then
@@ -137,6 +170,7 @@ begin
     V.OpenStream(nil);
     FreeAndNil(fs);
   end;
+
   fs:= TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);
   V.OpenStream(fs);
   V.Redraw;
@@ -162,7 +196,7 @@ begin
   V.Mode:= vbmodeUHex;
 end;
 
-procedure TfmMain.bFontClick(Sender: TObject);
+procedure TfmMain.btnFontClick(Sender: TObject);
 begin
   with FontDialog1 do
     if Execute then
