@@ -52,12 +52,12 @@ type
     procedure bHexChange(Sender: TObject);
   private
     { private declarations }
-    procedure Open(const Filename: string);
+    procedure OpenFile(const Filename: string);
     procedure ViewerOptionsChange(Sender: TObject);
     procedure ViewerScroll(Sender: TObject);
   public
     { public declarations }
-    bh: TATBinHex;
+    V: TATBinHex;
     fs: TFileStream;
   end;
 
@@ -76,41 +76,41 @@ var
 begin
   fs:= nil;
 
-  bh:= TATBinHex.Create(Self);
-  bh.Parent:= Self;
-  bh.Align:= alClient;
-  bh.Font.Size:= 10;
-  bh.OnScroll:=@ViewerScroll;
-  bh.OnOptionsChange:=@ViewerOptionsChange;
+  V:= TATBinHex.Create(Self);
+  V.Parent:= Self;
+  V.Align:= alClient;
+  V.Font.Size:= 10;
+  V.OnScroll:=@ViewerScroll;
+  V.OnOptionsChange:=@ViewerOptionsChange;
 
-  bh.TextGutter:= true;
-  bh.TextGutterLinesStep:= 10;
+  V.TextGutter:= true;
+  V.TextGutterLinesStep:= 10;
 
   fn:= ExtractFilePath(Application.ExeName)+'formmain.pas';
   if FileExists(fn) then
-    Open(fn);
+    OpenFile(fn);
 end;
 
 procedure TfmMain.bTextChange(Sender: TObject);
 begin
-  bh.Mode:= vbmodeText;
+  V.Mode:= vbmodeText;
 end;
 
 procedure TfmMain.bBinChange(Sender: TObject);
 begin
-  bh.Mode:= vbmodeBinary;
+  V.Mode:= vbmodeBinary;
 end;
 
 procedure TfmMain.bHexChange(Sender: TObject);
 begin
-  bh.Mode:= vbmodeHex;
+  V.Mode:= vbmodeHex;
 end;
 
 procedure TfmMain.bOpenClick(Sender: TObject);
 begin
   with OpenDialog1 do
     if Execute then
-      Open(Filename);
+      OpenFile(Filename);
 end;
 
 procedure TfmMain.bGotoClick(Sender: TObject);
@@ -127,39 +127,39 @@ begin
     ShowMessage('Too big pos, max is '+IntToStr(fs.Size));
     Exit
   end;
-  bh.PosAt(N);
+  V.PosAt(N);
 end;
 
-procedure TfmMain.Open(const Filename: string);
+procedure TfmMain.OpenFile(const Filename: string);
 begin
   if Assigned(fs) then
   begin
-    bh.OpenStream(nil);
+    V.OpenStream(nil);
     FreeAndNil(fs);
   end;
   fs:= TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);
-  bh.OpenStream(fs);
-  bh.Redraw;
+  V.OpenStream(fs);
+  V.Redraw;
 end;
 
 procedure TfmMain.ViewerOptionsChange(Sender: TObject);
 begin
-  StatusBar1.Panels[1].Text:= bh.TextEncoding;
+  StatusBar1.Panels[1].Text:= V.TextEncoding;
 end;
 
 procedure TfmMain.ViewerScroll(Sender: TObject);
 begin
-  StatusBar1.Panels[0].Text:= IntToStr(bh.PosPercent)+'%';
+  StatusBar1.Panels[0].Text:= IntToStr(V.PosPercent)+'%';
 end;
 
 procedure TfmMain.bUniChange(Sender: TObject);
 begin
-  bh.Mode:= vbmodeUnicode;
+  V.Mode:= vbmodeUnicode;
 end;
 
 procedure TfmMain.bUniHexChange(Sender: TObject);
 begin
-  bh.Mode:= vbmodeUHex;
+  V.Mode:= vbmodeUHex;
 end;
 
 procedure TfmMain.bFontClick(Sender: TObject);
@@ -167,48 +167,48 @@ begin
   with FontDialog1 do
     if Execute then
     begin
-      bh.Font:= Font;
-      bh.Redraw;
+      V.Font:= Font;
+      V.Redraw;
     end;
 end;
 
 procedure TfmMain.chkEnChange(Sender: TObject);
 begin
-  bh.Enabled:= chkEn.Checked;
-  bh.Redraw;
+  V.Enabled:= chkEn.Checked;
+  V.Redraw;
 end;
 
 procedure TfmMain.chkEnSelChange(Sender: TObject);
 begin
-  bh.TextEnableSel:= chkEnSel.Checked;
+  V.TextEnableSel:= chkEnSel.Checked;
 end;
 
 procedure TfmMain.chkGutterChange(Sender: TObject);
 begin
-  bh.TextGutter:= chkGutter.Checked;
-  bh.Redraw;
+  V.TextGutter:= chkGutter.Checked;
+  V.Redraw;
 end;
 
 procedure TfmMain.chkUnprChange(Sender: TObject);
 begin
-  bh.TextNonPrintable:= chkUnpr.Checked;
+  V.TextNonPrintable:= chkUnpr.Checked;
 end;
 
 procedure TfmMain.chkWrapChange(Sender: TObject);
 begin
-  bh.TextWrap:= chkWrap.Checked;
+  V.TextWrap:= chkWrap.Checked;
 end;
 
 procedure TfmMain.edBinChange(Sender: TObject);
 begin
-  bh.TextWidth:= edBin.Value;
-  bh.Redraw;
+  V.TextWidth:= edBin.Value;
+  V.Redraw;
 end;
 
 procedure TfmMain.edTabsizeChange(Sender: TObject);
 begin
-  bh.TextTabSize:= edTabsize.Value;
-  bh.Redraw;
+  V.TextTabSize:= edTabsize.Value;
+  V.Redraw;
 end;
 
 end.
