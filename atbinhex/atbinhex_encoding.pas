@@ -91,7 +91,7 @@ begin
     else Result:= CP1250ToUTF8(SA);
   end;
   {$else}
-  Result:= CP1250ToUTF8(SA);
+  Result:= CP1252ToUTF8(SA);
   {$endif}
 end;
 
@@ -101,7 +101,7 @@ var
 begin
   Ok:= true;
   if (AEnc='') or (AEnc='ANSI') then
-    Result:= AStr
+    Result:= SConvertAnsiToUtf8(AStr)
   else
     Result:= ConvertEncodingToUTF8(AStr, AEnc, Ok);
 end;
