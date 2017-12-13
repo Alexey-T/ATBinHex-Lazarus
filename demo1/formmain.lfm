@@ -1,5 +1,5 @@
 object fmMain: TfmMain
-  Left = 410
+  Left = 396
   Height = 454
   Top = 166
   Width = 884
@@ -11,11 +11,11 @@ object fmMain: TfmMain
   LCLVersion = '1.9.0.0'
   object PanelOpt: TPanel
     Left = 714
-    Height = 438
+    Height = 433
     Top = 0
     Width = 170
     Align = alRight
-    ClientHeight = 438
+    ClientHeight = 433
     ClientWidth = 170
     TabOrder = 0
     object bOpen: TButton
@@ -33,14 +33,14 @@ object fmMain: TfmMain
       Top = 100
       Width = 149
       Caption = 'mode'
-      ClientHeight = 129
-      ClientWidth = 147
+      ClientHeight = 125
+      ClientWidth = 145
       TabOrder = 3
       object bText: TRadioButton
         Left = 7
-        Height = 23
+        Height = 24
         Top = 0
-        Width = 50
+        Width = 54
         Caption = 'text'
         Checked = True
         OnChange = bTextChange
@@ -49,36 +49,36 @@ object fmMain: TfmMain
       end
       object bBin: TRadioButton
         Left = 7
-        Height = 23
+        Height = 24
         Top = 24
-        Width = 64
+        Width = 68
         Caption = 'binary'
         OnChange = bBinChange
         TabOrder = 1
       end
       object bHex: TRadioButton
         Left = 7
-        Height = 23
+        Height = 24
         Top = 48
-        Width = 48
+        Width = 50
         Caption = 'hex'
         OnChange = bHexChange
         TabOrder = 2
       end
       object bUni: TRadioButton
         Left = 7
-        Height = 23
+        Height = 24
         Top = 72
-        Width = 74
+        Width = 79
         Caption = 'unicode'
         OnChange = bUniChange
         TabOrder = 3
       end
       object bUniHex: TRadioButton
         Left = 7
-        Height = 23
+        Height = 24
         Top = 96
-        Width = 100
+        Width = 109
         Caption = 'unicode/hex'
         OnChange = bUniHexChange
         TabOrder = 4
@@ -95,7 +95,7 @@ object fmMain: TfmMain
     end
     object edBin: TSpinEdit
       Left = 10
-      Height = 31
+      Height = 27
       Top = 248
       Width = 59
       MaxValue = 160
@@ -106,26 +106,26 @@ object fmMain: TfmMain
     end
     object Label1: TLabel
       Left = 80
-      Height = 14
+      Height = 17
       Top = 252
-      Width = 76
+      Width = 83
       Caption = 'binary width'
       ParentColor = False
     end
     object chkUnpr: TCheckBox
       Left = 7
-      Height = 23
+      Height = 24
       Top = 344
-      Width = 123
+      Width = 131
       Caption = 'unprinted chars'
       OnChange = chkUnprChange
       TabOrder = 8
     end
     object chkGutter: TCheckBox
       Left = 7
-      Height = 23
+      Height = 24
       Top = 324
-      Width = 64
+      Width = 68
       Caption = 'gutter'
       Checked = True
       OnChange = chkGutterChange
@@ -134,18 +134,18 @@ object fmMain: TfmMain
     end
     object chkWrap: TCheckBox
       Left = 7
-      Height = 23
+      Height = 24
       Top = 304
-      Width = 56
+      Width = 60
       Caption = 'wrap'
       OnChange = chkWrapChange
       TabOrder = 6
     end
     object chkEn: TCheckBox
       Left = 7
-      Height = 23
+      Height = 24
       Top = 364
-      Width = 74
+      Width = 80
       Caption = 'enabled'
       Checked = True
       OnChange = chkEnChange
@@ -163,9 +163,9 @@ object fmMain: TfmMain
     end
     object chkEnSel: TCheckBox
       Left = 7
-      Height = 23
+      Height = 24
       Top = 384
-      Width = 94
+      Width = 102
       Caption = 'enabled sel'
       Checked = True
       OnChange = chkEnSelChange
@@ -174,7 +174,7 @@ object fmMain: TfmMain
     end
     object edTabsize: TSpinEdit
       Left = 10
-      Height = 31
+      Height = 27
       Top = 275
       Width = 59
       MaxValue = 12
@@ -185,17 +185,17 @@ object fmMain: TfmMain
     end
     object Label2: TLabel
       Left = 79
-      Height = 14
+      Height = 17
       Top = 280
-      Width = 46
+      Width = 52
       Caption = 'tab size'
       ParentColor = False
     end
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 16
-    Top = 438
+    Height = 21
+    Top = 433
     Width = 884
     Panels = <    
       item

@@ -116,17 +116,18 @@ end;
 procedure TfmMain.bGotoClick(Sender: TObject);
 var
   S: string;
-  N: integer;
+  N: Int64;
 begin
-  S:= InputBox('Go to', 'Offset:', '0');
+  S:= InputBox('Go to', 'Hex offset:', '0');
   if S='' then Exit;
-  N:= StrToInt(S);
+  N:= StrToInt64Def('$'+S, -1);
+  if N<0 then exit;
   if N>fs.Size-10 then
   begin
     ShowMessage('Too big pos, max is '+IntToStr(fs.Size));
     Exit
   end;
-  bh.Scroll(N, 3, 3);
+  bh.PosAt(N);
 end;
 
 procedure TfmMain.Open(const Filename: string);
