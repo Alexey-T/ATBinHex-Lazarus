@@ -59,7 +59,7 @@ type
 
     FSavStart,
     FSavLen: Int64;
-    FSavText: UnicodeString;
+    FSavText: string;
     FSavOpt: TATStreamsearchoptions;
     FSavEnc: string;
 
@@ -69,7 +69,7 @@ type
     FOnProgress: TATStreamSearchProgress;
     FCharSize: Integer;
 
-    FSavedText: UnicodeString;
+    FSavedText: string;
     FSavedOptions: TATStreamSearchOptions;
     //FSearchForValidUTF16: Boolean;
 
@@ -92,7 +92,7 @@ type
       const AProgress: Int64;
       var AAbort: Boolean);
     function RegexFindFirst(
-      const AText: UnicodeString;
+      const AText: string;
       const AStartPos: Int64;
       AEncoding: TATEncoding;
       AOptions: TATStreamSearchOptions): Boolean;
@@ -100,12 +100,12 @@ type
     {$ENDIF}
 
     function TextFind(
-      const AText: UnicodeString;
+      const AText: string;
       const AStartPos: Int64;
       const AEncoding: string;
       AOptions: TATStreamSearchOptions): Int64;
     function TextFindFirst(
-      const AText: UnicodeString;
+      const AText: string;
       const AStartPos: Int64;
       const AEncoding: string;
       AOptions: TATStreamSearchOptions): Boolean;
@@ -119,12 +119,12 @@ type
 
     property FileName: string read FFileName write SetFileName;
     property Stream: TStream read FStream write SetStream;
-    property SavedText: UnicodeString read FSavedText;
+    property SavedText: string read FSavedText;
     property SavedEncoding: string read FSavedEncoding;
     property SavedOptions: TATStreamSearchOptions read FSavedOptions;
 
     function FindFirst(
-      const AText: UnicodeString;
+      const AText: string;
       const AStartPos: Int64;
       const AEncoding: string;
       ACharSize: integer;
@@ -308,7 +308,7 @@ begin
 end;
 
 function TATStreamSearch.RegexFindFirst(
-  const AText: UnicodeString;
+  const AText: string;
   const AStartPos: Int64;
   AEncoding: TATEncoding;
   AOptions: TATStreamSearchOptions): Boolean;
@@ -422,15 +422,15 @@ end;
 // Plain search code
 
 function TATStreamSearch.TextFind(
-  const AText: UnicodeString;
+  const AText: string;
   const AStartPos: Int64;
   const AEncoding: string;
   AOptions: TATStreamSearchOptions): Int64;
 var
-  Buffer: array[0 .. cBlockSize - 1] of AnsiChar;
+  Buffer: array[0 .. cBlockSize - 1] of char;
   BufPosMax, BufPos, ReadPos: Int64;
   ReadSize, BytesRead: DWORD;
-  SBufferA: AnsiString;
+  SBufferA: string;
   SBufferW: UnicodeString;
   StringPos: Integer;
   AForward, AWholeWords, ACaseSens, AContinue: Boolean;
@@ -509,7 +509,7 @@ begin
     else
       begin
         SetString(SBufferA, Buffer, BytesRead);
-        SBufferA := SCodepageToUnicode(SBufferA, AEncoding);
+        //SBufferA := SCodepageToUTF8(SBufferA, AEncoding); //dont work in resulting binary file
         StringPos := SFindText(AText, SBufferA, AForward, AWholeWords, ACaseSens, BytesRead < cBlockSize);
       end;
 
@@ -532,7 +532,7 @@ begin
 end;
 
 function TATStreamSearch.TextFindFirst(
-  const AText: UnicodeString;
+  const AText: string;
   const AStartPos: Int64;
   const AEncoding: string;
   AOptions: TATStreamSearchOptions): Boolean;
@@ -586,7 +586,7 @@ end;
 // Combined search code
 
 function TATStreamSearch.FindFirst(
-  const AText: UnicodeString;
+  const AText: string;
   const AStartPos: Int64;
   const AEncoding: string;
   ACharSize: integer;

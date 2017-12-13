@@ -9,7 +9,7 @@ uses
   SysUtils, Classes, Menus,
   LConvEncoding;
 
-function SCodepageToUnicode(const AStr: string; const AEnc: string): UnicodeString;
+function SCodepageToUTF8(const AStr, AEnc: string): string;
 
 const
   cEncNameAnsi = 'ANSI';
@@ -95,22 +95,15 @@ begin
   {$endif}
 end;
 
-
-function SCodepageToUnicode(const AStr: string; const AEnc: string): UnicodeString;
+function SCodepageToUTF8(const AStr, AEnc: string): string;
 var
-  SBuf: string;
   Ok: boolean;
 begin
   Ok:= true;
   if (AEnc='') or (AEnc='ANSI') then
-    SBuf:= SConvertAnsiToUtf8(AStr)
+    Result:= AStr
   else
-    SBuf:= ConvertEncodingToUTF8(AStr, AEnc, Ok);
-
-  if Ok then
-    Result:= UTF8Decode(SBuf)
-  else
-    Result:= '?';
+    Result:= ConvertEncodingToUTF8(AStr, AEnc, Ok);
 end;
 
 

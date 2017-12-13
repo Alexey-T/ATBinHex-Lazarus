@@ -2556,7 +2556,7 @@ begin
     if IsModeUnicode then
       Result := SetStringW(@S[1], Length(S), IsUnicodeBE)
     else
-      Result := SCodepageToUnicode(S, FTextEncoding);
+      Result := UTF8Decode(SCodepageToUTF8(S, FTextEncoding));
 end;
 
 procedure TATBinHex.DblClick;
@@ -3501,7 +3501,7 @@ begin
   Assert(not IsModeUnicode, 'SelText is called in Unicode mode');
 
   Result := GetSelTextRaw;
-  Result := SCodepageToUnicode(Result, FTextEncoding);
+  Result := SCodepageToUTF8(Result, FTextEncoding);
 end;
 
 function TATBinHex.GetSelTextShort: AnsiString;
@@ -3509,7 +3509,7 @@ begin
   Assert(not IsModeUnicode, 'SelText is called in Unicode mode');
 
   Result := GetSelTextRaw(cMaxShortLength * CharSize);
-  Result := SCodepageToUnicode(Result, FTextEncoding);
+  Result := SCodepageToUTF8(Result, FTextEncoding);
 end;
 
 function TATBinHex.GetSelTextW: UnicodeString;
@@ -4333,7 +4333,7 @@ begin
     S2 := '';
     for i := 1 to Length(S) do
       S2 := S2 + AnsiChar(Ord(S[i]));
-    Result := SCodepageToUnicode(S2, FTextEncoding);
+    Result := UTF8Decode(SCodepageToUTF8(S2, FTextEncoding));
   end;
 end;
 
