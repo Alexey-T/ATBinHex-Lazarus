@@ -21,7 +21,8 @@ uses
   {$IFDEF TNT}
   TntClasses,
   {$ENDIF}
-  atbinhex_encoding;
+  atbinhex_encoding,
+  LazUTF8Classes;
 
 type
   TATStreamSearchOption = (
@@ -50,7 +51,7 @@ type
     FSavedEncoding: string;
     FStream: TStream;
     FStreamOwner: Boolean;
-    FFileName: WideString;
+    FFileName: string;
     FStreamStart,
     FStreamSize,
     FFoundStart,
@@ -58,8 +59,9 @@ type
 
     FSavStart,
     FSavLen: Int64;
-    FSavText: Widestring;
+    FSavText: UnicodeString;
     FSavOpt: TATStreamsearchoptions;
+    FSavEnc: string;
 
     {$IFDEF REGEX}
     FRegEx: TDIRegExSearchStream_Enc;
@@ -67,7 +69,7 @@ type
     FOnProgress: TATStreamSearchProgress;
     FCharSize: Integer;
 
-    FSavedText: WideString;
+    FSavedText: UnicodeString;
     FSavedOptions: TATStreamSearchOptions;
     //FSearchForValidUTF16: Boolean;
 
@@ -79,7 +81,7 @@ type
     procedure DoProgress(
       const ACurrentPos, AMaximalPos: Int64;
       var AContinueSearching: Boolean);
-    procedure SetFileName(const AFileName: WideString);
+    procedure SetFileName(const AFileName: string);
     procedure SetStream(AStream: TStream);
 
     {$IFDEF REGEX}
@@ -90,7 +92,7 @@ type
       const AProgress: Int64;
       var AAbort: Boolean);
     function RegexFindFirst(
-      const AText: WideString;
+      const AText: UnicodeString;
       const AStartPos: Int64;
       AEncoding: TATEncoding;
       AOptions: TATStreamSearchOptions): Boolean;
@@ -98,31 +100,31 @@ type
     {$ENDIF}
 
     function TextFind(
-      const AText: WideString;
+      const AText: UnicodeString;
       const AStartPos: Int64;
       const AEncoding: string;
       AOptions: TATStreamSearchOptions): Int64;
     function TextFindFirst(
-      const AText: WideString;
+      const AText: UnicodeString;
       const AStartPos: Int64;
       const AEncoding: string;
       AOptions: TATStreamSearchOptions): Boolean;
     function TextFindNext(AFindPrevious: Boolean = False): Boolean;
 
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent; ACharSize: integer);
     destructor Destroy; override;
     procedure SaveOptions;
     procedure RestoreOptions;
 
-    property FileName: WideString read FFileName write SetFileName;
+    property FileName: string read FFileName write SetFileName;
     property Stream: TStream read FStream write SetStream;
-    property SavedText: Widestring read FSavedText;
+    property SavedText: UnicodeString read FSavedText;
     property SavedEncoding: string read FSavedEncoding;
     property SavedOptions: TATStreamSearchOptions read FSavedOptions;
 
     function FindFirst(
-      const AText: WideString;
+      const AText: UnicodeString;
       const AStartPos: Int64;
       const AEncoding: string;
       AOptions: TATStreamSearchOptions): Boolean;
@@ -157,17 +159,6 @@ const
 
 { Helper functions }
 
-function CharSize(AEncoding: TATEncoding): Integer;
-begin
-  case AEncoding of
-    vEncUnicodeBE,
-    vEncUnicodeLE:
-      Result := 2
-    else
-      Result := 1;
-  end;    
-end;
-
 function BoolToSign(AValue: Boolean): Integer;
 begin
   if AValue then
@@ -192,7 +183,7 @@ end;
 
 { TATStreamSearch }
 
-constructor TATStreamSearch.Create(AOwner: TComponent);
+constructor TATStreamSearch.Create(AOwner: TComponent; ACharSize: integer);
 begin
   inherited Create(AOwner);
   FStream := nil;
@@ -209,7 +200,7 @@ begin
   {$ENDIF}
 
   FOnProgress := nil;
-  FCharSize := 1;
+  FCharSize:= ACharSize;
   InitSavedOptions;
 end;
 
@@ -232,11 +223,11 @@ end;
 procedure TATStreamSearch.InitSavedOptions;
 begin
   FSavedText := '';
-  FSavedEncoding := vencANSI;
+  FSavedEncoding := '';
   FSavedOptions := [];
 end;
 
-procedure TATStreamSearch.SetFileName(const AFileName: WideString);
+procedure TATStreamSearch.SetFileName(const AFileName: string);
 begin
   FreeStream;
 
@@ -245,7 +236,7 @@ begin
       InitSavedOptions;
       FFileName := AFileName;
       FStreamOwner := True;
-      FStream := {$IFDEF TNT}TTntFileStream{$ELSE}TFileStream{$ENDIF}.Create(
+      FStream := {$IFDEF TNT}TTntFileStream{$ELSE}TFileStreamUTF8{$ENDIF}.Create(
         AFileName, fmOpenRead or fmShareDenyNone);
     end;
 end;
@@ -265,7 +256,6 @@ begin
   Assert(Assigned(FStream));
   FStreamStart := AStartPos;
   FStreamSize := FStream.Size;
-  FCharSize := CharSize(AEncoding);
   Result := FStreamSize >= FCharSize;
 end;
 
@@ -317,7 +307,7 @@ begin
 end;
 
 function TATStreamSearch.RegexFindFirst(
-  const AText: WideString;
+  const AText: UnicodeString;
   const AStartPos: Int64;
   AEncoding: TATEncoding;
   AOptions: TATStreamSearchOptions): Boolean;
@@ -431,16 +421,16 @@ end;
 // Plain search code
 
 function TATStreamSearch.TextFind(
-  const AText: WideString;
+  const AText: UnicodeString;
   const AStartPos: Int64;
-  AEncoding: TATEncoding;
+  const AEncoding: string;
   AOptions: TATStreamSearchOptions): Int64;
 var
   Buffer: array[0 .. cBlockSize - 1] of AnsiChar;
   BufPosMax, BufPos, ReadPos: Int64;
   ReadSize, BytesRead: DWORD;
   SBufferA: AnsiString;
-  SBufferW: WideString;
+  SBufferW: UnicodeString;
   StringPos: Integer;
   AForward, AWholeWords, ACaseSens, AContinue: Boolean;
 begin
@@ -512,7 +502,7 @@ begin
 
     if FCharSize = 2 then
       begin
-        SBufferW := SetStringW(@Buffer, BytesRead, AEncoding = vencUnicodeBE);
+        SBufferW := SetStringW(@Buffer, BytesRead, false);
         StringPos := SFindTextW(AText, SBufferW, AForward, AWholeWords, ACaseSens, BytesRead < cBlockSize);
       end
     else
@@ -541,9 +531,9 @@ begin
 end;
 
 function TATStreamSearch.TextFindFirst(
-  const AText: WideString;
+  const AText: UnicodeString;
   const AStartPos: Int64;
-  AEncoding: TATEncoding;
+  const AEncoding: string;
   AOptions: TATStreamSearchOptions): Boolean;
 var
   ARealStartPos: Int64;
@@ -563,15 +553,12 @@ end;
 
 function TATStreamSearch.TextFindNext(AFindPrevious: Boolean = False): Boolean;
 var
-  ACharSize: Integer;
   AStartPos,
   AForwardPos, ABackwardPos: Int64;
   ANewOptions: TATStreamSearchOptions;
 begin
-  ACharSize := CharSize(FSavedEncoding);
-
-  AForwardPos := FFoundStart + ACharSize;
-  ABackwardPos := FFoundStart + (Length(FSavedText) - 2) * ACharSize;
+  AForwardPos := FFoundStart + FCharSize;
+  ABackwardPos := FFoundStart + (Length(FSavedText) - 2) * FCharSize;
 
   if (asoBackward in FSavedOptions) xor (AFindPrevious) then
     AStartPos := ABackwardPos
@@ -589,7 +576,7 @@ begin
   Result := FFoundStart >= 0;
 
   if Result then
-    FFoundLength := Length(FSavedText) * ACharSize
+    FFoundLength := Length(FSavedText) * FCharSize
   else
     FFoundLength := 0;
 end;
@@ -598,9 +585,9 @@ end;
 // Combined search code
 
 function TATStreamSearch.FindFirst(
-  const AText: WideString;
+  const AText: UnicodeString;
   const AStartPos: Int64;
-  AEncoding: TATEncoding;
+  const AEncoding: string;
   AOptions: TATStreamSearchOptions): Boolean;
 begin
   InitSavedOptions;
