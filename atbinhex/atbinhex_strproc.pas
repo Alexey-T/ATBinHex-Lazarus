@@ -96,8 +96,8 @@ begin
   FBuf := F;
   if not fCaseSens then
   begin
-    SBuf := AnsiLowerCase(SBuf);
-    FBuf := AnsiLowerCase(FBuf);
+    SBuf := LowerCase(SBuf);
+    FBuf := LowerCase(FBuf);
   end;
 
   LengthF := Length(F);
