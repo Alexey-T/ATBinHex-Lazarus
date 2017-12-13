@@ -222,6 +222,9 @@ type
     FViewPageSize: Int64; //Page size (number of bytes on screen), after redraw
     FHViewPos: Integer; //Horizontal scroll position (px)
     FHViewWidth: Integer; //Horizontal width of text on screen, after redraw
+    FPrevViewPos: Int64;
+    FPrevHViewPos: Integer;
+
     FSelStart: Int64;
     FSelLength: Int64;
     FMode: TATBinHexMode;
@@ -479,7 +482,7 @@ type
     {$endif}
 
     procedure DoOptionsChange;
-    procedure DoScroll;
+    procedure DoOnScroll;
     procedure DoDrawLine(ACanvas: TCanvas; const AStr: UnicodeString; const APos: Int64;
       const ARect: TRect; const ATextPnt: TPoint; var ADone: Boolean);
     procedure DoDrawLine2(ACanvas: TCanvas; const AStr: UnicodeString;
@@ -506,7 +509,7 @@ type
     function Open(const AFileName: UnicodeString; ARedraw: Boolean = True): Boolean;
     function OpenStream(AStream: TStream; ARedraw: Boolean = True): Boolean;
     procedure Reload;
-    procedure Redraw(DoPaint: Boolean = True);
+    procedure Redraw(ARepaint: Boolean = True);
 
     {$ifdef SEARCH}
     function FindFirst(const AText: UnicodeString; AOptions: TATStreamSearchOptions;
@@ -2293,8 +2296,14 @@ begin
 end;
 
 
-procedure TATBinHex.Redraw(DoPaint: Boolean);
+procedure TATBinHex.Redraw(ARepaint: boolean);
 begin
+  if (FPrevViewPos<>FViewPos) or
+    (FPrevHViewPos<>FHViewPos) then
+    DoOnScroll;
+  FPrevViewPos:= FViewPos;
+  FPrevHViewPos:= FHViewPos;
+
   if FEnabled2 then //Enabled2 enables control redrawing
     try
       Lock;
@@ -2304,7 +2313,7 @@ begin
       begin
         HideScrollbars;
         DrawEmptyTo(FBitmap, ClientWidth, ClientHeight, False);
-        if DoPaint then
+        if ARepaint then
           Paint;
         Exit;
       end;
@@ -2341,7 +2350,7 @@ begin
       //Update scrollbars and force paint
       UpdateVertScrollbar;
       UpdateHorzScrollbar;
-      if DoPaint then
+      if ARepaint then
         Paint;
     finally
       Unlock;
@@ -2811,8 +2820,6 @@ begin
 
     if ARedraw then
       Redraw;
-
-    DoScroll;
   end;
 end;
 
@@ -3293,7 +3300,6 @@ begin
   end;
 
   Message.Result := 0;
-  DoScroll;
   Invalidate;
 end;
 
@@ -3324,7 +3330,6 @@ begin
   end;
 
   Message.Result := 0;
-  DoScroll;
   Invalidate;
 end;
 
@@ -3336,7 +3341,6 @@ begin
   if (Key = VK_NEXT) and (Shift = []) then
   begin
     PosPageDown;
-    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3345,7 +3349,6 @@ begin
   if (Key = VK_PRIOR) and (Shift = []) then
   begin
     PosPageUp;
-    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3354,7 +3357,6 @@ begin
   if (Key = VK_DOWN) and (Shift = []) then
   begin
     PosLineDown;
-    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3363,7 +3365,6 @@ begin
   if (Key = VK_UP) and (Shift = []) then
   begin
     PosLineUp;
-    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3372,7 +3373,6 @@ begin
   if (Key = VK_HOME) and (Shift = [ssCtrl]) then
   begin
     PosBegin;
-    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3381,7 +3381,6 @@ begin
   if (Key = VK_END) and (Shift = [ssCtrl]) then
   begin
     PosEnd;
-    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3390,7 +3389,6 @@ begin
   if (Key = VK_LEFT) and (Shift = []) then
   begin
     HPosLeft;
-    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3399,7 +3397,6 @@ begin
   if (Key = VK_RIGHT) and (Shift = []) then
   begin
     HPosRight;
-    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3411,7 +3408,6 @@ begin
       HPosBegin
     else
       PosBegin;
-    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3423,7 +3419,6 @@ begin
       HPosEnd
     else
       PosEnd;
-    DoScroll;
     Key := 0;
     Exit
   end;
@@ -3633,7 +3628,6 @@ begin
   if (Shift = []) then
     PosLineUp(Mouse.WheelScrollLines);
 
-  DoScroll;
   Handled := True;
 end;
 
@@ -3649,7 +3643,6 @@ begin
   if (Shift = []) then
     PosLineDown(Mouse.WheelScrollLines);
 
-  DoScroll;
   Handled := True;
 end;
 
@@ -4595,7 +4588,7 @@ begin
     FOnOptionsChange(Self);
 end;
 
-procedure TATBinHex.DoScroll;
+procedure TATBinHex.DoOnScroll;
 begin
   if Assigned(FOnScroll) then
     FOnScroll(Self);
