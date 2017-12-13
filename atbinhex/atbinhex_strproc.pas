@@ -31,7 +31,7 @@ procedure SReplaceTabsW(var S: UnicodeString; var TabOptions: TStringTabOptions)
 function SCharCR(ch: WideChar): Boolean;
 function SLastCharCR(const S: UnicodeString): Boolean;
 
-function SFindText(const F, S: AnsiString; fForward, fWholeWords, fCaseSens, fLastBlock: Boolean): Integer;
+function SFindText(const F, S: string; fForward, fWholeWords, fCaseSens, fLastBlock: Boolean): Integer;
 function SFindTextW(const F, S: UnicodeString; fForward, fWholeWords, fCaseSens, fLastBlock: Boolean): Integer;
 
 procedure ILimitMin(var N: Integer; Value: Integer);
@@ -80,9 +80,9 @@ begin
 end;
 
 //--------------------------------------------------
-function SFindText(const F, S: AnsiString; fForward, fWholeWords, fCaseSens, fLastBlock: Boolean): Integer;
+function SFindText(const F, S: string; fForward, fWholeWords, fCaseSens, fLastBlock: Boolean): Integer;
 var
-  SBuf, FBuf, Delimiters: AnsiString;
+  SBuf, FBuf, Delimiters: string;
   Match: Boolean;
   LastPos, LengthF, i: Integer;
 begin

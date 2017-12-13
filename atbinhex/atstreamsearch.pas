@@ -70,6 +70,7 @@ type
     FCharSize: Integer;
 
     FSavedText: string;
+    FSavedTextLen: integer;
     FSavedOptions: TATStreamSearchOptions;
     //FSearchForValidUTF16: Boolean;
 
@@ -224,6 +225,7 @@ end;
 procedure TATStreamSearch.InitSavedOptions;
 begin
   FSavedText := '';
+  FSavedTextLen := 0;
   FSavedEncoding := '';
   FSavedOptions := [];
 end;
@@ -432,6 +434,7 @@ var
   ReadSize, BytesRead: DWORD;
   SBufferA: string;
   SBufferW: UnicodeString;
+  TextInCodepage: string;
   StringPos: Integer;
   AForward, AWholeWords, ACaseSens, AContinue: Boolean;
 begin
@@ -456,6 +459,11 @@ begin
 
   BufPos := AStartPos;
   NormalizePos(BufPos, FCharSize);
+
+  if FCharSize=1 then
+    TextInCodepage:= SCodepageFromUTF8(AText, AEncoding)
+  else
+    TextInCodepage:= '';
 
   if BufPos > BufPosMax then
     begin
@@ -509,8 +517,7 @@ begin
     else
       begin
         SetString(SBufferA, Buffer, BytesRead);
-        //SBufferA := SCodepageToUTF8(SBufferA, AEncoding); //dont work in resulting binary file
-        StringPos := SFindText(AText, SBufferA, AForward, AWholeWords, ACaseSens, BytesRead < cBlockSize);
+        StringPos := SFindText(TextInCodepage, SBufferA, AForward, AWholeWords, ACaseSens, BytesRead < cBlockSize);
       end;
 
     if StringPos > 0 then
@@ -547,7 +554,7 @@ begin
   Result := FFoundStart >= 0;
 
   if Result then
-    FFoundLength := Length(AText) * FCharSize
+    FFoundLength := FSavedTextLen
   else
     FFoundLength := 0;
 end;
@@ -577,7 +584,7 @@ begin
   Result := FFoundStart >= 0;
 
   if Result then
-    FFoundLength := Length(FSavedText) * FCharSize
+    FFoundLength := FSavedTextLen
   else
     FFoundLength := 0;
 end;
@@ -595,6 +602,11 @@ begin
   InitSavedOptions;
 
   FSavedText := AText;
+  if ACharSize=1 then
+    FSavedTextLen := Length(SCodepageFromUTF8(AText, AEncoding))
+  else
+    FSavedTextLen := Length(AText) * ACharSize;
+
   FSavedEncoding := AEncoding;
   FSavedOptions := AOptions;
   FCharSize := ACharSize;

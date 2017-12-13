@@ -10,6 +10,7 @@ uses
   LConvEncoding;
 
 function SCodepageToUTF8(const AStr, AEnc: string): string;
+function SCodepageFromUTF8(const AStr, AEnc: string): string;
 
 const
   cEncNameAnsi = 'ANSI';
@@ -74,7 +75,7 @@ const
 
 implementation
 
-function SConvertAnsiToUtf8(const SA: string): UTF8String;
+function SConvertAnsiToUtf8(const SA: string): string;
 begin
   {$ifdef windows}
   case Windows.GetACP of
@@ -95,6 +96,28 @@ begin
   {$endif}
 end;
 
+function SConvertUtf8ToAnsi(const SA: string): string;
+begin
+  {$ifdef windows}
+  todo.... below
+  case Windows.GetACP of
+    1250: Result:= CP1250ToUTF8(SA);
+    1251: Result:= CP1251ToUTF8(SA);
+    1252: Result:= CP1252ToUTF8(SA);
+    1253: Result:= CP1253ToUTF8(SA);
+    1254: Result:= CP1254ToUTF8(SA);
+    1255: Result:= CP1255ToUTF8(SA);
+    1256: Result:= CP1256ToUTF8(SA);
+    1257: Result:= CP1257ToUTF8(SA);
+    1258: Result:= CP1258ToUTF8(SA);
+    437: Result:= CP437ToUTF8(SA);
+    else Result:= CP1250ToUTF8(SA);
+  end;
+  {$else}
+  Result:= UTF8ToCP1252(SA);
+  {$endif}
+end;
+
 function SCodepageToUTF8(const AStr, AEnc: string): string;
 var
   Ok: boolean;
@@ -106,8 +129,16 @@ begin
     Result:= ConvertEncodingToUTF8(AStr, AEnc, Ok);
 end;
 
+function SCodepageFromUTF8(const AStr, AEnc: string): string;
+var
+  Ok: boolean;
+begin
+  Ok:= true;
+  if (AEnc='') or (AEnc='ANSI') then
+    Result:= SConvertUtf8ToAnsi(AStr)
+  else
+    Result:= ConvertEncodingFromUTF8(AStr, AEnc, Ok);
+end;
 
 end.
-
-
 
