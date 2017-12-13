@@ -112,7 +112,7 @@ type
     function TextFindNext(AFindPrevious: Boolean = False): Boolean;
 
   public
-    constructor Create(AOwner: TComponent; ACharSize: integer);
+    constructor Create(AOwner: TComponent);
     destructor Destroy; override;
     procedure SaveOptions;
     procedure RestoreOptions;
@@ -127,6 +127,7 @@ type
       const AText: UnicodeString;
       const AStartPos: Int64;
       const AEncoding: string;
+      ACharSize: integer;
       AOptions: TATStreamSearchOptions): Boolean;
     function FindNext(AFindPrevious: Boolean = False): Boolean;
 
@@ -183,7 +184,7 @@ end;
 
 { TATStreamSearch }
 
-constructor TATStreamSearch.Create(AOwner: TComponent; ACharSize: integer);
+constructor TATStreamSearch.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FStream := nil;
@@ -200,7 +201,7 @@ begin
   {$ENDIF}
 
   FOnProgress := nil;
-  FCharSize:= ACharSize;
+  FCharSize:= 1;
   InitSavedOptions;
 end;
 
@@ -588,6 +589,7 @@ function TATStreamSearch.FindFirst(
   const AText: UnicodeString;
   const AStartPos: Int64;
   const AEncoding: string;
+  ACharSize: integer;
   AOptions: TATStreamSearchOptions): Boolean;
 begin
   InitSavedOptions;
@@ -595,6 +597,7 @@ begin
   FSavedText := AText;
   FSavedEncoding := AEncoding;
   FSavedOptions := AOptions;
+  FCharSize := ACharSize;
 
   {$IFDEF REGEX}
   if asoRegEx in AOptions then

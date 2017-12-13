@@ -8,7 +8,8 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, Spin, ComCtrls,
   ATBinHex,
-  ATStreamSearch;
+  ATStreamSearch,
+  math;
 
 type
   { TfmMain }
@@ -97,7 +98,7 @@ begin
   if FileExists(fn) then
     OpenFile(fn);
 
-  srch:= TATStreamSearch.Create(Self, 1);
+  srch:= TATStreamSearch.Create(Self);
 end;
 
 procedure TfmMain.bTextChange(Sender: TObject);
@@ -142,12 +143,18 @@ end;
 procedure TfmMain.btnFindClick(Sender: TObject);
 var
   S: string;
+  NCharSize: integer;
 begin
   S:= InputBox('Find', 'String:', '');
   if S='' then exit;
 
+  if V.Mode in [vbmodeUnicode, vbmodeUHex] then
+    NCharSize:= 2
+  else
+    NCharSize:= 1;
+
   srch.Stream:= fs;
-  if not srch.FindFirst(S, 0, '', []) then
+  if not srch.FindFirst(S, 0, '', NCharSize, []) then
     ShowMessage('Not found')
   else
     V.SetSelection(srch.FoundStart, srch.FoundLength, true);
