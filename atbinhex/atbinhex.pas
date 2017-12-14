@@ -478,7 +478,7 @@ type
     procedure SetOnSearchProgress(AValue: TATStreamSearchProgress);
     function GetSearchResultStart: Int64;
     function GetSearchResultLength: Int64;
-    function GetSearchString: UnicodeString;
+    function GetSearchString: string;
     {$endif}
 
     procedure DoOptionsChange;
@@ -512,13 +512,13 @@ type
     procedure Redraw(ARepaint: Boolean = True);
 
     {$ifdef SEARCH}
-    function FindFirst(const AText: UnicodeString; AOptions: TATStreamSearchOptions;
+    function FindFirst(const AText: string; AOptions: TATStreamSearchOptions;
       const AFromPos: Int64 = -1): Boolean;
     function FindNext(AFindPrevious: Boolean = False): Boolean;
     property SearchResultStart: Int64 read GetSearchResultStart;
     property SearchResultLength: Int64 read GetSearchResultLength;
     property SearchStarted: Boolean read FSearchStarted;
-    property SearchString: UnicodeString read GetSearchString;
+    property SearchString: string read GetSearchString;
     {$endif}
 
     function IncreaseFontSize(AIncrement: Boolean): Boolean;
@@ -2974,8 +2974,8 @@ procedure TATBinHex.FreeData;
 begin
   {$ifdef SEARCH}
   case FFileSourceType of
-    vfSrcFile:
-      FSearch.FileName := '';
+    //vfSrcFile:
+    //  FSearch.FileName := '';
     vfSrcStream:
       FSearch.Stream := nil;
   end;
@@ -4504,7 +4504,7 @@ begin
   Result := FSearch.FoundLength;
 end;
 
-function TATBinHex.GetSearchString: UnicodeString;
+function TATBinHex.GetSearchString: string;
 begin
   Result := FSearch.SavedText;
 end;
@@ -4512,11 +4512,11 @@ end;
 
 {$ifdef SEARCH}
 function TATBinHex.FindFirst(
-  const AText: UnicodeString;
+  const AText: string;
   AOptions: TATStreamSearchOptions;
   const AFromPos: Int64 = -1): Boolean;
 var
-  AStreamEncoding: TATEncoding;
+  AStreamEncoding: string;
   AStartPos: Int64;
 begin
   Assert(SourceAssigned, 'Source not assigned: FindFirst');
@@ -4524,14 +4524,15 @@ begin
   //Handle encoding:
   if IsModeUnicode then
   begin
-    if IsUnicodeBE then
-      AStreamEncoding := vencUnicodeBE
-    else
-      AStreamEncoding := vencUnicodeLE;
+    //if IsUnicodeBE then
+    //  AStreamEncoding := vencUnicodeBE
+    //else
+    //  AStreamEncoding := vencUnicodeLE;
+    AStreamEncoding := '';
   end
   else
   begin
-    AStreamEncoding := FEncoding;
+    AStreamEncoding := FTextEncoding;
   end;
 
   //Handle "Origin" option:
@@ -4550,8 +4551,8 @@ begin
 
   try
     case FFileSourceType of
-      vfSrcFile:
-        FSearch.FileName := FFileName;
+      //vfSrcFile:
+      //  FSearch.FileName := FFileName;
       vfSrcStream:
         FSearch.Stream := FStream;
     end;
@@ -4562,7 +4563,9 @@ begin
     Exit;
   end;
 
-  Result := FSearch.FindFirst(AText, AStartPos, AStreamEncoding, AOptions);
+  Result := FSearch.FindFirst(AText, AStartPos, AStreamEncoding, CharSize, AOptions);
+  if Result then
+    SetSelection(FSearch.FoundStart, FSearch.FoundLength, true);
 end;
 {$endif}
 
@@ -4572,6 +4575,8 @@ begin
   Assert(SourceAssigned, 'Source not assigned: FindNext');
   Assert(FSearchStarted, 'Search not started: FindNext');
   Result := FSearch.FindNext(AFindPrevious);
+  if Result then
+    SetSelection(FSearch.FoundStart, FSearch.FoundLength, true);
 end;
 {$endif}
 
@@ -5043,6 +5048,7 @@ begin
     if FSearch2.FindFirst(
       FSearch.SavedText, 0,
       FSearch.SavedEncoding,
+      CharSize,
       FSearch.SavedOptions - [asoBackward]) then
     repeat
       Inc(n);
