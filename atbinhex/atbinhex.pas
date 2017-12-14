@@ -160,7 +160,7 @@ type
 
   TATBinHex = class(TCustomControl)
   private
-    FFileName: UnicodeString;
+    FFileName: string;
     FFileSize: Int64;
     FFileOK: Boolean;
     FFileUnicodeFmt: TATUnicodeFormat;
@@ -506,7 +506,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function Open(const AFileName: UnicodeString; ARedraw: Boolean = True): Boolean;
+    //function Open(const AFileName: string; ARedraw: Boolean = True): Boolean;
     function OpenStream(AStream: TStream; ARedraw: Boolean = True): Boolean;
     procedure Reload;
     procedure Redraw(ARepaint: Boolean = True);
@@ -583,7 +583,7 @@ type
     property TextPopupCaption[AIndex: TATPopupCommand]: AnsiString read GetTextPopupCaption write SetTextPopupCaption;
     property MaxLengths[AIndex: TATBinHexMode]: Integer read GetMaxLengths write SetMaxLengths;
     property MaxClipboardDataSizeMb: Integer read FMaxClipboardDataSizeMb write SetMaxClipboardDataSizeMb;
-    property FileName: UnicodeString read FFileName;
+    property FileName: string read FFileName;
     property FileSize: Int64 read FFileSize;
     property FileReadOK: Boolean read FFileOK;
     property FileUnicodeFormat: TATUnicodeFormat read FFileUnicodeFmt write SetFileUnicodeFmt;
@@ -2671,7 +2671,8 @@ begin
     end;
 end;
 
-function TATBinHex.Open(const AFileName: UnicodeString; ARedraw: Boolean = True): Boolean;
+(*
+function TATBinHex.Open(const AFileName: string; ARedraw: Boolean = True): Boolean;
 begin
   Result := True;
   if FFileName <> AFileName then
@@ -2682,6 +2683,7 @@ begin
       Redraw;
   end;
 end;
+*)
 
 function TATBinHex.OpenStream(AStream: TStream; ARedraw: Boolean = True): Boolean;
 begin
