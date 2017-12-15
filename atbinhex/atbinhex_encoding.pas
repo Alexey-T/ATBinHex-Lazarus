@@ -88,8 +88,8 @@ begin
     1256: Result:= CP1256ToUTF8(SA);
     1257: Result:= CP1257ToUTF8(SA);
     1258: Result:= CP1258ToUTF8(SA);
-    437: Result:= CP437ToUTF8(SA);
-    else Result:= CP1250ToUTF8(SA);
+    437:  Result:= CP437ToUTF8(SA);
+    else  Result:= CP1252ToUTF8(SA);
   end;
   {$else}
   Result:= CP1252ToUTF8(SA);
@@ -99,19 +99,18 @@ end;
 function SConvertUtf8ToAnsi(const SA: string): string;
 begin
   {$ifdef windows}
-  todo.... below
   case Windows.GetACP of
-    1250: Result:= CP1250ToUTF8(SA);
-    1251: Result:= CP1251ToUTF8(SA);
-    1252: Result:= CP1252ToUTF8(SA);
-    1253: Result:= CP1253ToUTF8(SA);
-    1254: Result:= CP1254ToUTF8(SA);
-    1255: Result:= CP1255ToUTF8(SA);
-    1256: Result:= CP1256ToUTF8(SA);
-    1257: Result:= CP1257ToUTF8(SA);
-    1258: Result:= CP1258ToUTF8(SA);
-    437: Result:= CP437ToUTF8(SA);
-    else Result:= CP1250ToUTF8(SA);
+    1250: Result:= UTF8ToCP1250(SA);
+    1251: Result:= UTF8ToCP1251(SA);
+    1252: Result:= UTF8ToCP1252(SA);
+    1253: Result:= UTF8ToCP1253(SA);
+    1254: Result:= UTF8ToCP1254(SA);
+    1255: Result:= UTF8ToCP1255(SA);
+    1256: Result:= UTF8ToCP1256(SA);
+    1257: Result:= UTF8ToCP1257(SA);
+    1258: Result:= UTF8ToCP1258(SA);
+    437:  Result:= UTF8ToCP437(SA);
+    else  Result:= UTF8ToCP1252(SA);
   end;
   {$else}
   Result:= UTF8ToCP1252(SA);
