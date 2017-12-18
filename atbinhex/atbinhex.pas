@@ -710,7 +710,7 @@ const
   cReUrl = '\b(' + cReProt + '://|www\.)[\w\d\.\-\?\#\+\{\}=~_$%;:&@,/]+';
   cReEmail = '\b[a-z\d\.\-_]+@[a-z\d\.\-]+\.[a-z]+\b';
 
-  cCharSpecial = '.';             //Draw: Char for control characters
+  cCharSpecial = WideChar($B7);   //Draw: Char for control characters
                                   //Draw: Gutter:
   cGutterWidth = 10;              //  gutter min width (px)
   cGutterDotSize = 3;             //  gutter dot radius (px)
