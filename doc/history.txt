@@ -4,3 +4,8 @@
 
 2017.12.15
 + big rework. ATStreamSearch works now. ATBinHex methods FindFirst/FindNext work now. Only case-insensitive search don't work for non-ascii text. Hard todo.
++ add: buttons Find/FindNext in demo
++ add: keys Home/End to goto file begin/end, in fixed modes
++ add: hide v-scrollbar in fixed modes (hex/ binary/ u-hex)
+- fix: OnScroll wasn't called in many cases
+- fix: huge file, if v-scrollbar dragged to end, file must also scroll to end
