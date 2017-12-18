@@ -1,0 +1,6 @@
+
+2017.12.18
++ add: use unicode middle-dot U+00B7 for special chars
+
+2017.12.15
++ big rework. ATStreamSearch works now. ATBinHex methods FindFirst/FindNext work now. Only case-insensitive search don't work for non-ascii text. Hard todo.

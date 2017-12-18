@@ -2,6 +2,6 @@ ATBinHex was originally a Delphi component http://atviewer.sourceforge.net/atbin
 
 This is Lazarus version.
 
-* Some features disabled via ATBinHexOptions.inc (searching of text, printing, regex hiliting of URLs).
-* Removed method OpenFile, it used Win API, now use OpenStream.
+* Some features disabled via ATBinHexOptions.inc (printing, regex hiliting of URLs)
+* Removed method OpenFile (it used Win API), now use OpenStream
 * Encodings are supported again, via LConvEncoding, in non-unicode modes only
