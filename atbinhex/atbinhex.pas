@@ -11,7 +11,7 @@
 {$RANGECHECKS OFF} //For assignment compatability between DWORD and Longint
 
 {$I atbinhexoptions.inc}   //ATBinHex options
-{$R atbinhexresources.res} //ATBinHex resources
+{$R res/atbinhexresources.res} //ATBinHex resources
 
 {$mode delphi}
 
