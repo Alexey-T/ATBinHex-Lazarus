@@ -1,4 +1,8 @@
 
+2018.04.07
++ add: update resource pic for "middle mouse click scroll" for hi-dpi
++ add: rewritten other resource files
+
 2017.12.18
 + add: use unicode middle-dot U+00B7 for special chars
 
