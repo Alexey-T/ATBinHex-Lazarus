@@ -1,0 +1,1 @@
+~/lazarus/tools/lazres atbinhexresources.res mouse_scroll.cur=ab_move mouse_scroll_up.cur=ab_move_u mouse_scroll_down.cur=ab_move_d mouse_scroll_left.cur=ab_move_l mouse_scroll_right.cur=ab_move_r mouse_scroll.png=ab_move

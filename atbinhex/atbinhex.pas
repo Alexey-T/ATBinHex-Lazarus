@@ -785,7 +785,7 @@ const
 { Resources constants: don't change }
 
 var
-  FBitmapNiceScroll: TBitmap = nil; //NiceScroll mode: bitmap that is drawn when mode is on
+  FBitmapNiceScroll: TPortableNetworkGraphic = nil; //NiceScroll mode: bitmap that is drawn when mode is on
 
 const
   cBitmapNiceScrollRadius = 16;     //NiceScroll mode: bitmap is actually a circle of specified radius
@@ -5166,12 +5166,8 @@ end;
 
 procedure InitCursors;
 begin
-  FBitmapNiceScroll := TBitmap.Create;
-  with FBitmapNiceScroll do
-  begin
-    LoadFromResourceName(HInstance, 'AB_MOVE');
-    Transparent := True;
-  end;
+  FBitmapNiceScroll := TPortableNetworkGraphic.Create;
+  FBitmapNiceScroll.LoadFromResourceName(HInstance, 'AB_MOVE');
 
   with Screen do
   begin
