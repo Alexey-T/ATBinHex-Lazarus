@@ -2508,13 +2508,12 @@ end;
 
 function TATBinHex.PosBefore(const APos: Int64; ALineType: TATLineType; ADir: TATDirection): Int64;
 const
-  Separators: array[TATLineType] of UnicodeString = (
-    #13#10,
-    ' !"#$%&''()*+,-./:;<=>?@[\]^`{|}~'#13#10#9,
-    ' ()<>{}"'''#13#10#9 );
+  cSepWord = ' !"#$%&''()*+,-./:;<=>?@[\]^`{|}~';
+  cSepUrl = ' ()<>{}"''';
 var
   PosTemp: Int64;
   i: Integer;
+  ch: WideChar;
 begin
   Result := APos;
   NormalizePos(Result);
@@ -2522,8 +2521,27 @@ begin
   for i := 1 to cMaxLengthSel do
   begin
     NextPos(PosTemp, ADir);
-    if (PosBad(PosTemp)) or (Pos(GetChar(PosTemp), Separators[ALineType]) > 0) then
-      Break;
+    if PosBad(PosTemp) then Break;
+    ch := GetChar(PosTemp);
+    if ch=cCharSpecial then Break;
+
+    case ALineType of
+      vbLineAll:
+        begin
+          if (ch=#10) or (ch=#13) then Break;
+        end;
+      vbLineWord:
+        begin
+          if Ord(ch)<$20 then Break;
+          if Pos(ch, cSepWord)>0 then Break;
+        end;
+      vbLineURL:
+        begin
+          if Ord(ch)<$20 then Break;
+          if Pos(ch, cSepUrl)>0 then Break;
+        end;
+    end;
+
     Result := PosTemp;
   end;
 end;
