@@ -2566,9 +2566,6 @@ begin
   FMouseDblClick := True;
   FMouseTriClick := False;
   FMouseTriTime := 0;
-
-  if cSelectionByDoubleClick then
-    SelectLineAtPos(FMouseStartDbl, vbLineWord);
 end;
 
 procedure TATBinHex.ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
@@ -3800,7 +3797,17 @@ begin
     FMouseDown := False;
     FMouseStart := -1;
     FTimerAutoScroll.Enabled := False;
-    DoSelectionChange;
+
+    if FMouseDblClick then
+    begin
+      if cSelectionByDoubleClick then
+        SelectLineAtPos(FMouseStartDbl, vbLineWord);
+    end
+    else
+      DoSelectionChange;
+
+    FMouseDblClick := False;
+    FMouseStartDbl := -1;
   end;
 end;
 

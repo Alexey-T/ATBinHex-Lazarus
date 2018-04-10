@@ -1,4 +1,7 @@
 
+2018.04.10
+- fix: double-click worked wrong (must react in MouseUp, not in DblClick)
+
 2018.04.07
 + add: update resource pic for "middle mouse click scroll" for hi-dpi
 + add: rewritten other resource files
