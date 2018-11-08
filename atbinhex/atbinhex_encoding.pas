@@ -12,30 +12,6 @@ uses
 function SCodepageToUTF8(const AStr, AEnc: string): string;
 function SCodepageFromUTF8(const AStr, AEnc: string): string;
 
-const
-  cEncNameAnsi = 'ANSI';
-  cEncNameCP1250 = 'CP1250';
-  cEncNameCP1251 = 'CP1251';
-  cEncNameCP1252 = 'CP1252';
-  cEncNameCP1253 = 'CP1253';
-  cEncNameCP1254 = 'CP1254';
-  cEncNameCP1255 = 'CP1255';
-  cEncNameCP1256 = 'CP1256';
-  cEncNameCP1257 = 'CP1257';
-  cEncNameCP1258 = 'CP1258';
-  cEncNameCP437 = 'CP437';
-  cEncNameCP850 = 'CP850';
-  cEncNameCP852 = 'CP852';
-  cEncNameCP866 = 'CP866';
-  cEncNameCP874 = 'CP874';
-  cEncNameISO1 = 'ISO-8859-1';
-  cEncNameISO2 = 'ISO-8859-2';
-  cEncNameMac = 'Macintosh';
-  cEncNameCP932 = 'CP932';
-  cEncNameCP936 = 'CP936';
-  cEncNameCP949 = 'CP949';
-  cEncNameCP950 = 'CP950';
-
 type
   TAppEncodingRecord = record
     Sub,
@@ -44,32 +20,30 @@ type
   end;
 
 const
-  AppEncodings: array[0..24] of TAppEncodingRecord = (
-    (Sub: ''; Name: cEncNameAnsi; ShortName: 'ansi'),
-    (Sub: ''; Name: '-'; ShortName: ''),
-    (Sub: 'eu'; Name: cEncNameCP1250; ShortName: cEncNameCP1250),
-    (Sub: 'eu'; Name: cEncNameCP1251; ShortName: cEncNameCP1251),
-    (Sub: 'eu'; Name: cEncNameCP1252; ShortName: cEncNameCP1252),
-    (Sub: 'eu'; Name: cEncNameCP1253; ShortName: cEncNameCP1253),
-    (Sub: 'eu'; Name: cEncNameCP1257; ShortName: cEncNameCP1257),
+  AppEncodings: array[0..22] of TAppEncodingRecord = (
+    (Sub: 'eu'; Name: EncodingCP1250; ShortName: EncodingCP1250),
+    (Sub: 'eu'; Name: EncodingCP1251; ShortName: EncodingCP1251),
+    (Sub: 'eu'; Name: EncodingCP1252; ShortName: EncodingCP1252),
+    (Sub: 'eu'; Name: EncodingCP1253; ShortName: EncodingCP1253),
+    (Sub: 'eu'; Name: EncodingCP1257; ShortName: EncodingCP1257),
     (Sub: 'eu'; Name: '-'; ShortName: ''),
-    (Sub: 'eu'; Name: cEncNameCP437; ShortName: cEncNameCP437),
-    (Sub: 'eu'; Name: cEncNameCP850; ShortName: cEncNameCP850),
-    (Sub: 'eu'; Name: cEncNameCP852; ShortName: cEncNameCP852),
-    (Sub: 'eu'; Name: cEncNameCP866; ShortName: cEncNameCP866),
+    (Sub: 'eu'; Name: EncodingCP437; ShortName: EncodingCP437),
+    (Sub: 'eu'; Name: EncodingCP850; ShortName: EncodingCP850),
+    (Sub: 'eu'; Name: EncodingCP852; ShortName: EncodingCP852),
+    (Sub: 'eu'; Name: EncodingCP866; ShortName: EncodingCP866),
     (Sub: 'eu'; Name: '-'; ShortName: ''),
-    (Sub: 'eu'; Name: cEncNameISO1; ShortName: cEncNameISO1),
-    (Sub: 'eu'; Name: cEncNameISO2; ShortName: cEncNameISO2),
-    (Sub: 'eu'; Name: cEncNameMac; ShortName: 'mac'),
-    (Sub: 'mi'; Name: cEncNameCP1254; ShortName: cEncNameCP1254),
-    (Sub: 'mi'; Name: cEncNameCP1255; ShortName: cEncNameCP1255),
-    (Sub: 'mi'; Name: cEncNameCP1256; ShortName: cEncNameCP1256),
-    (Sub: 'as'; Name: cEncNameCP874; ShortName: cEncNameCP874),
-    (Sub: 'as'; Name: cEncNameCP932; ShortName: cEncNameCP932),
-    (Sub: 'as'; Name: cEncNameCP936; ShortName: cEncNameCP936),
-    (Sub: 'as'; Name: cEncNameCP949; ShortName: cEncNameCP949),
-    (Sub: 'as'; Name: cEncNameCP950; ShortName: cEncNameCP950),
-    (Sub: 'as'; Name: cEncNameCP1258; ShortName: cEncNameCP1258)
+    (Sub: 'eu'; Name: EncodingCPIso1; ShortName: EncodingCPIso1),
+    (Sub: 'eu'; Name: EncodingCPIso2; ShortName: EncodingCPIso2),
+    (Sub: 'eu'; Name: EncodingCPMac; ShortName: 'mac'),
+    (Sub: 'mi'; Name: EncodingCP1254; ShortName: EncodingCP1254),
+    (Sub: 'mi'; Name: EncodingCP1255; ShortName: EncodingCP1255),
+    (Sub: 'mi'; Name: EncodingCP1256; ShortName: EncodingCP1256),
+    (Sub: 'as'; Name: EncodingCP874; ShortName: EncodingCP874),
+    (Sub: 'as'; Name: EncodingCP932; ShortName: EncodingCP932),
+    (Sub: 'as'; Name: EncodingCP936; ShortName: EncodingCP936),
+    (Sub: 'as'; Name: EncodingCP949; ShortName: EncodingCP949),
+    (Sub: 'as'; Name: EncodingCP950; ShortName: EncodingCP950),
+    (Sub: 'as'; Name: EncodingCP1258; ShortName: EncodingCP1258)
   );
 
 
