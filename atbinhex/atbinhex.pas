@@ -1393,6 +1393,7 @@ begin
   FTextWrap := False;
   FTextNonPrintable := False;
   FTextOemSpecial := False;
+  FTextEncoding := 'cp1252';
 
   FTextGutter := False;
   FTextGutterWidth := cGutterWidth;
