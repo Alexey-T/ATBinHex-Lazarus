@@ -96,7 +96,7 @@ var
   Ok: boolean;
 begin
   Ok:= true;
-  if (AEnc='') or (AEnc='ANSI') then
+  if (AEnc='') then
     Result:= SConvertAnsiToUtf8(AStr)
   else
     Result:= ConvertEncodingToUTF8(AStr, AEnc, Ok);
@@ -107,7 +107,7 @@ var
   Ok: boolean;
 begin
   Ok:= true;
-  if (AEnc='') or (AEnc='ANSI') then
+  if (AEnc='') then
     Result:= SConvertUtf8ToAnsi(AStr)
   else
     Result:= ConvertEncodingFromUTF8(AStr, AEnc, Ok);
