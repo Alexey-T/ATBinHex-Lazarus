@@ -1,4 +1,7 @@
 
+2019.09.19
+* change: require package EncConv (in github.com/alexey-t) instead of LConvEncoding
+
 2018.04.10
 - fix: double-click worked wrong (must react in MouseUp, not in DblClick)
 - fix: wrong find of whole words

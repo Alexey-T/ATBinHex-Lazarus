@@ -22,6 +22,7 @@ uses
   TntClasses,
   {$ENDIF}
   atbinhex_encoding,
+  EncConv,
   LazUTF8Classes;
 
 type
@@ -48,7 +49,7 @@ type
 
   TATStreamSearch = class(TComponent)
   private
-    FSavedEncoding: string;
+    FSavedEncoding: TEncConvId;
     FStream: TStream;
     FStreamOwner: Boolean;
     FFileName: string;
@@ -61,7 +62,7 @@ type
     FSavLen: Int64;
     FSavText: string;
     FSavOpt: TATStreamsearchoptions;
-    FSavEnc: string;
+    FSavEnc: TEncConvId;
 
     {$IFDEF REGEX}
     FRegEx: TDIRegExSearchStream_Enc;
@@ -78,7 +79,7 @@ type
     procedure InitSavedOptions;
     function InitProgressFields(
       const AStartPos: Int64;
-      const AEncoding: string): Boolean;
+      AEncoding: TEncConvId): Boolean;
     procedure DoProgress(
       const ACurrentPos, AMaximalPos: Int64;
       var AContinueSearching: Boolean);
@@ -103,12 +104,12 @@ type
     function TextFind(
       const AText: string;
       const AStartPos: Int64;
-      const AEncoding: string;
+      AEncoding: TEncConvId;
       AOptions: TATStreamSearchOptions): Int64;
     function TextFindFirst(
       const AText: string;
       const AStartPos: Int64;
-      const AEncoding: string;
+      AEncoding: TEncConvId;
       AOptions: TATStreamSearchOptions): Boolean;
     function TextFindNext(AFindPrevious: Boolean = False): Boolean;
 
@@ -121,13 +122,13 @@ type
     property FileName: string read FFileName write SetFileName;
     property Stream: TStream read FStream write SetStream;
     property SavedText: string read FSavedText;
-    property SavedEncoding: string read FSavedEncoding;
+    property SavedEncoding: TEncConvId read FSavedEncoding;
     property SavedOptions: TATStreamSearchOptions read FSavedOptions;
 
     function FindFirst(
       const AText: string;
       const AStartPos: Int64;
-      const AEncoding: string;
+      AEncoding: TEncConvId;
       ACharSize: integer;
       AOptions: TATStreamSearchOptions): Boolean;
     function FindNext(AFindPrevious: Boolean = False): Boolean;
@@ -226,7 +227,7 @@ procedure TATStreamSearch.InitSavedOptions;
 begin
   FSavedText := '';
   FSavedTextLen := 0;
-  FSavedEncoding := '';
+  FSavedEncoding := eidCP1252;
   FSavedOptions := [];
 end;
 
@@ -254,7 +255,7 @@ begin
 end;
 
 function TATStreamSearch.InitProgressFields(const AStartPos: Int64;
-  const AEncoding: string): Boolean;
+  AEncoding: TEncConvId): Boolean;
 begin
   Assert(Assigned(FStream));
   FStreamStart := AStartPos;
@@ -426,7 +427,7 @@ end;
 function TATStreamSearch.TextFind(
   const AText: string;
   const AStartPos: Int64;
-  const AEncoding: string;
+  AEncoding: TEncConvId;
   AOptions: TATStreamSearchOptions): Int64;
 var
   Buffer: array[0 .. cBlockSize - 1] of char;
@@ -541,7 +542,7 @@ end;
 function TATStreamSearch.TextFindFirst(
   const AText: string;
   const AStartPos: Int64;
-  const AEncoding: string;
+  AEncoding: TEncConvId;
   AOptions: TATStreamSearchOptions): Boolean;
 var
   ARealStartPos: Int64;
@@ -595,7 +596,7 @@ end;
 function TATStreamSearch.FindFirst(
   const AText: string;
   const AStartPos: Int64;
-  const AEncoding: string;
+  AEncoding: TEncConvId;
   ACharSize: integer;
   AOptions: TATStreamSearchOptions): Boolean;
 begin

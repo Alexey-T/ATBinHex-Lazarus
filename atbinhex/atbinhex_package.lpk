@@ -16,7 +16,7 @@
     </CompilerOptions>
     <Description Value="Viewer control, for files and streams, of unlimited size. Modes: text with var-length, text with fixed length, hex, unicode, hex-unicode."/>
     <License Value="MPL 2.0, LGPL"/>
-    <Version Major="1"/>
+    <Version Major="1" Minor="1"/>
     <Files Count="10">
       <Item1>
         <Filename Value="atbinhex.pas"/>
@@ -60,10 +60,13 @@
         <UnitName Value="ATStreamSearch"/>
       </Item10>
     </Files>
-    <RequiredPkgs Count="1">
+    <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="encconv_package"/>
       </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

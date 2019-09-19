@@ -23,6 +23,7 @@ uses
   Messages, SysUtils, Classes, Controls, Graphics,
   ExtCtrls,
   LMessages,
+  EncConv,
   ATBinHex_Encoding,
   {$ifdef NOTIF} ATFileNotification, {$endif}
   {$ifdef NOTIF} ATFileNotificationSimple, {$endif}
@@ -191,7 +192,7 @@ type
     FTimerAutoScroll: TTimer;
     FTimerNiceScroll: TTimer;
     FStrings: TObject;
-    FTextEncoding: string;
+    FTextEncoding: TEncConvId;
 
     FMenu: TPopupMenu;
     FMenuItemCopy: TMenuItem;
@@ -327,7 +328,7 @@ type
     procedure SetTextWrap(AValue: Boolean);
     procedure SetTextNonPrintable(AValue: Boolean);
     procedure SetTextUrlHilight(AValue: Boolean);
-    procedure SetTextEncoding(const AValue: string);
+    procedure SetTextEncoding(AValue: TEncConvId);
     procedure SetSearchIndentVert(AValue: Integer);
     procedure SetSearchIndentHorz(AValue: Integer);
     procedure SetFontFooter(AValue: TFont);
@@ -588,7 +589,7 @@ type
     property FileReadOK: Boolean read FFileOK;
     property FileUnicodeFormat: TATUnicodeFormat read FFileUnicodeFmt write SetFileUnicodeFmt;
 
-    property TextEncoding: string read FTextEncoding write SetTextEncoding;
+    property TextEncoding: TEncConvId read FTextEncoding write SetTextEncoding;
     procedure TextEncodingsMenu(AX, AY: Integer);
 
     //Enabled2 is the same as Enabled, but also enables control redrawing:
@@ -1393,7 +1394,7 @@ begin
   FTextWrap := False;
   FTextNonPrintable := False;
   FTextOemSpecial := False;
-  FTextEncoding := 'cp1252';
+  FTextEncoding := eidCP1252;
 
   FTextGutter := False;
   FTextGutterWidth := cGutterWidth;
@@ -2297,7 +2298,7 @@ begin
 end;
 
 
-procedure TATBinHex.Redraw(ARepaint: boolean);
+procedure TATBinHex.Redraw(ARepaint: Boolean);
 begin
   if (FPrevViewPos<>FViewPos) or
     (FPrevHViewPos<>FHViewPos) then
@@ -3144,7 +3145,7 @@ begin
     Redraw;
 end;
 
-procedure TATBinHex.SetTextEncoding(const AValue: string);
+procedure TATBinHex.SetTextEncoding(AValue: TEncConvId);
 begin
   if AValue <> FTextEncoding then
   begin
@@ -4544,7 +4545,7 @@ function TATBinHex.FindFirst(
   AOptions: TATStreamSearchOptions;
   const AFromPos: Int64 = -1): Boolean;
 var
-  AStreamEncoding: string;
+  AStreamEncoding: TEncConvId;
   AStartPos: Int64;
 begin
   Assert(SourceAssigned, 'Source not assigned: FindFirst');
@@ -4556,7 +4557,7 @@ begin
     //  AStreamEncoding := vencUnicodeBE
     //else
     //  AStreamEncoding := vencUnicodeLE;
-    AStreamEncoding := '';
+    AStreamEncoding := eidCP1252;
   end
   else
   begin
@@ -4687,7 +4688,7 @@ procedure TATBinHex.EncodingMenuItemClick(Sender: TObject);
 begin
   if Sender is TMenuItem then
   begin
-    TextEncoding := (Sender as TMenuItem).Caption;
+    TextEncoding := EncConvFindEncodingByName((Sender as TMenuItem).Caption);
     DoOptionsChange;
   end;
 end;
