@@ -14,41 +14,42 @@ function SCodepageFromUTF8(const AStr: string; AEnc: TEncConvId): string;
 
 type
   TAppEncodingRecord = record
-    Sub,
-    Name,
-    ShortName: string;
+    Sub: string;
+    Name: string;
+    Id: TEncConvId
   end;
 
 const
   AppEncodings: array[0..22] of TAppEncodingRecord = (
-    (Sub: 'eu'; Name: 'cp1250'; ShortName: 'cp1250'),
-    (Sub: 'eu'; Name: 'cp1251'; ShortName: 'cp1251'),
-    (Sub: 'eu'; Name: 'cp1252'; ShortName: 'cp1252'),
-    (Sub: 'eu'; Name: 'cp1253'; ShortName: 'cp1253'),
-    (Sub: 'eu'; Name: 'cp1257'; ShortName: 'cp1257'),
-    (Sub: 'eu'; Name: '-'; ShortName: ''),
-    (Sub: 'eu'; Name: 'cp437'; ShortName: 'cp437'),
-    (Sub: 'eu'; Name: 'cp850'; ShortName: 'cp850'),
-    (Sub: 'eu'; Name: 'cp852'; ShortName: 'cp852'),
-    (Sub: 'eu'; Name: 'cp866'; ShortName: 'cp866'),
-    (Sub: 'eu'; Name: '-'; ShortName: ''),
-    (Sub: 'eu'; Name: 'iso88591'; ShortName: 'iso88591'),
-    (Sub: 'eu'; Name: 'iso88592'; ShortName: 'iso88592'),
-    (Sub: 'eu'; Name: 'mac'; ShortName: 'mac'),
-    (Sub: 'mi'; Name: 'cp1254'; ShortName: 'cp1254'),
-    (Sub: 'mi'; Name: 'cp1255'; ShortName: 'cp1255'),
-    (Sub: 'mi'; Name: 'cp1256'; ShortName: 'cp1256'),
-    (Sub: 'as'; Name: 'cp874'; ShortName: 'cp874'),
-    (Sub: 'as'; Name: 'cp932'; ShortName: 'cp932'),
-    (Sub: 'as'; Name: 'cp936'; ShortName: 'cp936'),
-    (Sub: 'as'; Name: 'cp949'; ShortName: 'cp949'),
-    (Sub: 'as'; Name: 'cp950'; ShortName: 'cp950'),
-    (Sub: 'as'; Name: 'cp1258'; ShortName: 'cp1258')
+    (Sub: 'eu'; Name: 'cp1250'; Id: eidCP1250),
+    (Sub: 'eu'; Name: 'cp1251'; Id: eidCP1251),
+    (Sub: 'eu'; Name: 'cp1252'; Id: eidCP1252),
+    (Sub: 'eu'; Name: 'cp1253'; Id: eidCP1253),
+    (Sub: 'eu'; Name: 'cp1257'; Id: eidCP1257),
+    (Sub: 'eu'; Name: '-'; Id: eidUTF8),
+    (Sub: 'eu'; Name: 'cp437'; Id: eidCP437),
+    (Sub: 'eu'; Name: 'cp850'; Id: eidCP850),
+    (Sub: 'eu'; Name: 'cp852'; Id: eidCP852),
+    (Sub: 'eu'; Name: 'cp866'; Id: eidCP866),
+    (Sub: 'eu'; Name: '-'; Id: eidUTF8),
+    (Sub: 'eu'; Name: 'iso88591'; Id: eidISO1),
+    (Sub: 'eu'; Name: 'iso88592'; Id: eidISO2),
+    (Sub: 'eu'; Name: 'mac'; Id: eidCPMac),
+    (Sub: 'mi'; Name: 'cp1254'; Id: eidCP1254),
+    (Sub: 'mi'; Name: 'cp1255'; Id: eidCP1255),
+    (Sub: 'mi'; Name: 'cp1256'; Id: eidCP1256),
+    (Sub: 'as'; Name: 'cp874'; Id: eidCP874),
+    (Sub: 'as'; Name: 'cp932'; Id: eidCP932),
+    (Sub: 'as'; Name: 'cp936'; Id: eidCP936),
+    (Sub: 'as'; Name: 'cp949'; Id: eidCP949),
+    (Sub: 'as'; Name: 'cp950'; Id: eidCP950),
+    (Sub: 'as'; Name: 'cp1258'; Id: eidCP1258)
   );
 
 
 implementation
 
+(*
 function SConvertAnsiToUtf8(const SA: string): string;
 begin
   {$ifdef windows}
@@ -90,6 +91,7 @@ begin
   Result:= UTF8ToCP1252(SA);
   {$endif}
 end;
+*)
 
 function SCodepageToUTF8(const AStr: string; AEnc: TEncConvId): string;
 begin

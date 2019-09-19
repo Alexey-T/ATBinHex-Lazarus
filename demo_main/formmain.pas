@@ -7,6 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, Spin, ComCtrls,
+  EncConv,
   ATBinHex,
   ATStreamSearch,
   math;
@@ -154,7 +155,7 @@ begin
     NCharSize:= 1;
 
   srch.Stream:= fs;
-  if not srch.FindFirst(S, 0, '', NCharSize, []) then
+  if not srch.FindFirst(S, 0, eidCP1252, NCharSize, []) then
     ShowMessage('Not found')
   else
     V.SetSelection(srch.FoundStart, srch.FoundLength, true);
@@ -185,7 +186,7 @@ end;
 
 procedure TfmMain.ViewerOptionsChange(Sender: TObject);
 begin
-  StatusBar1.Panels[1].Text:= V.TextEncoding;
+  StatusBar1.Panels[1].Text:= cEncConvNames[V.TextEncoding];
 end;
 
 procedure TfmMain.ViewerScroll(Sender: TObject);

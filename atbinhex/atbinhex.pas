@@ -406,7 +406,7 @@ type
     function GetTextPopupCaption(AIndex: TATPopupCommand): AnsiString;
     procedure SetTextPopupCaption(AIndex: TATPopupCommand; const AValue: AnsiString);
     procedure SetTabSize(AValue: Integer);
-    procedure DoAddEncodingItem(AMenu: TMenuItem; Sub, SName: string);
+    procedure DoAddEncodingItem(AMenu: TMenuItem; Sub, SName: string; AEncId: TEncConvId);
 
     procedure InitURLs;
     procedure FindURLs(ABufSize: DWORD);
@@ -4674,8 +4674,10 @@ begin
 end;
 
 //--------------------------------------------------------
+{
 const
   cUnicodeFormatList: array[Boolean] of TATUnicodeFormat = (vbUnicodeFmtLE, vbUnicodeFmtBE);
+}
 
 procedure TATBinHex.SetFileUnicodeFmt(AValue: TATUnicodeFormat);
 begin
@@ -4688,7 +4690,7 @@ procedure TATBinHex.EncodingMenuItemClick(Sender: TObject);
 begin
   if Sender is TMenuItem then
   begin
-    TextEncoding := EncConvFindEncodingByName((Sender as TMenuItem).Caption);
+    TextEncoding := TEncConvId((Sender as TMenuItem).Tag);
     DoOptionsChange;
   end;
 end;
@@ -5207,7 +5209,7 @@ begin
 end;
 
 
-procedure TATBinHex.DoAddEncodingItem(AMenu: TMenuItem; Sub, SName: string);
+procedure TATBinHex.DoAddEncodingItem(AMenu: TMenuItem; Sub, SName: string; AEncId: TEncConvId);
 var
   mi, miSub: TMenuItem;
   n: integer;
@@ -5233,6 +5235,7 @@ begin
   if miSub=nil then miSub:= AMenu;
   mi:= TMenuItem.Create(Self);
   mi.Caption:= SName;
+  mi.Tag:= Ord(AEncId);
   mi.OnClick:= EncodingMenuItemClick;
 
   miSub.Add(mi);
@@ -5245,7 +5248,11 @@ begin
   AMenu.Clear;
   for i:= Low(AppEncodings) to High(AppEncodings) do
   begin
-    DoAddEncodingItem(AMenu, AppEncodings[i].Sub, AppEncodings[i].Name);
+    DoAddEncodingItem(AMenu,
+      AppEncodings[i].Sub,
+      AppEncodings[i].Name,
+      AppEncodings[i].Id
+      );
   end;
 end;
 
