@@ -16,7 +16,7 @@ implementation
 { Registration }
 procedure Register;
 begin
-  RegisterComponents('Misc', [TATBinHex]);
+  RegisterComponents('AT Controls', [TATBinHex]);
 end;
 
 end.
