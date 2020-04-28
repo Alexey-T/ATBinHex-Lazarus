@@ -2503,6 +2503,10 @@ end;
 
 procedure TATBinHex.Paint;
 begin
+  //handle=0 paints on Windows desktop
+  if not HandleAllocated then
+    exit;
+
   Canvas.Draw(0, 0, FBitmap);
   DrawNiceScroll;
 end;
