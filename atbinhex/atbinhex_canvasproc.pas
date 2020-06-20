@@ -1,7 +1,13 @@
-unit atbinhex_canvasproc;
+{***********************************}
+{                                   }
+{  ATBinHex Component               }
+{  Copyright (C) Alexey Torgashin   }
+{  http://uvviewsoft.com            }
+{                                   }
+{***********************************}
+unit ATBinHex_CanvasProc;
 
 {$mode delphi}
-//{$define win_fast} //use Windows api
 
 interface
 
@@ -20,7 +26,7 @@ procedure CanvasInvertRect(C: TCanvas; const R: TRect; AColor: TColor);
 implementation
 
 uses
-  {$ifdef win_fast}
+  {$ifdef windows}
   Windows,
   {$endif}
   LCLIntf;
@@ -68,6 +74,9 @@ var
 begin
   if S='' then Exit;
 
+  DxPtr:= nil;
+
+  {
   if not StringNeedsDxOffsets(S) then
     DxPtr:= nil
   else
@@ -89,8 +98,9 @@ begin
 
     DxPtr:= @Dx[0];
   end;
+  }
 
-  {$ifdef win_fast}
+  {$ifdef windows}
   Windows.ExtTextOutW(C.Handle, PosX, PosY, 0, nil, PWideChar(S), Length(S), DxPtr);
   {$else}
   Buf:= UTF8Encode(S);
@@ -133,7 +143,7 @@ begin
 end;
 *)
 
-{$ifdef win_fast}
+{$ifdef windows}
 procedure CanvasInvertRect(C: TCanvas; const R: TRect; AColor: TColor);
 begin
   Windows.InvertRect(C.Handle, R);
