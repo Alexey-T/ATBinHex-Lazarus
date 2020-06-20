@@ -18,8 +18,6 @@ uses
 procedure CanvasTextOut(C: TCanvas; PosX, PosY: integer; const S: UnicodeString; ATabSize: integer; ACharSize: TPoint);
 function CanvasTextSpaces(const S: atString; ATabSize: integer): real;
 function CanvasTextWidth(C: TCanvas; const S: atString; ATabSize: integer; ACharSize: TPoint): integer;
-
-function CanvasFontSizes(C: TCanvas): TSize;
 procedure CanvasInvertRect(C: TCanvas; const R: TRect; AColor: TColor);
 
 
@@ -30,11 +28,6 @@ uses
   Windows,
   {$endif}
   LCLIntf;
-
-function CanvasFontSizes(C: TCanvas): TSize;
-begin
-  Result:= C.TextExtent('M');
-end;
 
 function CanvasTextSpaces(const S: atString; ATabSize: integer): real;
 var
