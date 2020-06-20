@@ -1003,7 +1003,7 @@ function StringExtent(
   out AExtent: TATStringExtent;
   const AOptions: TATBinHexOutputOptions): Boolean;
 var
-  List: array of Real;
+  List: array of integer;
   i: Integer;
 begin
   Result:= true;
@@ -1014,7 +1014,7 @@ begin
   SCalcCharOffsets(AStr, List, AOptions.TabSize);
 
   for i:= 0 to Length(List)-1 do
-    AExtent[i+1]:= Trunc(List[i]*AOptions.TextSize.X);
+    AExtent[i+1]:= List[i]*AOptions.TextSize.X div 100;
 end;
 
 function IsSeparator(ch: WideChar): Boolean;

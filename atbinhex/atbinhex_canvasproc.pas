@@ -16,7 +16,7 @@ uses
   atbinhex_stringproc;
 
 procedure CanvasTextOut(C: TCanvas; PosX, PosY: integer; const S: UnicodeString; ATabSize: integer; ACharSize: TPoint);
-function CanvasTextSpaces(const S: atString; ATabSize: integer): real;
+function CanvasTextSpaces(const S: atString; ATabSize: integer): integer;
 function CanvasTextWidth(C: TCanvas; const S: atString; ATabSize: integer; ACharSize: TPoint): integer;
 procedure CanvasInvertRect(C: TCanvas; const R: TRect; AColor: TColor);
 
@@ -29,9 +29,9 @@ uses
   {$endif}
   LCLIntf;
 
-function CanvasTextSpaces(const S: atString; ATabSize: integer): real;
+function CanvasTextSpaces(const S: atString; ATabSize: integer): integer;
 var
-  List: array of real;
+  List: array of integer;
 begin
   Result:= 0;
   if S='' then Exit;
@@ -42,7 +42,7 @@ end;
 
 function CanvasTextWidth(C: TCanvas; const S: atString; ATabSize: integer; ACharSize: TPoint): integer;
 begin
-  Result:= Trunc(CanvasTextSpaces(S, ATabSize)*ACharSize.X);
+  Result:= CanvasTextSpaces(S, ATabSize)*ACharSize.X;
 end;
 
 function StringNeedsDxOffsets(const S: UnicodeString): boolean;
@@ -58,9 +58,11 @@ end;
 procedure CanvasTextOut(C: TCanvas; PosX, PosY: integer;
   const S: UnicodeString; ATabSize: integer; ACharSize: TPoint);
 var
-  ListReal: array of real;
+  {
+  ListReal: array of integer;
   ListInt: array of Longint;
   Dx: array of Longint;
+  }
   DxPtr: pointer;
   Buf: string;
   i: integer;
@@ -81,7 +83,7 @@ begin
     SCalcCharOffsets(S, ListReal, ATabSize);
 
     for i:= 0 to High(ListReal) do
-      ListInt[i]:= Trunc(ListReal[i]*ACharSize.X);
+      ListInt[i]:= ListReal[i]*ACharSize.X div 100;
 
     for i:= 0 to High(ListReal) do
       if i=0 then

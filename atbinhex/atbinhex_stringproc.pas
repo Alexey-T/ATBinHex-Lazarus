@@ -1,4 +1,11 @@
-unit atbinhex_stringproc;
+{***********************************}
+{                                   }
+{  ATBinHex Component               }
+{  Copyright (C) Alexey Torgashin   }
+{  http://uvviewsoft.com            }
+{                                   }
+{***********************************}
+unit ATBinHex_StringProc;
 
 {$mode delphi}
 
@@ -13,7 +20,7 @@ type
 
 const
   cMaxTabPositionToExpand = 1024;
-  cCharScaleFullwidth = 1.7; //width of CJK chars
+  cCharScaleFullwidth = 180; //width of CJK chars
 
 function IsWordChar(ch: atChar): boolean;
 function IsEolCode(N: Word): boolean;
@@ -23,7 +30,7 @@ function BoolToPlusMinusOne(b: boolean): integer;
 function SSwapEndian(const S: UnicodeString): UnicodeString;
 function SGetIndentSize(const S: atString; ATabSize: integer): integer;
 
-procedure SCalcCharOffsets(const AStr: atString; var AList: array of real; ATabSize: integer);
+procedure SCalcCharOffsets(const AStr: atString; var AList: array of integer; ATabSize: integer);
 function SExpandTabulations(const S: atString; ATabSize: integer): atString;
 function SFindWordWrapPosition(const S: atString; AColumns, ATabSize: integer): integer;
 function SFindClickedPosition(const Str: atString;
@@ -55,24 +62,26 @@ begin
   Result:= (ch=' ') or (ch=#9);
 end;
 
-procedure DoDebugOffsets(const List: array of real);
+procedure DoDebugOffsets(const List: array of integer);
 var
   i: integer;
   s: string;
 begin
   s:= '';
   for i:= Low(List) to High(List) do
-    s:= s+FloatToStr(List[i])+' ';
+    s:= s+IntToStr(List[i])+' ';
   showmessage('Offsets'#13+s);
 end;
 
 function SFindWordWrapPosition(const S: atString; AColumns, ATabSize: integer): integer;
 var
   N, NAvg: integer;
-  List: array of real;
+  List: array of integer;
 begin
   if S='' then
     begin Result:= 0; Exit end;
+
+  AColumns*= 100;
 
   SetLength(List, Length(S));
   SCalcCharOffsets(S, List, ATabSize);
@@ -84,7 +93,7 @@ begin
   end;
 
   N:= Length(S)-1;
-  while (N>1) and (List[N]>AColumns+1) do Dec(N);
+  while (N>1) and (List[N]>AColumns+100) do Dec(N);
   NAvg:= N;
   while (N>1) and IsWordChar(S[N]) and IsWordChar(S[N+1]) do Dec(N);
 
@@ -210,13 +219,14 @@ begin
 end;
 
 
-procedure SCalcCharOffsets(const AStr: atString; var AList: array of real; ATabSize: integer);
+procedure SCalcCharOffsets(const AStr: atString; var AList: array of integer;
+  ATabSize: integer);
 const
-  cScaleTest = 1.9; //debug, for test code, commented
+  cScaleTest = 190; //debug, for test code, commented
 var
   S: atString;
   NOffset, NTabSize, NListIndex, i: integer;
-  Scale: real;
+  Scale: integer;
 begin
   if Length(AList)<>Length(AStr) then
     raise Exception.Create('bad list parameter in CalcCharOffsets');
@@ -233,12 +243,12 @@ begin
     if IsCharFullWidth(S[i]) then
       Scale:= cCharScaleFullwidth
     else
-      Scale:= 1.0;
+      Scale:= 100;
 
     ////debug
     {
     if IsSpaceChar(S[i]) then
-      Scale:= 1
+      Scale:= 100
     else
       Scale:= cTestScale;
       }
@@ -274,7 +284,7 @@ function SFindClickedPosition(const Str: atString;
   APixelsFromLeft, ACharSize, ATabSize: integer;
   AAllowVirtualPos: boolean): integer;
 var
-  ListReal: array of real;
+  ListReal: array of integer;
   ListEnds, ListMid: array of integer;
   i: integer;
 begin
@@ -294,7 +304,7 @@ begin
 
   //positions of each char end
   for i:= 0 to High(ListEnds) do
-    ListEnds[i]:= Trunc(ListReal[i]*ACharSize);
+    ListEnds[i]:= ListReal[i]*ACharSize div 100;
 
   //positions of each char middle
   for i:= 0 to High(ListEnds) do
