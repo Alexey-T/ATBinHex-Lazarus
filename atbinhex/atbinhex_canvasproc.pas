@@ -46,36 +46,55 @@ begin
   Result:= Trunc(CanvasTextSpaces(S, ATabSize)*ACharSize.X);
 end;
 
+function StringNeedsDxOffsets(const S: UnicodeString): boolean;
+var
+  i: integer;
+begin
+  for i:= 1 to Length(S) do
+    if Ord(S[i])>$FF then
+      exit(true);
+  Result:= false;
+end;
+
 procedure CanvasTextOut(C: TCanvas; PosX, PosY: integer;
   const S: UnicodeString; ATabSize: integer; ACharSize: TPoint);
 var
   ListReal: array of real;
   ListInt: array of Longint;
   Dx: array of Longint;
-  i: integer;
+  DxPtr: pointer;
   Buf: string;
+  i: integer;
 begin
   if S='' then Exit;
-  SetLength(ListReal, Length(S));
-  SetLength(ListInt, Length(S));
-  SetLength(Dx, Length(S));
 
-  SCalcCharOffsets(S, ListReal, ATabSize);
+  if not StringNeedsDxOffsets(S) then
+    DxPtr:= nil
+  else
+  begin
+    SetLength(ListReal, Length(S));
+    SetLength(ListInt, Length(S));
+    SetLength(Dx, Length(S));
 
-  for i:= 0 to High(ListReal) do
-    ListInt[i]:= Trunc(ListReal[i]*ACharSize.X);
+    SCalcCharOffsets(S, ListReal, ATabSize);
 
-  for i:= 0 to High(ListReal) do
-    if i=0 then
-      Dx[i]:= ListInt[i]
-    else
-      Dx[i]:= ListInt[i]-ListInt[i-1];
+    for i:= 0 to High(ListReal) do
+      ListInt[i]:= Trunc(ListReal[i]*ACharSize.X);
+
+    for i:= 0 to High(ListReal) do
+      if i=0 then
+        Dx[i]:= ListInt[i]
+      else
+        Dx[i]:= ListInt[i]-ListInt[i-1];
+
+    DxPtr:= @Dx[0];
+  end;
 
   {$ifdef win_fast}
-  Windows.ExtTextOutW(C.Handle, PosX, PosY, 0, nil, PWideChar(S), Length(S), @Dx[0]);
+  Windows.ExtTextOutW(C.Handle, PosX, PosY, 0, nil, PWideChar(S), Length(S), DxPtr);
   {$else}
   Buf:= UTF8Encode(S);
-  ExtTextOut(C.Handle, PosX, PosY, 0, nil, PChar(Buf), Length(Buf), @Dx[0]);
+  ExtTextOut(C.Handle, PosX, PosY, 0, nil, PChar(Buf), Length(Buf), DxPtr);
   {$endif}
 end;
 
