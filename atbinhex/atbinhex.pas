@@ -1436,8 +1436,8 @@ begin
   FBitmap := TBitmap.Create;
   with FBitmap do
   begin
-    Width := Self.Width;
-    Height := Self.Height;
+    Width := 500;
+    Height := 300;
   end;
 
   FTimerAutoScroll := TTimer.Create(Self);
@@ -1599,6 +1599,8 @@ procedure TATBinHex.DrawEmptyTo(
   APageWidth,
   APageHeight: Integer;
   APrintMode: Boolean);
+const
+  cSizeStep = 50;
 var
   AColorBack: TColor;
 begin
@@ -1611,8 +1613,10 @@ begin
 
   with ABitmap do
   begin
-    Width := APageWidth;
-    Height := APageHeight;
+    SetSize(
+      Max(Width, (APageWidth div cSizeStep + 1) * cSizeStep),
+      Max(Height, (APageHeight div cSizeStep + 1) * cSizeStep)
+      );
     Canvas.Brush.Color := AColorBack;
     Canvas.FillRect(Rect(0, 0, Width, Height));
     DrawGutterTo(ABitmap);
