@@ -314,6 +314,7 @@ type
     function PosBefore(const APos: Int64; ALineType: TATLineType; ADir: TATDirection): Int64;
     procedure ReadUnicodeFmt;
     procedure HideScrollbars;
+    procedure UpdateBitmapSize(ABitmap: TBitmap);
     procedure UpdateMenuEncodings(AMenu: TMenuItem);
     procedure UpdateVertScrollbar;
     procedure UpdateHorzScrollbar;
@@ -493,7 +494,7 @@ type
     procedure DoClickURL(const AMousePos: Int64);
 
   protected
-    procedure DoOnResize; override;
+    procedure Resize; override;
     procedure DblClick; override;
     procedure Paint; override;
     procedure WMGetDlgCode(var Message: TMessage); message WM_GETDLGCODE;
@@ -1315,9 +1316,11 @@ var
 begin
   inherited Create(AOwner);
 
+  FBitmap := TBitmap.Create;
+
   //Init inherited properties
   Caption := '';
-  Width := 200;
+  Width := 250;
   Height := 150;
   BorderStyle := bsSingle;
   Color := clWindow;
@@ -1431,13 +1434,6 @@ begin
     Name := 'Courier New';
     Size := 9;
     Color := clBlack;
-  end;
-
-  FBitmap := TBitmap.Create;
-  with FBitmap do
-  begin
-    Width := 500;
-    Height := 300;
   end;
 
   FTimerAutoScroll := TTimer.Create(Self);
@@ -1594,13 +1590,22 @@ begin
     end;
 end;
 
+procedure TATBinHex.UpdateBitmapSize(ABitmap: TBitmap);
+const
+  cSizeStep = 50;
+begin
+  with ABitmap do
+    SetSize(
+      Max(Width, (ClientWidth div cSizeStep + 1) * cSizeStep),
+      Max(Height, (ClientHeight div cSizeStep + 1) * cSizeStep)
+      );
+end;
+
 procedure TATBinHex.DrawEmptyTo(
   ABitmap: TBitmap;
   APageWidth,
   APageHeight: Integer;
   APrintMode: Boolean);
-const
-  cSizeStep = 50;
 var
   AColorBack: TColor;
 begin
@@ -1613,10 +1618,6 @@ begin
 
   with ABitmap do
   begin
-    SetSize(
-      Max(Width, (APageWidth div cSizeStep + 1) * cSizeStep),
-      Max(Height, (APageHeight div cSizeStep + 1) * cSizeStep)
-      );
     Canvas.Brush.Color := AColorBack;
     Canvas.FillRect(Rect(0, 0, Width, Height));
     DrawGutterTo(ABitmap);
@@ -4984,8 +4985,10 @@ begin
   end;
 end;
 
-procedure TATBinHex.DoOnResize;
+procedure TATBinHex.Resize;
 begin
+  UpdateBitmapSize(FBitmap);
+
   //Notepad feature: when control increases height and
   //file was at the end, then file is scrolled again to the end.
   if cResizeFollowTail then
@@ -4994,8 +4997,10 @@ begin
 
   //Update last height
   FClientHeight := ClientHeight;
+
   Redraw(False);
-  inherited DoOnResize;
+
+  inherited;
 end;
 
 
