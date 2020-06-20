@@ -87,6 +87,7 @@ type
     ShowCR,                //Current line has CR (not wrapped)
     IsFontFixed: Boolean;  //Current font has fixed width
     TabSize: Integer;      //"Tab size" value
+    TextSize: TPoint;
   end;
 
   TATBinHexDrawLine = procedure(
@@ -279,6 +280,7 @@ type
     FMouseNiceScroll: Boolean;
     FMouseNiceScrollPos: TPoint;
     FClientHeight: Integer;
+    FTextSize: TPoint;
 
     FOnSelectionChange: TNotifyEvent;
     FOnOptionsChange: TNotifyEvent;
@@ -667,8 +669,6 @@ type
     property OnClickURL: TATBinHexClickURL read FOnClickURL write FOnClickURL;
   end;
 
-function TextIncreaseFontSize(AFont: TFont; ACanvas: TCanvas; AIncrement: Boolean): Boolean;
-
 implementation
 
 uses
@@ -950,15 +950,6 @@ begin
 end;
 {$endif}
 
-function CanvasCharSize(C: TCanvas): TPoint;
-var
-  Size: TSize;
-begin
-  Size:= C.TextExtent('M');
-  Result.X:= Size.cx;
-  Result.Y:= Size.cy;
-end;
-
 procedure StringOut(
   ACanvas: TCanvas;
   AX, AY: Integer;
@@ -980,7 +971,7 @@ begin
   {$endif}
 
   S:= SConvertForOut(AStr, AOptions);
-  CanvasTextOut(ACanvas, AX, AY, S, AOptions.TabSize, CanvasCharSize(ACanvas));
+  CanvasTextOut(ACanvas, AX, AY, S, AOptions.TabSize, AOptions.TextSize);
 end;
 
 function StringWidth(
@@ -991,7 +982,7 @@ var
   S: UnicodeString;
 begin
   S:= SConvertForOut(AStr, AOptions);
-  Result := CanvasTextWidth(ACanvas, S, AOptions.TabSize, CanvasCharSize(ACanvas));
+  Result := CanvasTextWidth(ACanvas, S, AOptions.TabSize, AOptions.TextSize);
 end;
 
 procedure DebugExtent(const AStr: UnicodeString; const A: TATStringExtent);
@@ -1012,7 +1003,6 @@ function StringExtent(
   const AOptions: TATBinHexOutputOptions): Boolean;
 var
   List: array of Real;
-  CharSize: TPoint;
   i: Integer;
 begin
   Result:= true;
@@ -1022,9 +1012,8 @@ begin
   SetLength(List, Length(AStr));
   SCalcCharOffsets(AStr, List, AOptions.TabSize);
 
-  CharSize:= CanvasCharSize(ACanvas);
   for i:= 0 to Length(List)-1 do
-    AExtent[i+1]:= Trunc(List[i]*CharSize.X);
+    AExtent[i+1]:= Trunc(List[i]*AOptions.TextSize.X);
 end;
 
 function IsSeparator(ch: WideChar): Boolean;
@@ -1044,22 +1033,6 @@ begin
   Result := AMaxLen;
 end;
 
-procedure FontReadProperties(
-  ACanvas: TCanvas;
-  var AHeight: Integer;
-  var AFirstChar: AnsiChar;
-  var ADigitWidth: Integer;
-  var AMonospaced: Boolean);
-var
-  CharSize: TPoint;
-begin
-  CharSize:= CanvasCharSize(ACanvas);
-  AHeight := CharSize.Y;
-  AFirstChar := ' ';
-  ADigitWidth := CharSize.X;
-  AMonospaced := true;
-end;
-
 function BoolToSign(AValue: Boolean): Integer;
 begin
   if AValue then
@@ -1068,46 +1041,18 @@ begin
     Result := -1;
 end;
 
-function TextIncreaseFontSize(
-  AFont: TFont;
-  ACanvas: TCanvas;
-  AIncrement: Boolean): Boolean;
-var
-  C: TCanvas;
-  CHeight: Integer;
+procedure TextIncreaseFontSize(C: TCanvas; AIncrement: Boolean);
 begin
-  Result := False;
-
-  C := TCanvas.Create;
-  try
-    C.Handle := ACanvas.Handle;
-    C.Font.Assign(AFont);
-
-    CHeight := CanvasCharSize(C).Y;
-
-    repeat
-      if AIncrement then
-      begin
-        if C.Font.Size >= cMaxFontSize then Break;
-      end
-      else
-      begin
-        if C.Font.Size <= 1 then Break;
-      end;
-
-      C.Font.Size := C.Font.Size + BoolToSign(AIncrement);
-
-      if CanvasCharSize(C).Y <> CHeight then
-      begin
-        AFont.Size := C.Font.Size;
-        Result := True;
-        Break;
-      end;
-    until False;
-
-  finally
-    FreeAndNil(C);
+  if AIncrement then
+  begin
+    if C.Font.Size >= cMaxFontSize then exit;
+  end
+  else
+  begin
+    if C.Font.Size <= 6 then exit;
   end;
+
+  C.Font.Size := C.Font.Size + BoolToSign(AIncrement);
 end;
 
 
@@ -1233,7 +1178,7 @@ begin
     end;
 
   //Get line number into Num
-  YH := CanvasCharSize(ACanvas).Y;
+  YH := AOptions.TextSize.Y;
   Num := 0;
   for i := 1 to FNum do
     with FArray[i] do
@@ -1683,6 +1628,7 @@ begin
   Result.ShowCR := AShowCR;
   Result.IsFontFixed := FFontMonospaced;
   Result.TabSize := FTabSize;
+  Result.TextSize := FTextSize;
 end;
 
 procedure TATBinHex.DrawTo(
@@ -1834,6 +1780,7 @@ var
   i, j: Integer;
   WithCR, WithDot: Boolean;
   PosOk, ADone: Boolean;
+  Size: TSize;
 begin
   PosOk :=
     (FBufferPos >= 0) and
@@ -1887,11 +1834,14 @@ begin
     Canvas.Font := ActiveFont;
     Canvas.Font.Color := AColorText;
 
-    FontReadProperties(Canvas,
-      FFontHeight,
-      FFontFirstChar,
-      FFontWidthDigits,
-      FFontMonospaced);
+    Size:= Canvas.TextExtent('N');
+    FTextSize.X:= Size.cx;
+    FTextSize.Y:= Size.cy;
+
+    FFontHeight := FTextSize.Y;
+    FFontWidthDigits := FTextSize.X;
+    FFontFirstChar := ' ';
+    FFontMonospaced := true;
     Inc(FFontHeight, FLineSp);
 
     if FTextWidthFit then SetTextWidthTo(ColsNumFit(ABitmap), ATextWidth);
@@ -1973,7 +1923,7 @@ begin
                     Canvas.Font.Assign(FFontGutter);
                     Canvas.TextOut(
                       (FTextGutterWidth - Canvas.TextWidth(IntToStr(ALineNum)) - cGutterIndent),
-                      (FFontHeight - CanvasCharSize(Canvas).Y) div 2 + APosTextY,
+                      (FFontHeight - FTextSize.Y) div 2 + APosTextY,
                       IntToStr(ALineNum));
                     Canvas.Font.Assign(ActiveFont);
                   end
@@ -2502,6 +2452,8 @@ begin
 end;
 
 procedure TATBinHex.Paint;
+var
+  Size: TSize;
 begin
   //handle=0 paints on Windows desktop
   if not HandleAllocated then
@@ -4508,12 +4460,9 @@ end;
 
 function TATBinHex.IncreaseFontSize(AIncrement: Boolean): Boolean;
 begin
-  Result := TextIncreaseFontSize(ActiveFont, Canvas, AIncrement);
-  if Result then
-  begin
-    Redraw;
-    DoOptionsChange;
-  end;
+  TextIncreaseFontSize(Canvas, AIncrement);
+  Redraw;
+  DoOptionsChange;
 end;
 
 {$ifdef SEARCH}
