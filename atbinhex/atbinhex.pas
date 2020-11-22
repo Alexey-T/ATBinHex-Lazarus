@@ -2381,7 +2381,7 @@ begin
     I64LimitMin(APage, 1);
     if APage >= AMax then
       APage := AMax + 1;
-    I64LimitMax(APage, MAXSHORT);
+    //I64LimitMax(APage, MAXSHORT); //win32 delphi rudiment
 
     //Disable variable pagesize in Text mode,
     //otherwise pagesize will be small and unusable:
@@ -2759,7 +2759,7 @@ begin
   Result := FFileSize div ACols * ACols;
   if Result = FFileSize then
     Dec(Result, ACols);
-  Dec(Result, (LinesNum - 1) * ACols);
+  //Dec(Result, (LinesNum - 1) * ACols); //removed to fix https://github.com/Alexey-T/CudaText/issues/2960
   I64LimitMin(Result, 0);
 end;
 
