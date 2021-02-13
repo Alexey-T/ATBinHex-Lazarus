@@ -314,7 +314,6 @@ type
     function PosBefore(const APos: Int64; ALineType: TATLineType; ADir: TATDirection): Int64;
     procedure ReadUnicodeFmt;
     procedure HideScrollbars;
-    procedure UpdateBitmapSize(ABitmap: TBitmap);
     procedure UpdateMenuEncodings(AMenu: TMenuItem);
     procedure UpdateVertScrollbar;
     procedure UpdateHorzScrollbar;
@@ -799,6 +798,28 @@ const
   crNiceScrollLeft  = TCursor(-33);
   crNiceScrollRight = TCursor(-34);
 
+
+procedure BitmapResize(b: TBitmap; W, H: integer);
+begin
+  {$ifdef fpc}
+  b.SetSize(W, H);
+  b.FreeImage; //recommended, otherwise black bitmap on big size
+  {$else}
+  b.Width:= W;
+  b.Height:= H;
+  {$endif}
+end;
+
+procedure BitmapResizeBySteps(b: TBitmap; W, H, StepW, StepH: integer);
+var
+  SizeX, SizeY: integer;
+begin
+  SizeX:= (W div StepW + 1)*StepW;
+  SizeY:= (H div StepH + 1)*StepH;
+  if (SizeX>b.Width) or
+    (SizeY>b.Height) then
+    BitmapResize(b, SizeX, SizeY);
+end;
 
 { Debug form }
 
@@ -1588,17 +1609,6 @@ begin
       Canvas.Brush.Color := FTextColorGutter;
       Canvas.FillRect(Rect(0, 0, FTextGutterWidth, Height));
     end;
-end;
-
-procedure TATBinHex.UpdateBitmapSize(ABitmap: TBitmap);
-const
-  cSizeStep = 50;
-begin
-  with ABitmap do
-    SetSize(
-      Max(Width, (ClientWidth div cSizeStep + 1) * cSizeStep),
-      Max(Height, (ClientHeight div cSizeStep + 1) * cSizeStep)
-      );
 end;
 
 procedure TATBinHex.DrawEmptyTo(
@@ -4987,16 +4997,16 @@ end;
 
 procedure TATBinHex.Resize;
 begin
-  UpdateBitmapSize(FBitmap);
+  BitmapResizeBySteps(FBitmap, Width, Height, 50, 50);
 
   //Notepad feature: when control increases height and
   //file was at the end, then file is scrolled again to the end.
   if cResizeFollowTail then
-    if (ClientHeight > FClientHeight) and FViewAtEnd then
+    if (Height > FClientHeight) and FViewAtEnd then
       PosEnd;
 
   //Update last height
-  FClientHeight := ClientHeight;
+  FClientHeight := Height;
 
   Redraw(False);
 
