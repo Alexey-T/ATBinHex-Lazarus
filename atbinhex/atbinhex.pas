@@ -2354,13 +2354,11 @@ end;
 procedure TATBinHex.UpdateVertScrollbar;
 var
   AHide: Boolean;
-  APageSize, ACols, ALines,
+  APageSize,
   AMax, APos, APage: Int64;
   si: TScrollInfo;
 begin
   //Calculate "page size":
-  ACols := ColsNum;
-  ALines := LinesNum;
   APageSize := GetVertScroll_PageSize;
 
   //debug
@@ -2467,8 +2465,6 @@ begin
 end;
 
 procedure TATBinHex.Paint;
-var
-  Size: TSize;
 begin
   //handle=0 paints on Windows desktop
   if not HandleAllocated then
