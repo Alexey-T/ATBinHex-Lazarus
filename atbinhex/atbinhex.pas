@@ -769,7 +769,7 @@ const
   cMaxFontSize = 72;              //User: Maximal font size for IncreaseFontSize method
   cMaxSearchIndent = 80;          //User: Maximal vert/horz search indent (avg. chars)
   cEncMenuOffsetY = 20;           //User: Offset of encodings menu above control center (px)
-  cResizeFollowTail = True;       //User: Notepad feature: when control increases height, it follows file tail
+  cResizeFollowTail = False;      //User: Notepad feature: when control increases height, it follows file tail
 
                                   //Draw: Colors:
   cColorDisabled = clGrayText;    //  text color for disabled state
