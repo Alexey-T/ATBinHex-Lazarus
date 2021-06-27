@@ -226,6 +226,7 @@ type
     FHViewWidth: Integer; //Horizontal width of text on screen, after redraw
     FPrevViewPos: Int64;
     FPrevHViewPos: Integer;
+    FResizeFollowTail: Boolean; //Notepad feature: when control increases height, it follows file tail
 
     FSelStart: Int64;
     FSelLength: Int64;
@@ -615,6 +616,7 @@ type
     property FontFooter: TFont read FFontFooter write SetFontFooter;
     property FontGutter: TFont read FFontGutter write SetFontGutter;
     property Mode: TATBinHexMode read FMode write SetMode default vbmodeText;
+    property ResizeFollowTail: boolean read FResizeFollowTail write FResizeFollowTail default True;
     property TextWidth: Integer read FTextWidth write SetTextWidth default 80;
     property TextWidthHex: Integer read FTextWidthHex write SetTextWidthHex default 16;
     property TextWidthUHex: Integer read FTextWidthUHex write SetTextWidthUHex default 8;
@@ -769,7 +771,6 @@ const
   cMaxFontSize = 72;              //User: Maximal font size for IncreaseFontSize method
   cMaxSearchIndent = 80;          //User: Maximal vert/horz search indent (avg. chars)
   cEncMenuOffsetY = 20;           //User: Offset of encodings menu above control center (px)
-  cResizeFollowTail = False;      //User: Notepad feature: when control increases height, it follows file tail
 
                                   //Draw: Colors:
   cColorDisabled = clGrayText;    //  text color for disabled state
@@ -1390,6 +1391,7 @@ begin
   FPopupCommands := cATBinHexCommandSet;
   FEnabled2 := True;
   FEnableSel := True;
+  FResizeFollowTail := True;
 
   FAutoReload := False;
   FAutoReloadBeep := False;
@@ -4997,7 +4999,7 @@ begin
 
   //Notepad feature: when control increases height and
   //file was at the end, then file is scrolled again to the end.
-  if cResizeFollowTail then
+  if FResizeFollowTail then
     if (Height > FClientHeight) and FViewAtEnd then
       PosEnd;
 
