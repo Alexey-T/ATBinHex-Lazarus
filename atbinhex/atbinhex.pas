@@ -3101,7 +3101,10 @@ begin
 end;
 
 procedure TATBinHex.SetMode(AMode: TATBinHexMode);
+var
+  FPrevPos: Int64;
 begin
+  FPrevPos := PosOffset;
   FMode := AMode;
   MouseNiceScroll := False;
 
@@ -3111,7 +3114,10 @@ begin
   end;
 
   if SourceAssigned then
+  begin
+    PosOffset := FPrevPos;
     Redraw;
+  end;
 end;
 
 procedure TATBinHex.SetTextEncoding(AValue: TEncConvId);
