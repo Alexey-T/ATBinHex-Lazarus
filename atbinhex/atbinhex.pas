@@ -525,7 +525,7 @@ type
     property SearchString: string read GetSearchString;
     {$endif}
 
-    function IncreaseFontSize(AIncrement: Boolean): Boolean;
+    procedure IncreaseFontSize(AIncrement: Boolean);
     procedure CopyToClipboard(AAsHex: Boolean = False);
     property SelStart: Int64 read FSelStart;
     property SelLength: Int64 read FSelLength;
@@ -4477,9 +4477,18 @@ begin
   SetTextWidthUHex(FTextWidthUHex);
 end;
 
-function TATBinHex.IncreaseFontSize(AIncrement: Boolean): Boolean;
+procedure TATBinHex.IncreaseFontSize(AIncrement: Boolean);
 begin
-  TextIncreaseFontSize(Canvas, AIncrement);
+  if AIncrement then
+  begin
+    Font.Size := Font.Size+1;
+  end
+  else
+  begin
+    if Font.Size>=6 then
+      Font.Size:= Font.Size-1;
+  end;
+
   Redraw;
   DoOptionsChange;
 end;
