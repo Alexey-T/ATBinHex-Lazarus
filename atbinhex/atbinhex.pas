@@ -117,6 +117,12 @@ const
   cFindGap = 30; //FindAll: offset below buffer position to find partial matches
   cFindMax = 1000; //FindAll: max matches
 
+  cMaskHighChars: Boolean = True; //render chars 0x7F... as '?';
+  //it's needed for Linux where some of these chars are rendered as 'rect with number'
+  //and this breaks selection-highlight horz position
+  cMaskHighFrom = $7F;
+  cMaskHighTo = $A0;
+
 type
   TATStringExtent = array[0 .. cMaxLength] of Integer;
   TATUrlArray = array[1 .. cMaxURLs] of record
@@ -920,6 +926,7 @@ var
   chTab,
   chCR: WideChar;
   TabOptions: TStringTabOptions;
+  i: integer;
 begin
   Result := S;
 
@@ -928,7 +935,14 @@ begin
   chCR := cCharNonPrintCR;
 
   if AOptions.ShowNonPrintable then
-    Result := StringReplace(Result, ' ', chSp, [rfReplaceAll]);
+    for i := 1 to Length(Result) do
+      if Result[i]=' ' then
+        Result[i] := chSp;
+
+  if cMaskHighChars then
+    for i := 1 to Length(Result) do
+      if (Ord(Result[i])>=cMaskHighFrom) and (Ord(Result[i])<=cMaskHighTo) then
+        Result[i] := '?';
 
   TabOptions.TabSize := AOptions.TabSize;
   TabOptions.TabPosition := 0;
