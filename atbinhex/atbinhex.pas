@@ -117,12 +117,6 @@ const
   cFindGap = 30; //FindAll: offset below buffer position to find partial matches
   cFindMax = 1000; //FindAll: max matches
 
-  cMaskHighChars: Boolean = True; //render chars 0x7F... as '?';
-  //it's needed for Linux where some of these chars are rendered as 'rect with number'
-  //and this breaks selection-highlight horz position
-  cMaskHighFrom = $7F;
-  cMaskHighTo = $A0;
-
 type
   TATStringExtent = array[0 .. cMaxLength] of Integer;
   TATUrlArray = array[1 .. cMaxURLs] of record
@@ -713,6 +707,12 @@ const
 { Visual constants: may be changed freely }
 
 const
+  cMaskHighChars = True; //render chars 0x7F... as '?';
+  cMaskHighFrom = $7F;
+  cMaskHighTo = $FF;
+  //it's needed for Linux where some of these chars are rendered as 'rect with number'
+  //and this breaks selection-highlight horz position
+
   cReloadWithLMBPressed = False;  //User: allow auto-reload when LMouseBtn pressed
                                   //User: Regex for URL and email
   cReProt = '[a-z]{3,8}';
