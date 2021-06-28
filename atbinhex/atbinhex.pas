@@ -83,8 +83,8 @@ type
   TATPopupCommands = set of TATPopupCommand;
 
   TATBinHexOutputOptions = record
-    ShowNonPrintable,      //"Show non-printable" mode is on
-    ShowCR,                //Current line has CR (not wrapped)
+    ShowNonPrintable: Boolean; //"Show non-printable" mode is on
+    ShowCR: Boolean;           //Current line has CR (not wrapped)
     IsFontFixed: Boolean;  //Current font has fixed width
     TabSize: Integer;      //"Tab size" value
     TextSize: TPoint;
@@ -707,11 +707,11 @@ const
 { Visual constants: may be changed freely }
 
 const
-  cMaskHighChars = True; //render chars 0x7F... as '?';
-  cMaskHighFrom = $7F;
-  cMaskHighTo = $FF;
+  //what char-range to render as '?' char;
   //it's needed for Linux where some of these chars are rendered as 'rect with number'
   //and this breaks selection-highlight horz position
+  cMaskHighFrom = $7F;
+  cMaskHighTo = $FF;
 
   cReloadWithLMBPressed = False;  //User: allow auto-reload when LMouseBtn pressed
                                   //User: Regex for URL and email
@@ -939,7 +939,7 @@ begin
       if Result[i]=' ' then
         Result[i] := chSp;
 
-  if cMaskHighChars then
+  if not AOptions.ShowNonPrintable then
     for i := 1 to Length(Result) do
       if (Ord(Result[i])>=cMaskHighFrom) and (Ord(Result[i])<=cMaskHighTo) then
         Result[i] := '?';
