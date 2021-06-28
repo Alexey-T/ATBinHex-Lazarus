@@ -1057,25 +1057,10 @@ begin
 end;
 
 function BoolToSign(AValue: Boolean): Integer;
+const
+  N: array[Boolean] of Integer = (-1, 1);
 begin
-  if AValue then
-    Result := 1
-  else
-    Result := -1;
-end;
-
-procedure TextIncreaseFontSize(C: TCanvas; AIncrement: Boolean);
-begin
-  if AIncrement then
-  begin
-    if C.Font.Size >= cMaxFontSize then exit;
-  end
-  else
-  begin
-    if C.Font.Size <= 6 then exit;
-  end;
-
-  C.Font.Size := C.Font.Size + BoolToSign(AIncrement);
+  Result := N[AValue];
 end;
 
 
@@ -4485,8 +4470,8 @@ begin
   end
   else
   begin
-    if Font.Size>=6 then
-      Font.Size:= Font.Size-1;
+    if Font.Size >= 6 then
+      Font.Size := Font.Size-1;
   end;
 
   Redraw;
