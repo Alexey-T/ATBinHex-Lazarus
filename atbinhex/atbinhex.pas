@@ -741,6 +741,7 @@ const
   cCharNonPrintTabOEM   = #$F9;   //  - (for OEM font)
   cCharNonPrintCR       = #$B6;   //  - char for CRs
   cCharNonPrintCROEM    = #$FE;   //  - (for OEM font)
+  cCharControlReplacement = '.';
 
   cDrawOffsetMinX = 2;            //Draw: Small offset (px) between text and left-top control corner
   cDrawOffsetMinY = 0;            //
@@ -942,7 +943,7 @@ begin
   if not AOptions.ShowNonPrintable then
     for i := 1 to Length(Result) do
       if (Ord(Result[i])>=cMaskHighFrom) and (Ord(Result[i])<=cMaskHighTo) then
-        Result[i] := '?';
+        Result[i] := cCharControlReplacement;
 
   TabOptions.TabSize := AOptions.TabSize;
   TabOptions.TabPosition := 0;
