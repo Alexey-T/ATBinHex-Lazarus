@@ -5202,7 +5202,8 @@ begin
   miSub:= nil;
   if Sub='eu' then Sub:= 'European' else
    if Sub='as' then Sub:= 'Asian' else
-    if Sub='mi' then Sub:= 'Misc';
+    if Sub='mi' then Sub:= 'Misc' else
+     if Sub='u' then Sub:= 'Unicode';
 
   if Sub<>'' then
   begin

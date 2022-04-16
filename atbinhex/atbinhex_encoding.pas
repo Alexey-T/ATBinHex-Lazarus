@@ -20,7 +20,8 @@ type
   end;
 
 const
-  AppEncodings: array[0..28] of TAppEncodingRecord = (
+  AppEncodings: array[0..29] of TAppEncodingRecord = (
+    (Sub: 'u'; Name: 'UTF-8'; Id: eidUTF8),
     (Sub: 'eu'; Name: 'cp1250'; Id: eidCP1250),
     (Sub: 'eu'; Name: 'cp1251'; Id: eidCP1251),
     (Sub: 'eu'; Name: 'cp1252'; Id: eidCP1252),
