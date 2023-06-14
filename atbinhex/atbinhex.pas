@@ -2331,6 +2331,7 @@ procedure TATBinHex.HideScrollbars;
 var
   si: TScrollInfo;
 begin
+  if Parent=nil then Exit; //prevent IDE exception when placing component in Lazarus
   FillChar(si, SizeOf(si), 0);
   with si do
   begin
