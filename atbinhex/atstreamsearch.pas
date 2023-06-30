@@ -22,8 +22,7 @@ uses
   TntClasses,
   {$ENDIF}
   atbinhex_encoding,
-  EncConv,
-  LazUTF8Classes;
+  EncConv;
 
 type
   TATStreamSearchOption = (
@@ -240,7 +239,7 @@ begin
       InitSavedOptions;
       FFileName := AFileName;
       FStreamOwner := True;
-      FStream := {$IFDEF TNT}TTntFileStream{$ELSE}TFileStreamUTF8{$ENDIF}.Create(
+      FStream := {$IFDEF TNT}TTntFileStream{$ELSE}TFileStream{$ENDIF}.Create(
         AFileName, fmOpenRead or fmShareDenyNone);
     end;
 end;
