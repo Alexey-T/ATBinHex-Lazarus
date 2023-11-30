@@ -283,6 +283,7 @@ type
     FMouseNiceScrollPos: TPoint;
     FClientHeight: Integer;
     FTextSize: TPoint;
+    FActiveCanvas: TCanvas;
 
     FOnSelectionChange: TNotifyEvent;
     FOnOptionsChange: TNotifyEvent;
@@ -2444,6 +2445,12 @@ begin
     exit;
 
   if DoubleBuffered then
+    FActiveCanvas:= FBmp.Canvas
+  else
+    FActiveCanvas:= Canvas;
+  FActiveCanvas.Font.Assign(Self.Font);
+
+  if DoubleBuffered then
   begin
     DrawTo(FBmp.Canvas);
     DrawNiceScroll(FBmp.Canvas);
@@ -3554,7 +3561,7 @@ begin
 
   //Scroll horizontally (redraw if needed and allowed)
   if TStrPositions(FStrings).GetCoordFromPos(
-    Canvas, APos, OutputOptions, APosX, APosY) then
+    FActiveCanvas, APos, OutputOptions, APosX, APosY) then
   begin
     if not ((APosX >= DrawOffsetX) and (APosX < ClientWidth - cSelectionRightIndent)) then
       HPosAt(APosX - DrawOffsetX + FHViewPos - AIndentHorz * FFontWidthDigits, ARedraw);
@@ -3604,7 +3611,7 @@ end;
 function TATBinHex.MousePosition(AX, AY: Integer; AStrict: Boolean = False): Int64;
 begin
   Result := TStrPositions(FStrings).GetPosFromCoord(
-    Canvas, AX, AY, OutputOptions, AStrict);
+    FActiveCanvas, AX, AY, OutputOptions, AStrict);
 end;
 
 procedure TATBinHex.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -3984,7 +3991,7 @@ end;
 function TATBinHex.HPosWidth: Integer;
 begin
   Result := TStrPositions(FStrings).GetScreenWidth(
-    Canvas, OutputOptions) + FHViewPos;
+    FActiveCanvas, OutputOptions) + FHViewPos;
 end;
 
 function TATBinHex.HPosMax: Integer;
@@ -4125,13 +4132,16 @@ begin
   if FTextWrap and (Result > 0) then
   begin
     AMaxWidth := ClientWidth - DrawOffsetX;
-    if StringWidth(Canvas, ALine, OutputOptions) > AMaxWidth then
-      if StringExtent(Canvas, ALine, Dx, OutputOptions) then
+    if StringWidth(FActiveCanvas, ALine, OutputOptions) > AMaxWidth then
+      if StringExtent(FActiveCanvas, ALine, Dx, OutputOptions) then
       begin
         Result := 1;
         for i := Length(ALine) downto 1 do
           if Dx[i] <= AMaxWidth then
-            begin Result := StringWrapPosition(ALine, i); Break end;
+            begin
+              Result := StringWrapPosition(ALine, i);
+              Break
+            end;
         SetLength(ALine, Result);
         SDelLastSpaceW(ALine);
       end;
