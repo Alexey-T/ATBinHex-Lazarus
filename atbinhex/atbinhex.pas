@@ -1027,7 +1027,7 @@ begin
   s:= '';
   for i:= 0 to 10 do
     s:= s+inttostr(A[i])+' ';
-  ShowMessage('Extent'#13+AStr+#13+s);
+  ShowMessage('Extent'#10+AStr+#10+s);
 end;
 
 function StringExtent(
@@ -1290,8 +1290,8 @@ begin
     S := '';
     for i := 1 to FNum do
       with FArray[i] do
-        S := S + Format('%d:  Pos: %d', [i, Pos]) + #13;
-    S := S + #13 + Format('APos: %d', [APos]);
+        S := S + Format('%d:  Pos: %d', [i, Pos]) + #10;
+    S := S + #10 + Format('APos: %d', [APos]);
     MsgError(S);
   end;
   }
@@ -1789,7 +1789,7 @@ begin
     (FViewPos <= FBufferPos + 2 * FBufferMaxOffset);
 
   Assert(PosOk,
-    Format('Positions out of range: DrawTo'#13+
+    Format('Positions out of range: DrawTo'#10+
     'BufferPos: %d, ViewPos: %d, BufMaxOffset: %d',
     [FBufferPos, FViewPos, FBufferMaxOffset]));
   if not PosOk then Exit;
@@ -5059,7 +5059,7 @@ procedure TATBinHex.FindURLs(ABufSize: DWORD);
     s := '';
     for i := 1 to 5 do
       with FUrlArray[i] do
-        s := s + Format('"%s" (%d)'#13, [Copy(FString, 1, 50), FPos]);
+        s := s + Format('"%s" (%d)'#10, [Copy(FString, 1, 50), FPos]);
     MsgInfo(s);
   end;
 var
