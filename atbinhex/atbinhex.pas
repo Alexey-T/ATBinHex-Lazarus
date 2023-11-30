@@ -1052,7 +1052,8 @@ end;
 
 function IsSeparator(ch: WideChar): Boolean;
 begin
-  Result := (ch = ' ') or (ch = #9) or (ch = '\');
+  Result:= (Ord(ch)<=$FF) and
+    (AnsiChar(Ord(ch)) in [' ', #9, '\', '.', ',', ';', ':', '-', '+', '*', '/', '<', '>', '=', '(', ')', '[', ']', '{', '}', '&', '!', '?']);
 end;
 
 function StringWrapPosition(
@@ -4131,7 +4132,7 @@ begin
 
   if FTextWrap and (Result > 0) then
   begin
-    AMaxWidth := ClientWidth - DrawOffsetX;
+    AMaxWidth := ClientWidth - FTextSize.X - DrawOffsetX;
     if StringWidth(FActiveCanvas, ALine, OutputOptions) > AMaxWidth then
       if StringExtent(FActiveCanvas, ALine, Dx, OutputOptions) then
       begin

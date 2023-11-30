@@ -36,8 +36,8 @@ begin
   Result:= 0;
   if S='' then Exit;
   SetLength(List, Length(S));
-  SCalcCharOffsets(S, List, ATabSize);
-  Result:= List[High(List)];
+  SCalcCharOffsets(S, List, ATabSize); //gets text width in percents of avg-char
+  Result:= List[High(List)] div 100;
 end;
 
 function CanvasTextWidth(C: TCanvas; const S: atString; ATabSize: integer; ACharSize: TPoint): integer;
