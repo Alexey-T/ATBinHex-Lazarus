@@ -162,6 +162,7 @@ type
 
   TATBinHex = class(TCustomControl)
   private
+    FDoubleBuffered: Boolean;
     FFileName: string;
     FFileSize: Int64;
     FFileOK: Boolean;
@@ -189,7 +190,7 @@ type
     FLinesExtUse: Boolean;
     FLinesExtList: AnsiString;
 
-    FBitmap: TBitmap;
+    FBmp: TBitmap;
     FTimerAutoScroll: TTimer;
     FTimerNiceScroll: TTimer;
     FStrings: TObject;
@@ -346,14 +347,15 @@ type
     function DrawOffsetX: Integer;
     function DrawOffsetY: Integer;
     procedure SetTextGutter(AValue: Boolean);
-    function LinesNum(ABitmap: TBitmap = nil): Integer;
-    function ColsNumFit(ABitmap: TBitmap = nil): Integer;
-    function ColsNumHexFit(ABitmap: TBitmap = nil): Integer;
-    function ColsNumUHexFit(ABitmap: TBitmap = nil): Integer;
-    function ColsNum(ABitmap: TBitmap = nil): Integer;
+    function LinesNum: Integer;
+    function ColsNumFit: Integer;
+    function ColsNumHexFit: Integer;
+    function ColsNumUHexFit: Integer;
+    function ColsNum: Integer;
     function PosBad(const APos: Int64): Boolean;
     procedure PosFixCRLF(var APos: Int64);
   public
+    property DoubleBuffered: boolean read FDoubleBuffered write FDoubleBuffered;
     function PosMax: Int64;
     function PosLast: Int64;
     procedure PosAt(const APos: Int64; ARedraw: Boolean = True);
@@ -437,12 +439,10 @@ type
     function ActiveFont: TFont;
     function ActiveLinesShow: Boolean;
 
-    procedure DrawGutterTo(ABitmap: TBitmap);
-    procedure DrawEmptyTo(
-      ABitmap: TBitmap;
-      APageWidth,
-      APageHeight: Integer;
-      APrintMode: Boolean);
+    procedure DrawTo(C: TCanvas);
+    procedure DrawGutterTo(C: TCanvas);
+    procedure DrawEmptyTo(C: TCanvas; APrintMode: Boolean);
+    procedure DrawNiceScroll(C: TCanvas);
 
     {$ifdef NOTIF}
     procedure NotifChanged(Sender: TObject);
@@ -465,7 +465,6 @@ type
     procedure SetMaxClipboardDataSizeMb(AValue: Integer);
     procedure SetEnabled2(AValue: Boolean);
     procedure SetMouseNiceScroll(AValue: Boolean);
-    procedure DrawNiceScroll;
     property MouseNiceScroll: Boolean read FMouseNiceScroll write SetMouseNiceScroll;
     procedure ExitProc(Sender: TObject);
     procedure EncodingMenuItemClick(Sender: TObject);
@@ -513,7 +512,6 @@ type
     //function Open(const AFileName: string; ARedraw: Boolean = True): Boolean;
     function OpenStream(AStream: TStream; ARedraw: Boolean = True): Boolean;
     procedure Reload;
-    procedure Redraw(ARepaint: Boolean = True);
 
     {$ifdef SEARCH}
     function FindFirst(const AText: string; AOptions: TATStreamSearchOptions;
@@ -534,15 +532,12 @@ type
     property SelTextW: UnicodeString read GetSelTextW;
     property SelTextShortW: UnicodeString read GetSelTextShortW;
     procedure SetSelection(const AStart, ALength: Int64; AScroll: Boolean;
-      AFireEvent: Boolean = True;
-      ARedraw: Boolean = True);
+      AFireEvent: Boolean = True);
     procedure Scroll(const APos: Int64; AIndentVert, AIndentHorz: Integer;
       ARedraw: Boolean = True);
     procedure SelectAll;
     procedure SelectNone(AFireEvent: Boolean = True);
-    procedure DrawTo(
-      ABitmap: TBitmap;
-      APageWidth, APageHeight: Integer;
+    procedure DrawTo(Canvas: TCanvas;
       AStringsObject: TObject;
       APrintMode: Boolean;
       const AFinalPos: Int64;
@@ -1338,7 +1333,7 @@ var
 begin
   inherited Create(AOwner);
 
-  FBitmap := TBitmap.Create;
+  FBmp := TBitmap.Create;
 
   //Init inherited properties
   Caption := '';
@@ -1586,7 +1581,7 @@ begin
 
   FreeData;
   FStrings.Free;
-  FBitmap.Free;
+  FBmp.Free;
   FFontFooter.Free;
   FFontGutter.Free;
 
@@ -1594,47 +1589,35 @@ begin
 end;
 
 
-procedure TATBinHex.DrawGutterTo(ABitmap: TBitmap);
+procedure TATBinHex.DrawGutterTo(C: TCanvas);
 begin
-  Assert(Assigned(ABitmap), 'Bitmap not assigned');
-
-  with ABitmap do
-    if FTextGutter then
+  if FTextGutter then
+  begin
+    FTextGutterWidth := cGutterWidth;
+    if ActiveLinesShow then
     begin
-      FTextGutterWidth := cGutterWidth;
-      if ActiveLinesShow then
-      begin
-        Canvas.Font.Assign(FFontGutter);
-        ILimitMin(FTextGutterWidth, Canvas.TextWidth(IntToStr(FLinesNum + 1)) + cGutterIndent);
-      end;
-
-      Canvas.Brush.Color := FTextColorGutter;
-      Canvas.FillRect(Rect(0, 0, FTextGutterWidth, Height));
+      C.Font.Assign(FFontGutter);
+      ILimitMin(FTextGutterWidth, C.TextWidth(IntToStr(FLinesNum + 1)) + cGutterIndent);
     end;
+
+    C.Brush.Color := FTextColorGutter;
+    C.FillRect(Rect(0, 0, FTextGutterWidth, Height));
+  end;
 end;
 
-procedure TATBinHex.DrawEmptyTo(
-  ABitmap: TBitmap;
-  APageWidth,
-  APageHeight: Integer;
-  APrintMode: Boolean);
+procedure TATBinHex.DrawEmptyTo(C: TCanvas; APrintMode: Boolean);
 var
   AColorBack: TColor;
 begin
-  Assert(Assigned(ABitmap), 'Bitmap not assigned');
-
   if APrintMode then
     AColorBack := cColorPrintBack
   else
     AColorBack := Color;
 
-  with ABitmap do
-  begin
-    Canvas.Brush.Color := AColorBack;
-    Canvas.FillRect(Rect(0, 0, Width, Height));
-    DrawGutterTo(ABitmap);
-    Canvas.Brush.Color := AColorBack;
-  end;
+  C.Brush.Color := AColorBack;
+  C.FillRect(Rect(0, 0, Width, Height));
+  DrawGutterTo(C);
+  C.Brush.Color := AColorBack;
 end;
 
 
@@ -1649,8 +1632,7 @@ begin
 end;
 
 procedure TATBinHex.DrawTo(
-  ABitmap: TBitmap;
-  APageWidth, APageHeight: Integer;
+  Canvas: TCanvas;
   AStringsObject: TObject;
   APrintMode: Boolean;
   const AFinalPos: Int64;
@@ -1677,7 +1659,7 @@ var
     nStart, nEnd: Int64;
     i: Integer;
   begin
-    if StringExtent(FBitmap.Canvas, ALine, Dx, OutputOptions) then
+    if StringExtent(Canvas, ALine, Dx, OutputOptions) then
     begin
       for i := Low(FUrlArray) to High(FUrlArray) do
         with FUrlArray[i] do
@@ -1693,19 +1675,19 @@ var
             I64LimitMax(nEnd, Length(ALine));
 
             {
-            FBitmap.Canvas.Pen.Color := clRed;
-            FBitmap.Canvas.Brush.Style := bsClear;
-            FBitmap.Canvas.Rectangle(Rect(
+            Canvas.Pen.Color := clRed;
+            Canvas.Brush.Style := bsClear;
+            Canvas.Rectangle(Rect(
               AX + Dx[nStart], AY, AX + Dx[nEnd], AY + FFontHeight));
             }
-            FBitmap.Canvas.Font.Color := AColorURL;
-            FBitmap.Canvas.Font.Style := ActiveFont.Style + [fsUnderline];
-            StringOut(FBitmap.Canvas,
+            Canvas.Font.Color := AColorURL;
+            Canvas.Font.Style := ActiveFont.Style + [fsUnderline];
+            StringOut(Canvas,
               AX + Dx[nStart], AY,
               Copy(ALine, nStart + 1, nEnd - nStart),
               OutputOptions);
-            FBitmap.Canvas.Font.Color := AColorText;
-            FBitmap.Canvas.Font.Style := ActiveFont.Style;
+            Canvas.Font.Color := AColorText;
+            Canvas.Font.Style := ActiveFont.Style;
           end;
         end;
 
@@ -1722,12 +1704,12 @@ var
             nEnd := (FPos - AFilePos) div CharSize + FLen;
             I64LimitMax(nEnd, Length(ALine));
 
-            FBitmap.Canvas.Brush.Color := FTextColorHi;
-            StringOut(FBitmap.Canvas,
+            Canvas.Brush.Color := FTextColorHi;
+            StringOut(Canvas,
               AX + Dx[nStart], AY,
               Copy(ALine, nStart + 1, nEnd - nStart),
               OutputOptions);
-            FBitmap.Canvas.Brush.Color := Color;
+            Canvas.Brush.Color := Color;
           end;
         end;
     end;
@@ -1753,11 +1735,11 @@ var
     if (FSelStart > AFilePos + (Len - 1) * CharSize) or
       (FSelStart + FSelLength - 1 * CharSize < AFilePos) then Exit;
 
-    if (AX >= FBitmap.Width) or (AY >= FBitmap.Height) then Exit;
+    if (AX >= Width) or (AY >= Height) then Exit;
 
     YHeight := FFontHeight;
 
-    if StringExtent(FBitmap.Canvas, ALine, Dx, OutputOptions) then
+    if StringExtent(Canvas, ALine, Dx, OutputOptions) then
     begin
       if ASelectAll then
         InvRect:= Rect(AX, AY, AX + Dx[Length(ALine)], AY + YHeight)
@@ -1772,7 +1754,7 @@ var
         InvRect:= Rect(AX + Dx[nStart], AY, AX + Dx[nEnd], AY + YHeight);
       end;
 
-      CanvasInvertRect(FBitmap.Canvas, InvRect, clBlack);
+      CanvasInvertRect(Canvas, InvRect, clBlack);
       Invalidate;
     end;
   end;
@@ -1840,14 +1822,12 @@ begin
     AColorURL := ActiveColor(FTextColorURL);
   end;
 
-  DrawEmptyTo(ABitmap, APageWidth, APageHeight, APrintMode);
+  DrawEmptyTo(Canvas, APrintMode);
 
   AStrings := TStrPositions(AStringsObject);
   if Assigned(AStrings) then
     AStrings.Clear(CharSize);
 
-  with ABitmap do
-  begin
     Canvas.Font := ActiveFont;
     Canvas.Font.Color := AColorText;
 
@@ -1861,14 +1841,14 @@ begin
     FFontMonospaced := true;
     Inc(FFontHeight, FLineSp);
 
-    if FTextWidthFit then SetTextWidthTo(ColsNumFit(ABitmap), ATextWidth);
-    if FTextWidthFitHex then SetTextWidthHexTo(ColsNumHexFit(ABitmap), ATextWidthHex);
-    if FTextWidthFitUHex then SetTextWidthUHexTo(ColsNumUHexFit(ABitmap), ATextWidthUHex);
+    if FTextWidthFit then SetTextWidthTo(ColsNumFit, ATextWidth);
+    if FTextWidthFitHex then SetTextWidthHexTo(ColsNumHexFit, ATextWidthHex);
+    if FTextWidthFitUHex then SetTextWidthUHexTo(ColsNumUHexFit, ATextWidthUHex);
 
     //Calculate fixed page size. In Text/Unicode modes it will be recalculated
     //and will contain variable page size.
-    ALines := LinesNum(ABitmap);
-    ACols := ColsNum(ABitmap);
+    ALines := LinesNum;
+    ACols := ColsNum;
     AViewPageSize := ALines * ACols;
 
     if FFileOK then
@@ -2089,7 +2069,7 @@ begin
               end;
             end;
 
-            DrawGutterTo(ABitmap);
+            DrawGutterTo(Canvas);
             AViewAtEnd := FViewPos >= (FFileSize - ALines * ACols);
           end;
 
@@ -2198,7 +2178,7 @@ begin
               end;
             end;
 
-            DrawGutterTo(ABitmap);
+            DrawGutterTo(Canvas);
             AViewAtEnd := FViewPos >= (FFileSize - ALines * ACols);
           end;
 
@@ -2232,7 +2212,7 @@ begin
                 AStrings.Add(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos);
             end;
 
-            DrawGutterTo(ABitmap);
+            DrawGutterTo(Canvas);
             AViewAtEnd := FViewPos >= (FFileSize - ALines * ACols);
           end;
       end; //case FMode
@@ -2248,7 +2228,6 @@ begin
         Canvas.Font.Color := AColorError;
         StringOut(Canvas, X, Y, LineA, OutputOptions);
       end;
-  end;
 end;
 
 procedure TATBinHex.TextEncodingsMenu(AX, AY: Integer);
@@ -2265,7 +2244,7 @@ begin
 end;
 
 
-procedure TATBinHex.Redraw(ARepaint: Boolean);
+procedure TATBinHex.DrawTo(C: TCanvas);
 begin
   if (FPrevViewPos<>FViewPos) or
     (FPrevHViewPos<>FHViewPos) then
@@ -2273,58 +2252,49 @@ begin
   FPrevViewPos:= FViewPos;
   FPrevHViewPos:= FHViewPos;
 
-  if FEnabled2 then //Enabled2 enables control redrawing
-    try
-      Lock;
+  try
+    Lock;
 
-      //If file is empty, clear and quit
-      if IsFileEmpty then
-      begin
-        HideScrollbars;
-        DrawEmptyTo(FBitmap, ClientWidth, ClientHeight, False);
-        if ARepaint then
-          Paint;
-        Exit;
-      end;
-
-      //Find matches
-      {$ifdef search}
-      FindAll;
-      {$endif}
-
-      //Do drawing
-      DrawTo(
-        FBitmap,
-        ClientWidth,
-        ClientHeight,
-        FStrings, //AStringsObject
-        False, //APrintMode
-        -1, //AFinalPos not needed
-        FTextWidth,
-        FTextWidthHex,
-        FTextWidthUHex,
-        FViewPageSize,
-        FViewAtEnd);
-
-      {
-      //Debug for TStrPositions.GetCoordFromPos:
-      if TStrPositions(FStrings).GetCoordFromPos(FBitmap.Canvas, 60, FTabSize, IsAnsiDecode, DebugX, DebugY) then
-      begin
-        FBitmap.Canvas.Pen.Color := clRed;
-        FBitmap.Canvas.MoveTo(DebugX, DebugY);
-        FBitmap.Canvas.LineTo(DebugX, DebugY + 20);
-      end;
-      }
-
-      //Update scrollbars and force paint
-      UpdateVertScrollbar;
-      UpdateHorzScrollbar;
-      if ARepaint then
-        Paint;
-    finally
-      Unlock;
+    //If file is empty, clear and quit
+    if IsFileEmpty then
+    begin
+      HideScrollbars;
+      DrawEmptyTo(C, False);
+      Exit;
     end;
-  Invalidate;
+
+    UpdateVertScrollbar;
+    UpdateHorzScrollbar;
+
+    //Find matches
+    {$ifdef search}
+    FindAll;
+    {$endif}
+
+    //Do drawing
+    DrawTo(
+      C,
+      FStrings, //AStringsObject
+      False, //APrintMode
+      -1, //AFinalPos not needed
+      FTextWidth,
+      FTextWidthHex,
+      FTextWidthUHex,
+      FViewPageSize,
+      FViewAtEnd);
+
+    {
+    //Debug for TStrPositions.GetCoordFromPos:
+    if TStrPositions(FStrings).GetCoordFromPos(C, 60, FTabSize, IsAnsiDecode, DebugX, DebugY) then
+    begin
+      C.Pen.Color := clRed;
+      C.MoveTo(DebugX, DebugY);
+      C.LineTo(DebugX, DebugY + 20);
+    end;
+    }
+  finally
+    Unlock;
+  end;
 end;
 
 procedure TATBinHex.HideScrollbars;
@@ -2473,8 +2443,17 @@ begin
   if not HandleAllocated then
     exit;
 
-  Canvas.Draw(0, 0, FBitmap);
-  DrawNiceScroll;
+  if DoubleBuffered then
+  begin
+    DrawTo(FBmp.Canvas);
+    DrawNiceScroll(FBmp.Canvas);
+    Canvas.Draw(0, 0, FBmp);
+  end
+  else
+  begin
+    DrawTo(Canvas);
+    DrawNiceScroll(Canvas);
+  end;
 end;
 
 
@@ -2679,62 +2658,47 @@ begin
   begin
     FStream := AStream;
     Result := LoadStream;
-    if ARedraw then
-      Redraw;
+    Invalidate;
   end;
 end;
 
-function TATBinHex.LinesNum(ABitmap: TBitmap = nil): Integer;
-var
-  AHeight: Integer;
+function TATBinHex.LinesNum: Integer;
 begin
-  if Assigned(ABitmap) then
-    AHeight := ABitmap.Height
-  else
-    AHeight := FBitmap.Height;
-
-  Result := (AHeight - DrawOffsetY - cDrawOffsetBelowY) div FFontHeight;
+  Result := (ClientHeight - DrawOffsetY - cDrawOffsetBelowY) div FFontHeight;
   ILimitMin(Result, 0);
   ILimitMax(Result, cMaxLines);
 end;
 
-function TATBinHex.ColsNumFit(ABitmap: TBitmap = nil): Integer;
-var
-  AWidth: Integer;
+function TATBinHex.ColsNumFit: Integer;
 begin
-  if Assigned(ABitmap) then
-    AWidth := ABitmap.Width
-  else
-    AWidth := FBitmap.Width;
-
-  Result := (AWidth - DrawOffsetX) div FFontWidthDigits;
+  Result := (ClientWidth - DrawOffsetX) div FFontWidthDigits;
   ILimitMin(Result, cMinLength);
   ILimitMax(Result, FMaxLength);
 end;
 
-function TATBinHex.ColsNumHexFit(ABitmap: TBitmap = nil): Integer;
+function TATBinHex.ColsNumHexFit: Integer;
 const
   //Take 4 spaces for each byte:
   cSpacesPerChar = 4;
 begin
-  Result := (ColsNumFit(ABitmap) - (FHexOffsetLen + Length(cHexOffsetSep) + 4{4 inner spaces})) div cSpacesPerChar;
+  Result := (ColsNumFit - (FHexOffsetLen + Length(cHexOffsetSep) + 4{4 inner spaces})) div cSpacesPerChar;
   ILimitMin(Result, cMinLength);
   ILimitMax(Result, FMaxLength);
 end;
 
-function TATBinHex.ColsNumUHexFit(ABitmap: TBitmap = nil): Integer;
+function TATBinHex.ColsNumUHexFit: Integer;
 const
   //Take (6 + ~0.8) = ~7 spaces for each word
   //(~0.8 because wide ieroglyphs take about ~1.8 spaces).
   //Take 6 as it looks nicer:
   cSpacesPerChar = 6;
 begin
-  Result := (ColsNumFit(ABitmap) - (FHexOffsetLen + Length(cHexOffsetSep) + 4{4 inner spaces})) div cSpacesPerChar;
+  Result := (ColsNumFit - (FHexOffsetLen + Length(cHexOffsetSep) + 4{4 inner spaces})) div cSpacesPerChar;
   ILimitMin(Result, cMinLength);
   ILimitMax(Result, FMaxLength);
 end;
 
-function TATBinHex.ColsNum(ABitmap: TBitmap = nil): Integer;
+function TATBinHex.ColsNum: Integer;
 begin
   case FMode of
     vbmodeBinary:
@@ -2806,9 +2770,7 @@ begin
     FViewPos := FViewPos div ACols * ACols;
 
     ReadBuffer(FViewPos);
-
-    if ARedraw then
-      Redraw;
+    Invalidate;
   end;
 end;
 
@@ -3029,7 +2991,7 @@ begin
   //Restore selection
   if NeedToRestorePos then
     SetSelection(OldSelStart, OldSelLength,
-      False{No scroll}, False{No event}, False{No redraw});
+      False{No scroll}, False{No event});
 
   {$ifdef NOTIF}
   if FAutoReload then
@@ -3117,7 +3079,7 @@ begin
   if SourceAssigned then
   begin
     PosOffset := FPrevPos;
-    Redraw;
+    Invalidate;
   end;
 end;
 
@@ -3126,7 +3088,7 @@ begin
   if AValue <> FTextEncoding then
   begin
     FTextEncoding := AValue;
-    Redraw;
+    Invalidate;
   end;
 end;
 
@@ -3202,7 +3164,7 @@ begin
     FTextWrap := AValue;
     if FTextWrap then
       HPosAt(0, False);
-    Redraw;
+    Invalidate;
   end;
 end;
 
@@ -3538,8 +3500,7 @@ end;
 procedure TATBinHex.SetSelection(
   const AStart, ALength: Int64;
   AScroll: Boolean;
-  AFireEvent: Boolean = True;
-  ARedraw: Boolean = True);
+  AFireEvent: Boolean = True);
 var
   ASelChanged: Boolean;
 begin
@@ -3562,8 +3523,7 @@ begin
     if AScroll then
       Scroll(AStart, FSearchIndentVert, FSearchIndentHorz, False);
 
-    if ARedraw then
-      Redraw;
+    Invalidate;
 
     if ASelChanged and AFireEvent then
       DoSelectionChange;
@@ -3594,7 +3554,7 @@ begin
 
   //Scroll horizontally (redraw if needed and allowed)
   if TStrPositions(FStrings).GetCoordFromPos(
-    FBitmap.Canvas, APos, OutputOptions, APosX, APosY) then
+    Canvas, APos, OutputOptions, APosX, APosY) then
   begin
     if not ((APosX >= DrawOffsetX) and (APosX < ClientWidth - cSelectionRightIndent)) then
       HPosAt(APosX - DrawOffsetX + FHViewPos - AIndentHorz * FFontWidthDigits, ARedraw);
@@ -3644,7 +3604,7 @@ end;
 function TATBinHex.MousePosition(AX, AY: Integer; AStrict: Boolean = False): Int64;
 begin
   Result := TStrPositions(FStrings).GetPosFromCoord(
-    FBitmap.Canvas, AX, AY, OutputOptions, AStrict);
+    Canvas, AX, AY, OutputOptions, AStrict);
 end;
 
 procedure TATBinHex.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -3977,7 +3937,7 @@ begin
   begin
     FHViewPos := APos;
     if ARedraw then
-      Redraw;
+     Invalidate;
   end;
 end;
 
@@ -4024,7 +3984,7 @@ end;
 function TATBinHex.HPosWidth: Integer;
 begin
   Result := TStrPositions(FStrings).GetScreenWidth(
-    FBitmap.Canvas, OutputOptions) + FHViewPos;
+    Canvas, OutputOptions) + FHViewPos;
 end;
 
 function TATBinHex.HPosMax: Integer;
@@ -4164,9 +4124,9 @@ begin
 
   if FTextWrap and (Result > 0) then
   begin
-    AMaxWidth := FBitmap.Width - DrawOffsetX;
-    if StringWidth(FBitmap.Canvas, ALine, OutputOptions) > AMaxWidth then
-      if StringExtent(FBitmap.Canvas, ALine, Dx, OutputOptions) then
+    AMaxWidth := ClientWidth - DrawOffsetX;
+    if StringWidth(Canvas, ALine, OutputOptions) > AMaxWidth then
+      if StringExtent(Canvas, ALine, Dx, OutputOptions) then
       begin
         Result := 1;
         for i := Length(ALine) downto 1 do
@@ -4221,7 +4181,7 @@ begin
   ReadBuffer(FViewPos);
 
   if ARedraw then
-    Redraw;
+    Invalidate;
 end;
 
 procedure TATBinHex.PosNextLine(
@@ -4490,7 +4450,7 @@ begin
       Font.Size := Font.Size-1;
   end;
 
-  Redraw;
+  Invalidate;
   DoOptionsChange;
 end;
 
@@ -4613,7 +4573,7 @@ end;
 procedure TATBinHex.SetEnabled(AValue: Boolean);
 begin
   inherited;
-  Redraw;
+  Invalidate;
 end;
 
 procedure TATBinHex.SetEnabled2(AValue: Boolean);
@@ -4637,14 +4597,14 @@ begin
     FMouseNiceScroll := AValue;
     FTimerNiceScroll.Enabled := AValue;
     Cursor := crIBeam;
-    Redraw;
+    Invalidate;
   end;
 end;
 
-procedure TATBinHex.DrawNiceScroll;
+procedure TATBinHex.DrawNiceScroll(C: TCanvas);
 begin
   if MouseNiceScroll then
-    Canvas.Draw(
+    C.Draw(
       FMouseNiceScrollPos.X - cBitmapNiceScrollRadius,
       FMouseNiceScrollPos.Y - cBitmapNiceScrollRadius,
       FBitmapNiceScroll);
@@ -4665,7 +4625,7 @@ procedure TATBinHex.SetFileUnicodeFmt(AValue: TATUnicodeFormat);
 begin
   FFileUnicodeFmt := AValue;
   if IsModeUnicode then
-    Redraw;
+    Invalidate;
 end;
 
 procedure TATBinHex.EncodingMenuItemClick(Sender: TObject);
@@ -4688,7 +4648,7 @@ begin
   if FTextOemSpecial <> AValue then
   begin
     FTextOemSpecial := AValue;
-    Redraw;
+    Invalidate;
   end;
 end;
 
@@ -4697,7 +4657,7 @@ begin
   if FUrlShow <> AValue then
   begin
     FUrlShow := AValue;
-    Redraw;
+    Invalidate;
   end;
 end;
 
@@ -4706,7 +4666,7 @@ begin
   if FTextNonPrintable <> AValue then
   begin
     FTextNonPrintable := AValue;
-    Redraw;
+    Invalidate;
   end;
 end;
 
@@ -5011,7 +4971,8 @@ end;
 
 procedure TATBinHex.Resize;
 begin
-  BitmapResizeBySteps(FBitmap, Width, Height, 50, 50);
+  if Assigned(FBmp) then
+    BitmapResizeBySteps(FBmp, Width, Height, 50, 50);
 
   //Notepad feature: when control increases height and
   //file was at the end, then file is scrolled again to the end.
@@ -5022,8 +4983,7 @@ begin
   //Update last height
   FClientHeight := Height;
 
-  Redraw(False);
-
+  Invalidate;
   inherited;
 end;
 
