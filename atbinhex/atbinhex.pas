@@ -537,7 +537,7 @@ type
       ARedraw: Boolean = True);
     procedure SelectAll;
     procedure SelectNone(AFireEvent: Boolean = True);
-    procedure DrawTo(Canvas: TCanvas;
+    procedure DrawTo(C: TCanvas;
       AStringsObject: TObject;
       APrintMode: Boolean;
       const AFinalPos: Int64;
@@ -1632,7 +1632,7 @@ begin
 end;
 
 procedure TATBinHex.DrawTo(
-  Canvas: TCanvas;
+  C: TCanvas;
   AStringsObject: TObject;
   APrintMode: Boolean;
   const AFinalPos: Int64;
@@ -1659,7 +1659,7 @@ var
     nStart, nEnd: Int64;
     i: Integer;
   begin
-    if StringExtent(Canvas, ALine, Dx, OutputOptions) then
+    if StringExtent(C, ALine, Dx, OutputOptions) then
     begin
       for i := Low(FUrlArray) to High(FUrlArray) do
         with FUrlArray[i] do
@@ -1675,19 +1675,19 @@ var
             I64LimitMax(nEnd, Length(ALine));
 
             {
-            Canvas.Pen.Color := clRed;
-            Canvas.Brush.Style := bsClear;
-            Canvas.Rectangle(Rect(
+            C.Pen.Color := clRed;
+            C.Brush.Style := bsClear;
+            C.Rectangle(Rect(
               AX + Dx[nStart], AY, AX + Dx[nEnd], AY + FFontHeight));
             }
-            Canvas.Font.Color := AColorURL;
-            Canvas.Font.Style := ActiveFont.Style + [fsUnderline];
-            StringOut(Canvas,
+            C.Font.Color := AColorURL;
+            C.Font.Style := ActiveFont.Style + [fsUnderline];
+            StringOut(C,
               AX + Dx[nStart], AY,
               Copy(ALine, nStart + 1, nEnd - nStart),
               OutputOptions);
-            Canvas.Font.Color := AColorText;
-            Canvas.Font.Style := ActiveFont.Style;
+            C.Font.Color := AColorText;
+            C.Font.Style := ActiveFont.Style;
           end;
         end;
 
@@ -1704,12 +1704,12 @@ var
             nEnd := (FPos - AFilePos) div CharSize + FLen;
             I64LimitMax(nEnd, Length(ALine));
 
-            Canvas.Brush.Color := FTextColorHi;
-            StringOut(Canvas,
+            C.Brush.Color := FTextColorHi;
+            StringOut(C,
               AX + Dx[nStart], AY,
               Copy(ALine, nStart + 1, nEnd - nStart),
               OutputOptions);
-            Canvas.Brush.Color := Color;
+            C.Brush.Color := Color;
           end;
         end;
     end;
@@ -1739,7 +1739,7 @@ var
 
     YHeight := FFontHeight;
 
-    if StringExtent(Canvas, ALine, Dx, OutputOptions) then
+    if StringExtent(C, ALine, Dx, OutputOptions) then
     begin
       if ASelectAll then
         InvRect:= Rect(AX, AY, AX + Dx[Length(ALine)], AY + YHeight)
@@ -1754,7 +1754,7 @@ var
         InvRect:= Rect(AX + Dx[nStart], AY, AX + Dx[nEnd], AY + YHeight);
       end;
 
-      CanvasInvertRect(Canvas, InvRect, clBlack);
+      CanvasInvertRect(C, InvRect, clBlack);
       Invalidate;
     end;
   end;
@@ -1822,16 +1822,16 @@ begin
     AColorURL := ActiveColor(FTextColorURL);
   end;
 
-  DrawEmptyTo(Canvas, APrintMode);
+  DrawEmptyTo(C, APrintMode);
 
   AStrings := TStrPositions(AStringsObject);
   if Assigned(AStrings) then
     AStrings.Clear(CharSize);
 
-    Canvas.Font := ActiveFont;
-    Canvas.Font.Color := AColorText;
+    C.Font := ActiveFont;
+    C.Font.Color := AColorText;
 
-    Size:= Canvas.TextExtent('N');
+    Size:= C.TextExtent('N');
     FTextSize.X:= Size.cx;
     FTextSize.Y:= Size.cy;
 
@@ -1873,9 +1873,9 @@ begin
 
               if not APrintMode then
               begin
-                Canvas.Font.Color := AColorText;
-                Canvas.Brush.Color := AColorBack;
-                DoDrawLine(Canvas, LineText, APos,
+                C.Font.Color := AColorText;
+                C.Brush.Color := AColorBack;
+                DoDrawLine(C, LineText, APos,
                   Rect(0, APosTextY, ClientWidth, APosTextY + FFontHeight),
                   Point(APosTextX, APosTextY),
                   ADone);
@@ -1895,12 +1895,12 @@ begin
                     end;
                     }
 
-                StringOut(Canvas, APosTextX - FHViewPos, APosTextY, LineText, OutputOptions(WithCR));
+                StringOut(C, APosTextX - FHViewPos, APosTextY, LineText, OutputOptions(WithCR));
                 SelectLine(LineText, APosTextX - FHViewPos, APosTextY, APos, False{SelectAll}, True{Hilight});
                 if Assigned(AStrings) then
                   AStrings.Add(LineText, APosTextX - FHViewPos, APosTextY, APos);
 
-                DoDrawLine2(Canvas, LineText,
+                DoDrawLine2(C, LineText,
                   Point(APosTextX - FHViewPos, APosTextY),
                   OutputOptions(WithCR));
               end;
@@ -1908,8 +1908,8 @@ begin
               //Draw gutter dot
               if FTextGutter then
               begin
-                Canvas.Brush.Color := FTextColorGutter;
-                Canvas.FillRect(Rect(0, APosTextY, FTextGutterWidth, APosTextY + FFontHeight));
+                C.Brush.Color := FTextColorGutter;
+                C.FillRect(Rect(0, APosTextY, FTextGutterWidth, APosTextY + FFontHeight));
                 if WithDot then
                 begin
                   ALineNum := FindLineNum(APos);
@@ -1917,24 +1917,24 @@ begin
                     (ALineNum > 0) and
                     (ALineNum mod FLinesStep = 0) then
                   begin
-                    Canvas.Font.Assign(FFontGutter);
-                    Canvas.TextOut(
-                      (FTextGutterWidth - Canvas.TextWidth(IntToStr(ALineNum)) - cGutterIndent),
+                    C.Font.Assign(FFontGutter);
+                    C.TextOut(
+                      (FTextGutterWidth - C.TextWidth(IntToStr(ALineNum)) - cGutterIndent),
                       (FFontHeight - FTextSize.Y) div 2 + APosTextY,
                       IntToStr(ALineNum));
-                    Canvas.Font.Assign(ActiveFont);
+                    C.Font.Assign(ActiveFont);
                   end
                   else
                   begin
-                    Canvas.Brush.Color := AColorBack;
-                    Canvas.Pen.Color := AColorText;
-                    Canvas.Pen.Width := 1;
-                    Canvas.Ellipse(
+                    C.Brush.Color := AColorBack;
+                    C.Pen.Color := AColorText;
+                    C.Pen.Width := 1;
+                    C.Ellipse(
                       FTextGutterWidth div 2 - cGutterDotSize, APosTextY + FFontHeight div 2 - cGutterDotSize,
                       FTextGutterWidth div 2 + cGutterDotSize, APosTextY + FFontHeight div 2 + cGutterDotSize);
                   end;
                 end;
-                Canvas.Brush.Color := AColorBack;
+                C.Brush.Color := AColorBack;
               end;
 
               //Move to the next line
@@ -1983,14 +1983,14 @@ begin
               //Draw offset
               X := DrawOffsetX;
               LineA := IntToHex(FBufferPos + APos, FHexOffsetLen) + cHexOffsetSep;
-              Canvas.Font.Color := AColorText;
-              StringOut(Canvas, X - FHViewPos, Y, LineA, OutputOptions);
+              C.Font.Color := AColorText;
+              StringOut(C, X - FHViewPos, Y, LineA, OutputOptions);
 
               //Draw hex background
               Inc(X, (Length(LineA) + 1{space}) * FFontWidthDigits);
 
-              Canvas.Brush.Color := AColorBackHex;
-              Canvas.FillRect(Rect(
+              C.Brush.Color := AColorBackHex;
+              C.FillRect(Rect(
                 X - FHViewPos,
                 Y,
                 X - FHViewPos + FFontWidthDigits * (ATextWidthHex * 3 + 2),
@@ -2005,12 +2005,12 @@ begin
                 if APosEnd < FFileSize then
                 begin
                   if (j mod 4) < 2 then
-                    Canvas.Font.Color := AColorTextHex1
+                    C.Font.Color := AColorTextHex1
                   else
-                    Canvas.Font.Color := AColorTextHex2;
+                    C.Font.Color := AColorTextHex2;
 
                   LineW := GetHex(APosEnd);
-                  StringOut(Canvas, X - FHViewPos, Y, LineW, OutputOptions);
+                  StringOut(C, X - FHViewPos, Y, LineW, OutputOptions);
                   SelectLine(LineW, X - FHViewPos, Y, FBufferPos + APos + j, True);
 
                   //Save hex offsets
@@ -2030,8 +2030,8 @@ begin
               TStrPositions(FStrings).AddHexMargin(X);
               Inc(X, FFontWidthDigits);
 
-              Canvas.Brush.Color := AColorBack;
-              Canvas.Font.Color := AColorText;
+              C.Brush.Color := AColorBack;
+              C.Font.Color := AColorText;
               LineW := '';
 
               for j := 0 to ATextWidthHex - 1 do
@@ -2044,7 +2044,7 @@ begin
               LineText := DecodeString(LineW);
               APosTextX := X;
               APosTextY := Y;
-              StringOut(Canvas, APosTextX - FHViewPos, APosTextY, LineText, OutputOptions);
+              StringOut(C, APosTextX - FHViewPos, APosTextY, LineText, OutputOptions);
               SelectLine(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos, False{SelectAll}, True{Hilight});
               if Assigned(AStrings) then
                 AStrings.Add(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos);
@@ -2052,24 +2052,24 @@ begin
               //Draw lines
               if cHexLinesShow then
               begin
-                Canvas.Pen.Color := AColorLines;
-                Canvas.Pen.Width := cHexLinesWidth;
+                C.Pen.Color := AColorLines;
+                C.Pen.Width := cHexLinesWidth;
 
                 X := DrawOffsetX + (FHexOffsetLen + Length(cHexOffsetSep) + 1{1 space}) * FFontWidthDigits;
-                Canvas.MoveTo(X - FHViewPos, Y);
-                Canvas.LineTo(X - FHViewPos, Y2);
+                C.MoveTo(X - FHViewPos, Y);
+                C.LineTo(X - FHViewPos, Y2);
 
                 X := DrawOffsetX + (FHexOffsetLen + Length(cHexOffsetSep) + 2{2 spaces} + (ATextWidthHex div 2) * 3) * FFontWidthDigits;
-                Canvas.MoveTo(X - FHViewPos, Y);
-                Canvas.LineTo(X - FHViewPos, Y2);
+                C.MoveTo(X - FHViewPos, Y);
+                C.LineTo(X - FHViewPos, Y2);
 
                 X := DrawOffsetX + (FHexOffsetLen + Length(cHexOffsetSep) + 3{3 spaces} + ATextWidthHex * 3) * FFontWidthDigits;
-                Canvas.MoveTo(X - FHViewPos, Y);
-                Canvas.LineTo(X - FHViewPos, Y2);
+                C.MoveTo(X - FHViewPos, Y);
+                C.LineTo(X - FHViewPos, Y2);
               end;
             end;
 
-            DrawGutterTo(Canvas);
+            DrawGutterTo(C);
             AViewAtEnd := FViewPos >= (FFileSize - ALines * ACols);
           end;
 
@@ -2092,14 +2092,14 @@ begin
               //Draw offset
               X := DrawOffsetX;
               LineA := IntToHex(FBufferPos + APos, FHexOffsetLen) + cHexOffsetSep;
-              Canvas.Font.Color := AColorText;
-              StringOut(Canvas, X - FHViewPos, Y, LineA, OutputOptions);
+              C.Font.Color := AColorText;
+              StringOut(C, X - FHViewPos, Y, LineA, OutputOptions);
 
               //Draw hex background
               Inc(X, (Length(LineA) + 1{space}) * FFontWidthDigits);
 
-              Canvas.Brush.Color := AColorBackHex;
-              Canvas.FillRect(Rect(
+              C.Brush.Color := AColorBackHex;
+              C.FillRect(Rect(
                 X - FHViewPos,
                 Y,
                 X - FHViewPos + FFontWidthDigits * (ATextWidthUHex * 5 + 2),
@@ -2114,12 +2114,12 @@ begin
                 if APosEnd + 1 < FFileSize then
                 begin
                   if (j mod 4) < 2 then
-                    Canvas.Font.Color := AColorTextHex1
+                    C.Font.Color := AColorTextHex1
                   else
-                    Canvas.Font.Color := AColorTextHex2;
+                    C.Font.Color := AColorTextHex2;
 
                   LineW := GetHex(APosEnd);
-                  StringOut(Canvas, X - FHViewPos, Y, LineW, OutputOptions);
+                  StringOut(C, X - FHViewPos, Y, LineW, OutputOptions);
                   SelectLine(LineW, X - FHViewPos, Y, FBufferPos + APos + 2 * j, True);
 
                   //Save hex offset
@@ -2139,8 +2139,8 @@ begin
               TStrPositions(FStrings).AddHexMargin(X);
               Inc(X, FFontWidthDigits);
 
-              Canvas.Brush.Color := AColorBack;
-              Canvas.Font.Color := AColorText;
+              C.Brush.Color := AColorBack;
+              C.Font.Color := AColorText;
               LineW := '';
 
               for j := 0 to ATextWidthUHex - 1 do
@@ -2153,7 +2153,7 @@ begin
               LineText := DecodeString(LineW);
               APosTextX := X;
               APosTextY := Y;
-              StringOut(Canvas, APosTextX - FHViewPos, APosTextY, LineText, OutputOptions);
+              StringOut(C, APosTextX - FHViewPos, APosTextY, LineText, OutputOptions);
               SelectLine(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos, False{SelectAll}, True{Hilight});
               if Assigned(AStrings) then
                 AStrings.Add(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos);
@@ -2161,24 +2161,24 @@ begin
               //Draw lines
               if cHexLinesShow then
               begin
-                Canvas.Pen.Color := AColorLines;
-                Canvas.Pen.Width := cHexLinesWidth;
+                C.Pen.Color := AColorLines;
+                C.Pen.Width := cHexLinesWidth;
 
                 X := DrawOffsetX + (FHexOffsetLen + Length(cHexOffsetSep) + 1{1 space}) * FFontWidthDigits;
-                Canvas.MoveTo(X - FHViewPos, Y);
-                Canvas.LineTo(X - FHViewPos, Y2);
+                C.MoveTo(X - FHViewPos, Y);
+                C.LineTo(X - FHViewPos, Y2);
 
                 X := DrawOffsetX + (FHexOffsetLen + Length(cHexOffsetSep) + 2{2 spaces} + (ATextWidthUHex div 2) * 5) * FFontWidthDigits;
-                Canvas.MoveTo(X - FHViewPos, Y);
-                Canvas.LineTo(X - FHViewPos, Y2);
+                C.MoveTo(X - FHViewPos, Y);
+                C.LineTo(X - FHViewPos, Y2);
 
                 X := DrawOffsetX + (FHexOffsetLen + Length(cHexOffsetSep) + 3{3 spaces} + ATextWidthUHex * 5) * FFontWidthDigits;
-                Canvas.MoveTo(X - FHViewPos, Y);
-                Canvas.LineTo(X - FHViewPos, Y2);
+                C.MoveTo(X - FHViewPos, Y);
+                C.LineTo(X - FHViewPos, Y2);
               end;
             end;
 
-            DrawGutterTo(Canvas);
+            DrawGutterTo(C);
             AViewAtEnd := FViewPos >= (FFileSize - ALines * ACols);
           end;
 
@@ -2206,13 +2206,13 @@ begin
               LineText := DecodeString(LineW);
               APosTextX := DrawOffsetX;
               APosTextY := DrawOffsetY + (i - 1) * FFontHeight;
-              StringOut(Canvas, APosTextX - FHViewPos, APosTextY, LineText, OutputOptions);
+              StringOut(C, APosTextX - FHViewPos, APosTextY, LineText, OutputOptions);
               SelectLine(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos, False{SelectAll}, True{Hilight});
               if Assigned(AStrings) then
                 AStrings.Add(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos);
             end;
 
-            DrawGutterTo(Canvas);
+            DrawGutterTo(C);
             AViewAtEnd := FViewPos >= (FFileSize - ALines * ACols);
           end;
       end; //case FMode
@@ -2221,12 +2221,12 @@ begin
       //Handle read error
       begin
         LineA := Format(MsgViewerErrCannotReadPos, [IntToHex(FViewPos, FHexOffsetLen)]);
-        X := (Width - StringWidth(Canvas, LineA, OutputOptions)) div 2;
+        X := (Width - StringWidth(C, LineA, OutputOptions)) div 2;
         Y := (Height - FFontHeight) div 2;
         ILimitMin(X, DrawOffsetX);
         ILimitMin(Y, DrawOffsetY);
-        Canvas.Font.Color := AColorError;
-        StringOut(Canvas, X, Y, LineA, OutputOptions);
+        C.Font.Color := AColorError;
+        StringOut(C, X, Y, LineA, OutputOptions);
       end;
 end;
 
