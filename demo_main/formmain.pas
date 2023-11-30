@@ -181,7 +181,6 @@ begin
 
   fs:= TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);
   V.OpenStream(fs);
-  V.Redraw;
 end;
 
 procedure TfmMain.ViewerOptionsChange(Sender: TObject);
@@ -206,18 +205,17 @@ end;
 
 procedure TfmMain.btnFontClick(Sender: TObject);
 begin
-  with FontDialog1 do
-    if Execute then
-    begin
-      V.Font:= Font;
-      V.Redraw;
-    end;
+  if FontDialog1.Execute then
+  begin
+    V.Font:= FontDialog1.Font;
+    V.Invalidate;
+  end;
 end;
 
 procedure TfmMain.chkEnChange(Sender: TObject);
 begin
   V.Enabled:= chkEn.Checked;
-  V.Redraw;
+  V.Invalidate;
 end;
 
 procedure TfmMain.chkEnSelChange(Sender: TObject);
@@ -228,7 +226,7 @@ end;
 procedure TfmMain.chkGutterChange(Sender: TObject);
 begin
   V.TextGutter:= chkGutter.Checked;
-  V.Redraw;
+  V.Invalidate;
 end;
 
 procedure TfmMain.chkUnprChange(Sender: TObject);
@@ -244,13 +242,13 @@ end;
 procedure TfmMain.edBinChange(Sender: TObject);
 begin
   V.TextWidth:= edBin.Value;
-  V.Redraw;
+  V.Invalidate;
 end;
 
 procedure TfmMain.edTabsizeChange(Sender: TObject);
 begin
   V.TextTabSize:= edTabsize.Value;
-  V.Redraw;
+  V.Invalidate;
 end;
 
 end.
