@@ -6,16 +6,16 @@ object fmMain: TfmMain
   Caption = 'ATBinHex demo'
   ClientHeight = 533
   ClientWidth = 902
-  OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '3.99.0.0'
+  OnCreate = FormCreate
   object PanelOpt: TPanel
     Left = 708
-    Height = 512
+    Height = 515
     Top = 0
     Width = 194
     Align = alRight
-    ClientHeight = 512
+    ClientHeight = 515
     ClientWidth = 194
     TabOrder = 0
     object btnOpen: TButton
@@ -24,8 +24,8 @@ object fmMain: TfmMain
       Top = 11
       Width = 89
       Caption = 'open...'
-      OnClick = btnOpenClick
       TabOrder = 0
+      OnClick = btnOpenClick
     end
     object GroupBox1: TGroupBox
       Left = 7
@@ -33,55 +33,55 @@ object fmMain: TfmMain
       Top = 100
       Width = 149
       Caption = 'mode'
-      ClientHeight = 125
-      ClientWidth = 145
+      ClientHeight = 126
+      ClientWidth = 147
       TabOrder = 5
       object bText: TRadioButton
         Left = 7
-        Height = 24
+        Height = 23
         Top = 0
-        Width = 54
+        Width = 53
         Caption = 'text'
         Checked = True
-        OnChange = bTextChange
         TabOrder = 0
         TabStop = True
+        OnChange = bTextChange
       end
       object bBin: TRadioButton
         Left = 7
-        Height = 24
+        Height = 23
         Top = 24
         Width = 68
         Caption = 'binary'
-        OnChange = bBinChange
         TabOrder = 1
+        OnChange = bBinChange
       end
       object bHex: TRadioButton
         Left = 7
-        Height = 24
+        Height = 23
         Top = 48
-        Width = 50
+        Width = 49
         Caption = 'hex'
-        OnChange = bHexChange
         TabOrder = 2
+        OnChange = bHexChange
       end
       object bUni: TRadioButton
         Left = 7
-        Height = 24
+        Height = 23
         Top = 72
         Width = 79
         Caption = 'unicode'
-        OnChange = bUniChange
         TabOrder = 3
+        OnChange = bUniChange
       end
       object bUniHex: TRadioButton
         Left = 7
-        Height = 24
+        Height = 23
         Top = 96
-        Width = 109
+        Width = 108
         Caption = 'unicode/hex'
-        OnChange = bUniHexChange
         TabOrder = 4
+        OnChange = bUniHexChange
       end
     end
     object btnFont: TButton
@@ -90,19 +90,19 @@ object fmMain: TfmMain
       Top = 40
       Width = 89
       Caption = 'font...'
-      OnClick = btnFontClick
       TabOrder = 1
+      OnClick = btnFontClick
     end
     object edBin: TSpinEdit
       Left = 10
-      Height = 27
+      Height = 33
       Top = 248
       Width = 59
       MaxValue = 160
       MinValue = 40
-      OnChange = edBinChange
       TabOrder = 6
       Value = 80
+      OnChange = edBinChange
     end
     object Label1: TLabel
       Left = 80
@@ -114,43 +114,43 @@ object fmMain: TfmMain
     end
     object chkUnpr: TCheckBox
       Left = 7
-      Height = 24
-      Top = 344
+      Height = 23
+      Top = 360
       Width = 131
       Caption = 'unprinted chars'
-      OnChange = chkUnprChange
       TabOrder = 10
+      OnChange = chkUnprChange
     end
     object chkGutter: TCheckBox
       Left = 7
-      Height = 24
-      Top = 324
+      Height = 23
+      Top = 336
       Width = 68
       Caption = 'gutter'
       Checked = True
-      OnChange = chkGutterChange
       State = cbChecked
       TabOrder = 9
+      OnChange = chkGutterChange
     end
     object chkWrap: TCheckBox
       Left = 7
-      Height = 24
-      Top = 304
+      Height = 23
+      Top = 312
       Width = 60
       Caption = 'wrap'
-      OnChange = chkWrapChange
       TabOrder = 8
+      OnChange = chkWrapChange
     end
     object chkEn: TCheckBox
       Left = 7
-      Height = 24
-      Top = 364
+      Height = 23
+      Top = 384
       Width = 80
       Caption = 'enabled'
       Checked = True
-      OnChange = chkEnChange
       State = cbChecked
       TabOrder = 11
+      OnChange = chkEnChange
     end
     object btnGoto: TButton
       Left = 104
@@ -158,30 +158,30 @@ object fmMain: TfmMain
       Top = 11
       Width = 83
       Caption = 'go to...'
-      OnClick = btnGotoClick
       TabOrder = 2
+      OnClick = btnGotoClick
     end
     object chkEnSel: TCheckBox
       Left = 7
-      Height = 24
-      Top = 384
+      Height = 23
+      Top = 408
       Width = 102
       Caption = 'enabled sel'
       Checked = True
-      OnChange = chkEnSelChange
       State = cbChecked
       TabOrder = 12
+      OnChange = chkEnSelChange
     end
     object edTabsize: TSpinEdit
       Left = 10
-      Height = 27
+      Height = 33
       Top = 275
       Width = 59
       MaxValue = 12
       MinValue = 2
-      OnChange = edTabsizeChange
       TabOrder = 7
       Value = 8
+      OnChange = edTabsizeChange
     end
     object Label2: TLabel
       Left = 79
@@ -197,8 +197,8 @@ object fmMain: TfmMain
       Top = 40
       Width = 83
       Caption = 'find...'
-      OnClick = btnFindClick
       TabOrder = 3
+      OnClick = btnFindClick
     end
     object btnFindNext: TButton
       Left = 104
@@ -207,14 +207,23 @@ object fmMain: TfmMain
       Width = 83
       Caption = 'find next'
       Enabled = False
-      OnClick = btnFindNextClick
       TabOrder = 4
+      OnClick = btnFindNextClick
+    end
+    object chkUTF8: TCheckBox
+      Left = 7
+      Height = 23
+      Top = 432
+      Width = 124
+      Caption = 'UTF8 encoding'
+      TabOrder = 13
+      OnChange = chkUTF8Change
     end
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 21
-    Top = 512
+    Height = 18
+    Top = 515
     Width = 902
     Panels = <    
       item
@@ -233,13 +242,13 @@ object fmMain: TfmMain
     SimplePanel = False
   end
   object OpenDialog1: TOpenDialog
-    left = 480
-    top = 16
+    Left = 480
+    Top = 16
   end
   object FontDialog1: TFontDialog
     MinFontSize = 0
     MaxFontSize = 0
-    left = 472
-    top = 64
+    Left = 472
+    Top = 64
   end
 end

@@ -21,6 +21,7 @@ type
     btnGoto: TButton;
     btnFind: TButton;
     btnFindNext: TButton;
+    chkUTF8: TCheckBox;
     chkEnSel: TCheckBox;
     chkEn: TCheckBox;
     chkWrap: TCheckBox;
@@ -51,6 +52,7 @@ type
     procedure chkEnSelChange(Sender: TObject);
     procedure chkGutterChange(Sender: TObject);
     procedure chkUnprChange(Sender: TObject);
+    procedure chkUTF8Change(Sender: TObject);
     procedure chkWrapChange(Sender: TObject);
     procedure edBinChange(Sender: TObject);
     procedure edTabsizeChange(Sender: TObject);
@@ -232,6 +234,14 @@ end;
 procedure TfmMain.chkUnprChange(Sender: TObject);
 begin
   V.TextNonPrintable:= chkUnpr.Checked;
+end;
+
+procedure TfmMain.chkUTF8Change(Sender: TObject);
+begin
+  if chkUTF8.Checked then
+    V.TextEncoding:= eidUTF8
+  else
+    V.TextEncoding:= eidCP1252;
 end;
 
 procedure TfmMain.chkWrapChange(Sender: TObject);
