@@ -1,4 +1,9 @@
 
+2023.12.01
+* change: support proportional fonts, but now rendering is slower due to call of TCanvas.TextWidth for each char
++ add: DoubleBuffered property, it now allows correct rendering on macOS Retina if set to False
+- fix: TextWrap is now working
+
 2019.09.19
 * change: require package EncConv (in github.com/alexey-t) instead of LConvEncoding
 
