@@ -225,7 +225,9 @@ procedure SCalcCharOffsets(C: TCanvas; ACharSize: integer; const AStr: atString;
 var
   S: atString;
   NOffset, NTabSize, NListIndex, i: integer;
-  Scale: integer;
+  Scale, ScaleDigit: integer;
+  SizeDigit, SizeW: integer;
+  FontMonospaced: boolean;
 begin
   if Length(AList)<>Length(AStr) then
     raise Exception.Create('bad list parameter in CalcCharOffsets');
@@ -235,11 +237,25 @@ begin
   i:= 0;
   NListIndex:= 0;
 
+  SizeDigit:= C.TextWidth('0');
+  SizeW:= C.TextWidth('W');
+  FontMonospaced:= SizeDigit=SizeW;
+  ScaleDigit:= SizeDigit * 100 div ACharSize;
+
   repeat
     Inc(i);
     if i>Length(S) then Break;
 
-    Scale:= C.TextWidth(UTF8Encode(WideString(S[i]))) * 100 div ACharSize;
+    if FontMonospaced then
+      case Ord(S[i]) of
+        32..255:
+          Scale:= ScaleDigit;
+        else
+          Scale:= C.TextWidth(UTF8Encode(WideString(S[i]))) * 100 div ACharSize;
+      end
+    else
+      Scale:= C.TextWidth(UTF8Encode(WideString(S[i]))) * 100 div ACharSize;
+
     NOffset:= 1;
 
     {
