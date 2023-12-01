@@ -22,7 +22,7 @@ interface
 uses
   Messages, SysUtils, Classes, Controls, Graphics,
   ExtCtrls,
-  LMessages,
+  LMessages, LazUTF8,
   EncConv,
   ATBinHex_Encoding,
   {$ifdef NOTIF} ATFileNotification, {$endif}
@@ -1722,6 +1722,7 @@ var
     const AFilePos: Int64;
     ASelectAll: Boolean = False; AHilight: Boolean = False);
   var
+    LineAnsi: AnsiString;
     Len, YHeight: Integer;
     nStart, nEnd: Int64;
     InvRect: TRect;
@@ -1744,7 +1745,10 @@ var
     if StringExtent(C, ALine, Dx, OutputOptions) then
     begin
       if ASelectAll then
-        InvRect:= Rect(AX, AY, AX + Dx[Length(ALine)], AY + YHeight)
+      begin
+        nStart:= 0;
+        nEnd:= Length(ALine);
+      end
       else
       begin
         nStart := (FSelStart - AFilePos) div CharSize;
@@ -1752,9 +1756,16 @@ var
 
         nEnd:= (FSelStart + FSelLength - AFilePos) div CharSize;
         I64LimitMax(nEnd, Length(ALine));
-
-        InvRect:= Rect(AX + Dx[nStart], AY, AX + Dx[nEnd], AY + YHeight);
       end;
+
+      if TextEncoding=eidUTF8 then
+      begin
+        LineAnsi := UTF8Encode(ALine);
+        nStart := UTF8Length(PChar(LineAnsi), nStart);
+        nEnd := UTF8Length(PChar(LineAnsi), nEnd);
+      end;
+
+      InvRect:= Rect(AX + Dx[nStart], AY, AX + Dx[nEnd], AY + YHeight);
 
       CanvasInvertRect(C, InvRect, clBlack);
     end;
