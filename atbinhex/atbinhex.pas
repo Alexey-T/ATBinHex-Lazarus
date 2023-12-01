@@ -1044,7 +1044,7 @@ begin
   if AStr='' then Exit;
 
   SetLength(List, Length(AStr));
-  SCalcCharOffsets(AStr, List, AOptions.TabSize);
+  SCalcCharOffsets(ACanvas, AOptions.TextSize.X, AStr, List, AOptions.TabSize);
 
   for i:= 0 to Length(List)-1 do
     AExtent[i+1]:= List[i]*AOptions.TextSize.X div 100;
@@ -1757,7 +1757,6 @@ var
       end;
 
       CanvasInvertRect(C, InvRect, clBlack);
-      Invalidate;
     end;
   end;
 

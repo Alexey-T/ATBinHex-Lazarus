@@ -16,7 +16,7 @@ uses
   atbinhex_stringproc;
 
 procedure CanvasTextOut(C: TCanvas; PosX, PosY: integer; const S: UnicodeString; ATabSize: integer; ACharSize: TPoint);
-function CanvasTextSpaces(const S: atString; ATabSize: integer): integer;
+function CanvasTextSpaces(C: TCanvas; ACharSize: integer; const S: atString; ATabSize: integer): integer;
 function CanvasTextWidth(C: TCanvas; const S: atString; ATabSize: integer; ACharSize: TPoint): integer;
 procedure CanvasInvertRect(C: TCanvas; const R: TRect; AColor: TColor);
 
@@ -29,20 +29,20 @@ uses
   {$endif}
   LCLIntf;
 
-function CanvasTextSpaces(const S: atString; ATabSize: integer): integer;
+function CanvasTextSpaces(C: TCanvas; ACharSize: integer; const S: atString; ATabSize: integer): integer;
 var
   List: array of integer;
 begin
   Result:= 0;
   if S='' then Exit;
   SetLength(List, Length(S));
-  SCalcCharOffsets(S, List, ATabSize); //gets text width in percents of avg-char
+  SCalcCharOffsets(C, ACharSize, S, List, ATabSize); //gets text width in percents of avg-char
   Result:= List[High(List)] div 100;
 end;
 
 function CanvasTextWidth(C: TCanvas; const S: atString; ATabSize: integer; ACharSize: TPoint): integer;
 begin
-  Result:= CanvasTextSpaces(S, ATabSize)*ACharSize.X;
+  Result:= CanvasTextSpaces(C, ACharSize.X, S, ATabSize)*ACharSize.X;
 end;
 
 function StringNeedsDxOffsets(const S: UnicodeString): boolean;

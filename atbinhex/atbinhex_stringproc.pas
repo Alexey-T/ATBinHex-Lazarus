@@ -12,7 +12,7 @@ unit ATBinHex_StringProc;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, Graphics;
 
 type
   atString = UnicodeString;
@@ -30,10 +30,11 @@ function BoolToPlusMinusOne(b: boolean): integer;
 function SSwapEndian(const S: UnicodeString): UnicodeString;
 function SGetIndentSize(const S: atString; ATabSize: integer): integer;
 
-procedure SCalcCharOffsets(const AStr: atString; var AList: array of integer; ATabSize: integer);
+procedure SCalcCharOffsets(C: TCanvas; ACharSize: integer; const AStr: atString; var AList: array of integer; ATabSize: integer);
 function SExpandTabulations(const S: atString; ATabSize: integer): atString;
-function SFindWordWrapPosition(const S: atString; AColumns, ATabSize: integer): integer;
-function SFindClickedPosition(const Str: atString;
+function SFindWordWrapPosition(C: TCanvas; ACharSize: integer; const S: atString; AColumns, ATabSize: integer): integer;
+function SFindClickedPosition(C: TCanvas;
+  const Str: atString;
   APixelsFromLeft, ACharSize, ATabSize: integer;
   AAllowVirtualPos: boolean): integer;
 
@@ -73,7 +74,7 @@ begin
   showmessage('Offsets'#13+s);
 end;
 
-function SFindWordWrapPosition(const S: atString; AColumns, ATabSize: integer): integer;
+function SFindWordWrapPosition(C: TCanvas; ACharSize: integer; const S: atString; AColumns, ATabSize: integer): integer;
 var
   N, NAvg: integer;
   List: array of integer;
@@ -84,7 +85,7 @@ begin
   AColumns*= 100;
 
   SetLength(List, Length(S));
-  SCalcCharOffsets(S, List, ATabSize);
+  SCalcCharOffsets(C, ACharSize, S, List, ATabSize);
 
   if List[High(List)]<=AColumns then
   begin
@@ -219,10 +220,8 @@ begin
 end;
 
 
-procedure SCalcCharOffsets(const AStr: atString; var AList: array of integer;
+procedure SCalcCharOffsets(C: TCanvas; ACharSize: integer; const AStr: atString; var AList: array of integer;
   ATabSize: integer);
-const
-  cScaleTest = 190; //debug, for test code, commented
 var
   S: atString;
   NOffset, NTabSize, NListIndex, i: integer;
@@ -240,19 +239,10 @@ begin
     Inc(i);
     if i>Length(S) then Break;
 
-    if IsCharFullWidth(S[i]) then
-      Scale:= cCharScaleFullwidth
-    else
-      Scale:= 100;
+    Scale:= C.TextWidth(UTF8Encode(WideString(S[i]))) * 100 div ACharSize;
+    NOffset:= 1;
 
-    ////debug
     {
-    if IsSpaceChar(S[i]) then
-      Scale:= 100
-    else
-      Scale:= cTestScale;
-      }
-
     if S[i]<>#9 then
       NOffset:= 1
     else
@@ -264,11 +254,14 @@ begin
         Insert(StringOfChar(' ', NTabSize-1), S, i);
       Inc(i, NTabSize-1);
     end;
+    }
 
+    {
     if (i<Length(S)) and IsAccentChar(S[i+1]) then
     begin
       NOffset:= 0;
     end;
+    }
 
     if NListIndex=0 then
       AList[NListIndex]:= NOffset*Scale
@@ -280,7 +273,9 @@ begin
 end;
 
 
-function SFindClickedPosition(const Str: atString;
+function SFindClickedPosition(
+  C: TCanvas;
+  const Str: atString;
   APixelsFromLeft, ACharSize, ATabSize: integer;
   AAllowVirtualPos: boolean): integer;
 var
@@ -300,7 +295,7 @@ begin
   SetLength(ListReal, Length(Str));
   SetLength(ListEnds, Length(Str));
   SetLength(ListMid, Length(Str));
-  SCalcCharOffsets(Str, ListReal, ATabSize);
+  SCalcCharOffsets(C, ACharSize, Str, ListReal, ATabSize);
 
   //positions of each char end
   for i:= 0 to High(ListEnds) do
