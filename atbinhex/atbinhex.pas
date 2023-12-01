@@ -1005,7 +1005,7 @@ begin
   {$endif}
 
   S:= SConvertForOut(AStr, AOptions);
-  CanvasTextOut(ACanvas, AX, AY, S, AOptions.TabSize, AOptions.TextSize);
+  CanvasTextOut(ACanvas, AX, AY, S);
 end;
 
 function StringWidth(
@@ -1016,7 +1016,7 @@ var
   S: UnicodeString;
 begin
   S:= SConvertForOut(AStr, AOptions);
-  Result := CanvasTextWidth(ACanvas, S, AOptions.TabSize, AOptions.TextSize);
+  Result := CanvasTextWidth(ACanvas, S);
 end;
 
 procedure DebugExtent(const AStr: UnicodeString; const A: TATStringExtent);
@@ -1044,10 +1044,10 @@ begin
   if AStr='' then Exit;
 
   SetLength(List, Length(AStr));
-  SCalcCharOffsets(ACanvas, AOptions.TextSize.X, AStr, List, AOptions.TabSize);
+  SCalcCharOffsets(ACanvas, AStr, List);
 
   for i:= 0 to Length(List)-1 do
-    AExtent[i+1]:= List[i]*AOptions.TextSize.X div 100;
+    AExtent[i+1]:= List[i];
 end;
 
 function IsSeparator(ch: WideChar): Boolean;
