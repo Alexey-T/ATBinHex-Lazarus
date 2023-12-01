@@ -1,5 +1,6 @@
 
 2023.12.01
+* change: disabled selection with UTF8 encoding, to hide wrong selection with UTF8 
 * change: support proportional fonts, but now rendering is slower due to call of TCanvas.TextWidth for each char
 + add: DoubleBuffered property, it now allows correct rendering on macOS Retina if set to False
 - fix: TextWrap is now working
