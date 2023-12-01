@@ -2461,6 +2461,10 @@ begin
     FActiveCanvas:= Canvas;
   FActiveCanvas.Font.Assign(Self.Font);
 
+  //we have problems with rendering selection in UTF8 encoding,
+  //let's disable selection yet
+  TextEnableSel:= TextEncoding<>eidUTF8;
+
   if DoubleBuffered then
   begin
     DrawTo(FBmp.Canvas);
