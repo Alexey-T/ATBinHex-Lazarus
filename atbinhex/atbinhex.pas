@@ -2491,6 +2491,8 @@ begin
   Result := APos;
   NormalizePos(Result);
   PosTemp := Result;
+  ch := GetChar(PosTemp);
+  if Pos(ch, cSepWord)>0 then exit;
   for i := 1 to cMaxLengthSel do
   begin
     NextPos(PosTemp, ADir);
