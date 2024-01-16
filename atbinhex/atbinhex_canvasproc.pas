@@ -43,42 +43,43 @@ function StringNeedsDxOffsets(const S: UnicodeString): boolean;
 var
   i: integer;
 begin
+  //we need ExtTextOut offsets for Qt and Cocoa: char widths are float numbers there
+  {$if defined(LCLQt5) or defined(LCLQt6) or defined(LCLCocoa)}
+  exit(true);
+  {$endif}
+
   for i:= 1 to Length(S) do
     if Ord(S[i])>$FF then
       exit(true);
   Result:= false;
 end;
 
+{$ifdef windows}
+procedure CanvasTextOut(C: TCanvas; PosX, PosY: integer; const S: UnicodeString);
+begin
+  Windows.ExtTextOutW(C.Handle, PosX, PosY, 0, nil, PWideChar(S), Length(S), nil);
+end;
+{$else}
 procedure CanvasTextOut(C: TCanvas; PosX, PosY: integer; const S: UnicodeString);
 var
-  {
-  ListReal: array of integer;
   ListInt: array of Longint;
   Dx: array of Longint;
-  }
   DxPtr: pointer;
   Buf: string;
   i: integer;
 begin
   if S='' then Exit;
 
-  DxPtr:= nil;
-
-  {
   if not StringNeedsDxOffsets(S) then
     DxPtr:= nil
   else
   begin
-    SetLength(ListReal, Length(S));
     SetLength(ListInt, Length(S));
     SetLength(Dx, Length(S));
 
-    SCalcCharOffsets(S, ListReal, ATabSize);
+    SCalcCharOffsets(C, S, ListInt);
 
-    for i:= 0 to High(ListReal) do
-      ListInt[i]:= ListReal[i]*ACharSize.X div 100;
-
-    for i:= 0 to High(ListReal) do
+    for i:= 0 to High(ListInt) do
       if i=0 then
         Dx[i]:= ListInt[i]
       else
@@ -86,15 +87,11 @@ begin
 
     DxPtr:= @Dx[0];
   end;
-  }
 
-  {$ifdef windows}
-  Windows.ExtTextOutW(C.Handle, PosX, PosY, 0, nil, PWideChar(S), Length(S), DxPtr);
-  {$else}
   Buf:= UTF8Encode(S);
   ExtTextOut(C.Handle, PosX, PosY, 0, nil, PChar(Buf), Length(Buf), DxPtr);
-  {$endif}
 end;
+{$endif}
 
 (*
 var
