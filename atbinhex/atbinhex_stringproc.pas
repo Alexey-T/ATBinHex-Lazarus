@@ -237,7 +237,7 @@ begin
     if FontMonospaced and (Ord(S[i])>=32) and (Ord(S[i])<=255) then
       Size:= SizeDigit
     else
-      Size:= C.TextWidth(UTF8Encode(WideString(S[i])));
+      Size:= C.TextWidth(UTF8Encode(UnicodeString(S[i])));
 
     if i=1 then
       AList[i-1]:= Size
