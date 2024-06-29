@@ -22,7 +22,8 @@ uses
   TntClasses,
   {$ENDIF}
   atbinhex_encoding,
-  EncConv;
+  EncConv,
+  Math;
 
 type
   TATStreamSearchOption = (
@@ -33,7 +34,8 @@ type
     {$IFDEF REGEX} asoRegExMLine, {$ENDIF}
     asoFromPage, //ATBinHex only, ignored in ATStreamSearch
     asoFromPos, //ATBinHex only
-    asoShowAll //ATBinHex only
+    asoShowAll, //ATBinHex only
+    asoInSelection //ATBinHex only
     );
 
   TATStreamSearchOptions = set of TATStreamSearchOption;
@@ -102,12 +104,12 @@ type
 
     function TextFind(
       const AText: string;
-      const AStartPos: Int64;
+      const AStartPos, AEndPos: Int64;
       AEncoding: TEncConvId;
       AOptions: TATStreamSearchOptions): Int64;
     function TextFindFirst(
       const AText: string;
-      const AStartPos: Int64;
+      const AStartPos, AEndPos: Int64;
       AEncoding: TEncConvId;
       AOptions: TATStreamSearchOptions): Boolean;
     function TextFindNext(AFindPrevious: Boolean = False): Boolean;
@@ -126,7 +128,7 @@ type
 
     function FindFirst(
       const AText: string;
-      const AStartPos: Int64;
+      const AStartPos, AEndPos: Int64;
       AEncoding: TEncConvId;
       ACharSize: integer;
       AOptions: TATStreamSearchOptions): Boolean;
@@ -425,18 +427,18 @@ end;
 
 function TATStreamSearch.TextFind(
   const AText: string;
-  const AStartPos: Int64;
+  const AStartPos, AEndPos: Int64;
   AEncoding: TEncConvId;
   AOptions: TATStreamSearchOptions): Int64;
 var
   Buffer: array[0 .. cBlockSize - 1] of char;
-  BufPosMax, BufPos, ReadPos: Int64;
+  BufPosMin, BufPosMax, TotalMax, BufPos, ReadPos: Int64;
   ReadSize, BytesRead: DWORD;
   SBufferA: string;
   SBufferW: UnicodeString;
   TextInCodepage: string;
   StringPos: Integer;
-  AForward, AWholeWords, ACaseSens, AContinue: Boolean;
+  bForward, bWholeWords, bCaseSens, bContinue: Boolean;
 begin
   Result := -1;
 
@@ -450,12 +452,17 @@ begin
 
   //2. Init variables
 
-  AForward := not (asoBackward in AOptions);
-  AWholeWords := asoWholeWords in AOptions;
-  ACaseSens := asoCaseSens in AOptions;
+  bForward := not (asoBackward in AOptions);
+  bWholeWords := asoWholeWords in AOptions;
+  bCaseSens := asoCaseSens in AOptions;
 
-  BufPosMax := LastPos(FStreamSize, FCharSize);
-  NormalizePos(BufPosMax, FCharSize);
+  BufPosMin := Min(AStartPos, AEndPos);
+  BufPosMax := Max(AStartPos, AEndPos);
+
+  TotalMax := LastPos(FStreamSize, FCharSize);
+  NormalizePos(TotalMax, FCharSize);
+  if BufPosMax > TotalMax then
+    BufPosMax := TotalMax;
 
   BufPos := AStartPos;
   NormalizePos(BufPos, FCharSize);
@@ -467,30 +474,30 @@ begin
 
   if BufPos > BufPosMax then
     begin
-      if AForward then
+      if bForward then
         Exit
       else
         BufPos := BufPosMax;
     end;
 
-  if BufPos < 0 then
+  if BufPos < BufPosMin then
     begin
-      if AForward then
-        BufPos := 0
+      if bForward then
+        BufPos := BufPosMin
       else
         Exit;
     end;
 
   //3. Search
 
-  DoProgress(BufPos, FStreamSize, AContinue);
-  if not AContinue then Exit;
+  DoProgress(BufPos, FStreamSize, bContinue);
+  if not bContinue then Exit;
 
   repeat
     ReadPos := BufPos;
     ReadSize := cBlockSize;
 
-    if not AForward then
+    if not bForward then
       begin
         Dec(ReadPos, cBlockSize - FCharSize);
         I64LimitMin(ReadPos, 0);
@@ -512,12 +519,12 @@ begin
     if FCharSize = 2 then
       begin
         SBufferW := SetStringW(@Buffer, BytesRead, false);
-        StringPos := SFindTextW(AText, SBufferW, AForward, AWholeWords, ACaseSens, BytesRead < cBlockSize);
+        StringPos := SFindTextW(AText, SBufferW, bForward, bWholeWords, bCaseSens, BytesRead < cBlockSize);
       end
     else
       begin
         SetString(SBufferA, Buffer, BytesRead);
-        StringPos := SFindText(TextInCodepage, SBufferA, AForward, AWholeWords, ACaseSens, BytesRead < cBlockSize);
+        StringPos := SFindText(TextInCodepage, SBufferA, bForward, bWholeWords, bCaseSens, BytesRead < cBlockSize);
       end;
 
     if StringPos > 0 then
@@ -526,31 +533,32 @@ begin
         Exit
       end;
 
-    DoProgress(BufPos, FStreamSize, AContinue);
-    if not AContinue then Exit;
+    DoProgress(BufPos, FStreamSize, bContinue);
+    if not bContinue then Exit;
 
-    Inc(BufPos, Int64(ReadSize) * BoolToSign(AForward));
-    Dec(BufPos, Int64(Length(AText) + 1) * FCharSize * BoolToSign(AForward));
+    Inc(BufPos, Int64(ReadSize) * BoolToSign(bForward));
+    Dec(BufPos, Int64(Length(AText) + 1) * FCharSize * BoolToSign(bForward));
     NormalizePos(BufPos, FCharSize);
 
-    if (BufPos < 0) or (BufPos > BufPosMax) then Exit;
+    if bForward then
+      begin
+        if BufPos > BufPosMax then Exit;
+      end
+    else
+      begin
+        if BufPos < BufPosMin then Exit;
+      end;
 
   until BytesRead < cBlockSize;
 end;
 
 function TATStreamSearch.TextFindFirst(
   const AText: string;
-  const AStartPos: Int64;
+  const AStartPos, AEndPos: Int64;
   AEncoding: TEncConvId;
   AOptions: TATStreamSearchOptions): Boolean;
-var
-  ARealStartPos: Int64;
 begin
-  ARealStartPos := AStartPos;
-  if (asoBackward in AOptions) and (AStartPos = 0) then
-    ARealStartPos := High(Int64);
-
-  FFoundStart := TextFind(AText, ARealStartPos, AEncoding, AOptions);
+  FFoundStart := TextFind(AText, AStartPos, AEndPos, AEncoding, AOptions);
   Result := FFoundStart >= 0;
 
   if Result then
@@ -561,26 +569,32 @@ end;
 
 function TATStreamSearch.TextFindNext(AFindPrevious: Boolean = False): Boolean;
 var
-  AStartPos,
-  AForwardPos, ABackwardPos: Int64;
-  ANewOptions: TATStreamSearchOptions;
+  NStartPos, NEndPos,
+  NForwardPos, NBackwardPos: Int64;
+  NewOptions: TATStreamSearchOptions;
 begin
-  AForwardPos := FFoundStart + FCharSize;
-  ABackwardPos := FFoundStart + (Length(FSavedText) - 2) * FCharSize;
+  NForwardPos := FFoundStart + FCharSize;
+  NBackwardPos := FFoundStart + (Length(FSavedText) - 2) * FCharSize;
 
-  if (asoBackward in FSavedOptions) xor (AFindPrevious) then
-    AStartPos := ABackwardPos
+  if (asoBackward in FSavedOptions) xor AFindPrevious then
+  begin
+    NStartPos := NBackwardPos;
+    NEndPos := 0;
+  end
   else
-    AStartPos := AForwardPos;
+  begin
+    NStartPos := NForwardPos;
+    NEndPos := High(Int64);
+  end;
 
-  ANewOptions := FSavedOptions;
+  NewOptions := FSavedOptions;
   if AFindPrevious then
-    if (asoBackward in ANewOptions) then
-      Exclude(ANewOptions, asoBackward)
+    if (asoBackward in NewOptions) then
+      Exclude(NewOptions, asoBackward)
     else
-      Include(ANewOptions, asoBackward);
+      Include(NewOptions, asoBackward);
 
-  FFoundStart := TextFind(FSavedText, AStartPos, FSavedEncoding, ANewOptions);
+  FFoundStart := TextFind(FSavedText, NStartPos, NEndPos, FSavedEncoding, NewOptions);
   Result := FFoundStart >= 0;
 
   if Result then
@@ -594,7 +608,7 @@ end;
 
 function TATStreamSearch.FindFirst(
   const AText: string;
-  const AStartPos: Int64;
+  const AStartPos, AEndPos: Int64;
   AEncoding: TEncConvId;
   ACharSize: integer;
   AOptions: TATStreamSearchOptions): Boolean;
@@ -619,7 +633,7 @@ begin
   end
   else
   {$ENDIF}
-    Result := TextFindFirst(AText, AStartPos, AEncoding, AOptions);
+    Result := TextFindFirst(AText, AStartPos, AEndPos, AEncoding, AOptions);
 end;
 
 function TATStreamSearch.FindNext(AFindPrevious: Boolean = False): Boolean;

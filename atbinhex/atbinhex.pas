@@ -4514,8 +4514,8 @@ function TATBinHex.FindFirst(
   AOptions: TATStreamSearchOptions;
   const AFromPos: Int64 = -1): Boolean;
 var
-  AStreamEncoding: TEncConvId;
-  AStartPos: Int64;
+  NStreamEncoding: TEncConvId;
+  NStartPos, NEndPos: Int64;
 begin
   Assert(SourceAssigned, 'Source not assigned: FindFirst');
 
@@ -4523,28 +4523,47 @@ begin
   if IsModeUnicode then
   begin
     //if IsUnicodeBE then
-    //  AStreamEncoding := vencUnicodeBE
+    //  NStreamEncoding := vencUnicodeBE
     //else
-    //  AStreamEncoding := vencUnicodeLE;
-    AStreamEncoding := eidCP1252;
+    //  NStreamEncoding := vencUnicodeLE;
+    NStreamEncoding := eidCP1252;
   end
   else
   begin
-    AStreamEncoding := FTextEncoding;
+    NStreamEncoding := FTextEncoding;
   end;
 
+  if (asoBackward in AOptions) then
+    NEndPos := 0
+  else
+    NEndPos := High(Int64);
+
   //Handle "Origin" option:
+  if (asoInSelection in AOptions) then
+  begin
+    if (asoBackward in AOptions) then
+      begin
+        NStartPos := FSelStart+FSelLength;
+        NEndPos := FSelStart;
+      end
+    else
+      begin
+        NStartPos := FSelStart;
+        NEndPos := FSelStart+FSelLength;
+      end;
+  end
+  else
   if (asoFromPos in AOptions) and (AFromPos >= 0) then
-    AStartPos := AFromPos
+    NStartPos := AFromPos
   else
   if not (asoFromPage in AOptions) then
-    AStartPos := 0 //0 is valid for both directions
+    NStartPos := 0 //0 is valid for both directions
   else
   begin
     if not (asoBackward in AOptions) then
-      AStartPos := FViewPos //Forward: page start position
+      NStartPos := FViewPos //Forward: page start position
     else
-      AStartPos := FViewPos + FViewPageSize; //Backward: page end position
+      NStartPos := FViewPos + FViewPageSize; //Backward: page end position
   end;
 
   try
@@ -4561,7 +4580,7 @@ begin
     Exit;
   end;
 
-  Result := FSearch.FindFirst(AText, AStartPos, AStreamEncoding, CharSize, AOptions);
+  Result := FSearch.FindFirst(AText, NStartPos, NEndPos, NStreamEncoding, CharSize, AOptions);
   if Result then
     SetSelection(FSearch.FoundStart, FSearch.FoundLength, true);
 end;
@@ -5050,7 +5069,9 @@ begin
     FSearch2.Stream := MS;
 
     if FSearch2.FindFirst(
-      FSearch.SavedText, 0,
+      FSearch.SavedText,
+      0,
+      High(Int64),
       FSearch.SavedEncoding,
       CharSize,
       FSearch.SavedOptions - [asoBackward]) then
