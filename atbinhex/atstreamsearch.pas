@@ -511,6 +511,12 @@ begin
         ReadSize := BufPos - ReadPos + FCharSize;
         if ReadSize > cBlockSize then
           ReadSize := cBlockSize;
+      end
+    else
+      begin
+        // do not find after AEndPos
+        ReadSize := Min(Int64(ReadSize), AEndPos - ReadPos);
+        if ReadSize <= 0 then Exit;
       end;
 
     try
