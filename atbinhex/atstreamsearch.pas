@@ -75,6 +75,8 @@ type
     FSavedTextLen: integer;
     FSavedOptions: TATStreamSearchOptions;
     //FSearchForValidUTF16: Boolean;
+    FSavedStartPos: Int64;
+    FSavedEndPos: Int64;
 
     procedure FreeStream;
     procedure InitSavedOptions;
@@ -115,7 +117,7 @@ type
     function TextFindNext(AFindPrevious: Boolean = False): Boolean;
 
   public
-    constructor Create(AOwner: TComponent);
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SaveOptions;
     procedure RestoreOptions;
@@ -125,6 +127,8 @@ type
     property SavedText: string read FSavedText;
     property SavedEncoding: TEncConvId read FSavedEncoding;
     property SavedOptions: TATStreamSearchOptions read FSavedOptions;
+    property SavedStartPos: Int64 read FSavedStartPos;
+    property SavedEndPos: Int64 read FSavedEndPos;
 
     function FindFirst(
       const AText: string;
@@ -230,6 +234,8 @@ begin
   FSavedTextLen := 0;
   FSavedEncoding := eidCP1252;
   FSavedOptions := [];
+  FSavedStartPos := 0;
+  FSavedEndPos := High(Int64);
 end;
 
 procedure TATStreamSearch.SetFileName(const AFileName: string);
@@ -579,12 +585,14 @@ begin
   if (asoBackward in FSavedOptions) xor AFindPrevious then
   begin
     NStartPos := NBackwardPos;
-    NEndPos := 0;
+    NEndPos := FSavedStartPos;
+    I64LimitMin(NStartPos, NEndPos + FSavedTextLen - FCharSize);
   end
   else
   begin
     NStartPos := NForwardPos;
-    NEndPos := High(Int64);
+    NEndPos := FSavedEndPos;
+    I64LimitMax(NStartPos, NEndPos - FSavedTextLen);
   end;
 
   NewOptions := FSavedOptions;
@@ -623,6 +631,8 @@ begin
 
   FSavedEncoding := AEncoding;
   FSavedOptions := AOptions;
+  FSavedStartPos := AStartPos;
+  FSavedEndPos := AEndPos;
   FCharSize := ACharSize;
 
   {$IFDEF REGEX}
