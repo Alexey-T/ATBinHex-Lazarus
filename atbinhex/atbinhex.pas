@@ -523,7 +523,7 @@ type
     function FindNext(AFindPrevious: Boolean = False): Boolean;
     property SearchResultStart: Int64 read GetSearchResultStart;
     property SearchResultLength: Int64 read GetSearchResultLength;
-    property SearchStarted: Boolean read FSearchStarted;
+    property SearchStarted: Boolean read FSearchStarted write FSearchStarted;
     property SearchString: string read GetSearchString;
     {$endif}
 
