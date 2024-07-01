@@ -232,6 +232,9 @@ type
     FSelStart: Int64;
     FSelLength: Int64;
     FMode: TATBinHexMode;
+    FMarkerStart: Int64;
+    FMarkerLength: Int64;
+    FMarkerLineWidth: Integer;
     FUrlArray: TATUrlArray;
     FFindArray: TATFindArray;
     FUrlShow: Boolean;
@@ -528,6 +531,9 @@ type
     procedure CopyToClipboard(AAsHex: Boolean = False);
     property SelStart: Int64 read FSelStart;
     property SelLength: Int64 read FSelLength;
+    property MarkerStart: Int64 read FMarkerStart write FMarkerStart;
+    property MarkerLength: Int64 read FMarkerLength write FMarkerLength;
+    property MarkerLineWidth: Integer read FMarkerLineWidth write FMarkerLineWidth;
     property SelText: AnsiString read GetSelText;
     property SelTextShort: AnsiString read GetSelTextShort;
     property SelTextW: UnicodeString read GetSelTextW;
@@ -1717,6 +1723,51 @@ var
     end;
   end;
 
+  procedure DrawMarker(
+    const ALine: UnicodeString; AX, AY: Integer;
+    const AFilePos: Int64);
+  var
+    LineAnsi: AnsiString;
+    Len, YHeight: Integer;
+    nStart, nEnd: Int64;
+    FRect: TRect;
+  begin
+    if FMarkerLength <= 0 then Exit;
+
+    Len := Length(ALine);
+    if (FMarkerStart > AFilePos + (Len - 1) * CharSize) or
+      (FMarkerStart + FMarkerLength - 1 * CharSize < AFilePos) then Exit;
+
+    if (AX >= Width) or (AY >= Height) then Exit;
+
+    YHeight := FFontHeight;
+
+    if StringExtent(C, ALine, Dx, OutputOptions) then
+    begin
+      nStart := (FMarkerStart - AFilePos) div CharSize;
+      I64LimitMin(nStart, 0);
+
+      nEnd:= (FMarkerStart + FMarkerLength - AFilePos) div CharSize;
+      I64LimitMax(nEnd, Length(ALine));
+
+      if TextEncoding=eidUTF8 then
+      begin
+        LineAnsi := UTF8Encode(ALine);
+        nStart := UTF8Length(PChar(LineAnsi), nStart);
+        nEnd := UTF8Length(PChar(LineAnsi), nEnd);
+      end;
+
+      FRect:= Rect(AX + Dx[nStart], AY, AX + Dx[nEnd], AY + YHeight);
+
+      C.Brush.Color := clRed;
+      C.FillRect(
+        FRect.Left,
+        FRect.Bottom - FMarkerLineWidth,
+        FRect.Right,
+        FRect.Bottom);
+    end;
+  end;
+
   procedure SelectLine(
     const ALine: UnicodeString; AX, AY: Integer;
     const AFilePos: Int64;
@@ -1909,6 +1960,7 @@ begin
 
                 StringOut(C, APosTextX - FHViewPos, APosTextY, LineText, OutputOptions(WithCR));
                 SelectLine(LineText, APosTextX - FHViewPos, APosTextY, APos, False{SelectAll}, True{Hilight});
+                DrawMarker(LineText, APosTextX - FHViewPos, APosTextY, APos);
                 if Assigned(AStrings) then
                   AStrings.Add(LineText, APosTextX - FHViewPos, APosTextY, APos);
 
@@ -2024,6 +2076,7 @@ begin
                   LineW := GetHex(APosEnd);
                   StringOut(C, X - FHViewPos, Y, LineW, OutputOptions);
                   SelectLine(LineW, X - FHViewPos, Y, FBufferPos + APos + j, True);
+                  DrawMarker(LineW, X - FHViewPos, Y, FBufferPos + APos + j);
 
                   //Save hex offsets
                   TStrPositions(FStrings).AddHex(
@@ -2058,6 +2111,7 @@ begin
               APosTextY := Y;
               StringOut(C, APosTextX - FHViewPos, APosTextY, LineText, OutputOptions);
               SelectLine(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos, False{SelectAll}, True{Hilight});
+              DrawMarker(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos);
               if Assigned(AStrings) then
                 AStrings.Add(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos);
 
@@ -2133,6 +2187,7 @@ begin
                   LineW := GetHex(APosEnd);
                   StringOut(C, X - FHViewPos, Y, LineW, OutputOptions);
                   SelectLine(LineW, X - FHViewPos, Y, FBufferPos + APos + 2 * j, True);
+                  DrawMarker(LineW, X - FHViewPos, Y, FBufferPos + APos + 2 * j);
 
                   //Save hex offset
                   TStrPositions(FStrings).AddHex(
@@ -2167,6 +2222,7 @@ begin
               APosTextY := Y;
               StringOut(C, APosTextX - FHViewPos, APosTextY, LineText, OutputOptions);
               SelectLine(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos, False{SelectAll}, True{Hilight});
+              DrawMarker(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos);
               if Assigned(AStrings) then
                 AStrings.Add(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos);
 
@@ -2220,6 +2276,7 @@ begin
               APosTextY := DrawOffsetY + (i - 1) * FFontHeight;
               StringOut(C, APosTextX - FHViewPos, APosTextY, LineText, OutputOptions);
               SelectLine(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos, False{SelectAll}, True{Hilight});
+              DrawMarker(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos);
               if Assigned(AStrings) then
                 AStrings.Add(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos);
             end;
@@ -2931,6 +2988,9 @@ begin
   FHViewWidth := 0;
   FSelStart := 0;
   FSelLength := 0;
+  FMarkerStart := 0;
+  FMarkerLength := 0;
+  FMarkerLineWidth := 3;
   FMouseDown := False;
   FMouseStart := -1;
   FMouseStartShift := -1;
@@ -4581,8 +4641,20 @@ begin
   end;
 
   Result := FSearch.FindFirst(AText, NStartPos, NEndPos, NStreamEncoding, CharSize, AOptions);
+
+  FMarkerStart := 0;
+  FMarkerLength := 0;
   if Result then
-    SetSelection(FSearch.FoundStart, FSearch.FoundLength, true);
+  begin
+    if asoInSelection in AOptions then
+    begin
+      MarkerStart := FSearch.FoundStart;
+      MarkerLength := FSearch.FoundLength;
+      Invalidate;
+    end
+    else
+      SetSelection(FSearch.FoundStart, FSearch.FoundLength, true);
+  end;
 end;
 {$endif}
 
@@ -4592,8 +4664,20 @@ begin
   Assert(SourceAssigned, 'Source not assigned: FindNext');
   Assert(FSearchStarted, 'Search not started: FindNext');
   Result := FSearch.FindNext(AFindPrevious);
+
+  FMarkerStart := 0;
+  FMarkerLength := 0;
   if Result then
-    SetSelection(FSearch.FoundStart, FSearch.FoundLength, true);
+  begin
+    if asoInSelection in FSearch.SavedOptions then
+    begin
+      MarkerStart := FSearch.FoundStart;
+      MarkerLength := FSearch.FoundLength;
+      Invalidate;
+    end
+    else
+      SetSelection(FSearch.FoundStart, FSearch.FoundLength, true);
+  end;
 end;
 {$endif}
 
