@@ -496,6 +496,7 @@ begin
 
   //3. Search
 
+  bContinue := True;
   DoProgress(BufPos, FStreamSize, bContinue);
   if not bContinue then Exit;
 
