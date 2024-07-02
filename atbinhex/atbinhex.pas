@@ -1763,6 +1763,8 @@ var
       end;
 
       FRect:= Rect(AX + Dx[nStart], AY, AX + Dx[nEnd], AY + YHeight);
+      if IsModeUnicode then
+        FRect.Right := FRect.Left + FRect.Width div 2;
 
       PrevColor := C.Brush.Color;
       C.Brush.Color := FTextColorMarker;
