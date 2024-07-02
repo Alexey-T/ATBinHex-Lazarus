@@ -54,12 +54,12 @@ type
     FStream: TStream;
     FStreamOwner: Boolean;
     FFileName: string;
-    FStreamStart,
-    FStreamSize,
-    FFoundStart,
+    FStreamStart: Int64;
+    FStreamSize: Int64;
+    FFoundStart: Int64;
     FFoundLength: Int64;
 
-    FSavStart,
+    FSavStart: Int64;
     FSavLen: Int64;
     FSavText: string;
     FSavOpt: TATStreamsearchoptions;
@@ -138,8 +138,8 @@ type
       AOptions: TATStreamSearchOptions): Boolean;
     function FindNext(AFindPrevious: Boolean = False): Boolean;
 
-    property FoundStart: Int64 read FFoundStart;
-    property FoundLength: Int64 read FFoundLength;
+    property FoundStart: Int64 read FFoundStart write FFoundStart;
+    property FoundLength: Int64 read FFoundLength write FFoundLength;
 
   published
     //property SearchForValidUTF16: Boolean read FSearchForValidUTF16 write FSearchForValidUTF16 default False;

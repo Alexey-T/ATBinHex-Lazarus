@@ -517,6 +517,7 @@ type
     //function Open(const AFileName: string; ARedraw: Boolean = True): Boolean;
     function OpenStream(AStream: TStream; ARedraw: Boolean = True): Boolean;
     procedure Reload;
+    procedure ResetSearch;
 
     {$ifdef SEARCH}
     function FindFirst(const AText: string; AOptions: TATStreamSearchOptions;
@@ -524,7 +525,7 @@ type
     function FindNext(AFindPrevious: Boolean = False): Boolean;
     property SearchResultStart: Int64 read GetSearchResultStart;
     property SearchResultLength: Int64 read GetSearchResultLength;
-    property SearchStarted: Boolean read FSearchStarted write FSearchStarted;
+    property SearchStarted: Boolean read FSearchStarted;
     property SearchString: string read GetSearchString;
     {$endif}
 
@@ -4786,6 +4787,16 @@ procedure TATBinHex.Reload;
 begin
   Assert(SourceAssigned, 'Source not assigned: Reload');
   SetMode(FMode);
+end;
+
+procedure TATBinHex.ResetSearch;
+begin
+  FSearchStarted := False;
+  if Assigned(FSearch) then
+  begin
+    FSearch.FoundStart := -1;
+    FSearch.FoundLength := 0;
+  end;
 end;
 
 procedure TATBinHex.SetTextOemSpecial(AValue: Boolean);
