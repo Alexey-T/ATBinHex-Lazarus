@@ -1108,7 +1108,7 @@ type
     procedure Clear(ACharSize: Integer = 1);
     procedure Add(const AStr: UnicodeString; AX, AY: Integer; const APos: Int64);
     function GetPosFromCoord(ACanvas: TCanvas; AX, AY: Integer; const AOptions: TATBinHexOutputOptions; AStrict: Boolean = False): Int64;
-    function GetCoordFromPos(ACanvas: TCanvas; const APos: Int64; const AOptions: TATBinHexOutputOptions; var AX, AY: Integer): Boolean;
+    function GetCoordFromPos(ACanvas: TCanvas; const APos: Int64; const AOptions: TATBinHexOutputOptions; out AX, AY: Integer): Boolean;
     function GetScreenWidth(ACanvas: TCanvas; const AOptions: TATBinHexOutputOptions): Integer;
     procedure AddHex(APos, AX, ANum, ALen: Integer);
     procedure AddHexMargin(AX: Integer);
@@ -1269,7 +1269,7 @@ begin
   end;
 end;
 
-function TStrPositions.GetCoordFromPos(ACanvas: TCanvas; const APos: Int64; const AOptions: TATBinHexOutputOptions; var AX, AY: Integer): Boolean;
+function TStrPositions.GetCoordFromPos(ACanvas: TCanvas; const APos: Int64; const AOptions: TATBinHexOutputOptions; out AX, AY: Integer): Boolean;
 var
   i: Integer;
   Dx: TATStringExtent;
@@ -4656,7 +4656,7 @@ begin
       Scroll(FMarkerStart, FSearchIndentVert, FSearchIndentHorz);
     end
     else
-      SetSelection(FSearch.FoundStart, FSearch.FoundLength, true);
+      SetSelection(FSearch.FoundStart, FSearch.FoundLength, True);
   end;
 end;
 {$endif}
@@ -4679,7 +4679,7 @@ begin
       Scroll(FMarkerStart, FSearchIndentVert, FSearchIndentHorz);
     end
     else
-      SetSelection(FSearch.FoundStart, FSearch.FoundLength, true);
+      SetSelection(FSearch.FoundStart, FSearch.FoundLength, True);
   end;
 end;
 {$endif}
