@@ -3639,7 +3639,7 @@ begin
     PosAt(ANewPos);
   end;
 
-  //to fix missing horz scroll on Lazarus
+  //to fix missing horz scroll (linux, lazarus)
   Application.ProcessMessages;
 
   //Scroll horizontally (redraw if needed and allowed)
