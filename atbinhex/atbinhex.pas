@@ -3639,6 +3639,9 @@ begin
     PosAt(ANewPos);
   end;
 
+  //to fix missing horz scroll on Lazarus
+  Application.ProcessMessages;
+
   //Scroll horizontally (redraw if needed and allowed)
   if TStrPositions(FStrings).GetCoordFromPos(
     FActiveCanvas, APos, OutputOptions, APosX, APosY) then
