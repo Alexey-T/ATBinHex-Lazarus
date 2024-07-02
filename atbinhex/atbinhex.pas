@@ -540,6 +540,7 @@ type
     property SelTextShortW: UnicodeString read GetSelTextShortW;
     procedure SetSelection(const AStart, ALength: Int64; AScroll: Boolean;
       AFireEvent: Boolean = True);
+    procedure SetMarker(const AStart, ALength: Int64);
     procedure Scroll(const APos: Int64; AIndentVert, AIndentHorz: Integer;
       ARedraw: Boolean = True);
     procedure SelectAll;
@@ -3584,6 +3585,13 @@ begin
     Result := SetStringW(@S[1], Length(S), IsUnicodeBE);
 end;
 
+procedure TATBinHex.SetMarker(const AStart, ALength: Int64);
+begin
+  FMarkerStart := AStart;
+  FMarkerLength := ALength;
+  Scroll(AStart, FSearchIndentVert, FSearchIndentHorz);
+end;
+
 procedure TATBinHex.SetSelection(
   const AStart, ALength: Int64;
   AScroll: Boolean;
@@ -4653,11 +4661,7 @@ begin
   if Result then
   begin
     if asoInSelection in AOptions then
-    begin
-      FMarkerStart := FSearch.FoundStart;
-      FMarkerLength := FSearch.FoundLength;
-      Scroll(FMarkerStart, FSearchIndentVert, FSearchIndentHorz);
-    end
+      SetMarker(FSearch.FoundStart, FSearch.FoundLength)
     else
       SetSelection(FSearch.FoundStart, FSearch.FoundLength, True);
   end;
@@ -4676,11 +4680,7 @@ begin
   if Result then
   begin
     if asoInSelection in FSearch.SavedOptions then
-    begin
-      FMarkerStart := FSearch.FoundStart;
-      FMarkerLength := FSearch.FoundLength;
-      Scroll(FMarkerStart, FSearchIndentVert, FSearchIndentHorz);
-    end
+      SetMarker(FSearch.FoundStart, FSearch.FoundLength)
     else
       SetSelection(FSearch.FoundStart, FSearch.FoundLength, True);
   end;
