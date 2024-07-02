@@ -4659,14 +4659,16 @@ begin
 
   Result := FSearch.FindFirst(AText, NStartPos, NEndPos, NStreamEncoding, CharSize, AOptions);
 
-  FMarkerStart := 0;
-  FMarkerLength := 0;
   if Result then
   begin
     if asoInSelection in AOptions then
       SetMarker(FSearch.FoundStart, FSearch.FoundLength)
     else
+    begin
+      FMarkerStart := 0;
+      FMarkerLength := 0;
       SetSelection(FSearch.FoundStart, FSearch.FoundLength, True);
+    end;
   end;
 end;
 {$endif}
@@ -4678,14 +4680,16 @@ begin
   Assert(FSearchStarted, 'Search not started: FindNext');
   Result := FSearch.FindNext(AFindPrevious);
 
-  FMarkerStart := 0;
-  FMarkerLength := 0;
   if Result then
   begin
     if asoInSelection in FSearch.SavedOptions then
       SetMarker(FSearch.FoundStart, FSearch.FoundLength)
     else
+    begin
+      FMarkerStart := 0;
+      FMarkerLength := 0;
       SetSelection(FSearch.FoundStart, FSearch.FoundLength, True);
+    end;
   end;
 end;
 {$endif}
