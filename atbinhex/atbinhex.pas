@@ -1775,7 +1775,7 @@ var
     end;
   end;
 
-  procedure DrawSelectedLine(
+  procedure SelectLine(
     const ALine: UnicodeString; AX, AY: Integer;
     const AFilePos: Int64;
     ASelectAll: Boolean = False; AHilight: Boolean = False);
@@ -1827,15 +1827,6 @@ var
 
       CanvasInvertRect(C, InvRect, clBlack);
     end;
-  end;
-
-  procedure SelectLine(
-    const ALine: UnicodeString; AX, AY: Integer;
-    const AFilePos: Int64;
-    ASelectAll: Boolean = False; AHilight: Boolean = False);
-  begin
-    DrawSelectedLine(ALine, AX, AY, AFilePos, ASelectAll, AHilight);
-    DrawMarker(ALine, AX, AY, AFilePos);
   end;
 
   function ActiveColor(AColor: TColor): TColor;
@@ -1976,6 +1967,7 @@ begin
 
                 StringOut(C, APosTextX - FHViewPos, APosTextY, LineText, OutputOptions(WithCR));
                 SelectLine(LineText, APosTextX - FHViewPos, APosTextY, APos, False{SelectAll}, True{Hilight});
+                DrawMarker(LineText, APosTextX - FHViewPos, APosTextY, APos);
                 if Assigned(AStrings) then
                   AStrings.Add(LineText, APosTextX - FHViewPos, APosTextY, APos);
 
@@ -2125,6 +2117,7 @@ begin
               APosTextY := Y;
               StringOut(C, APosTextX - FHViewPos, APosTextY, LineText, OutputOptions);
               SelectLine(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos, False{SelectAll}, True{Hilight});
+              DrawMarker(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos);
               if Assigned(AStrings) then
                 AStrings.Add(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos);
 
@@ -2234,6 +2227,7 @@ begin
               APosTextY := Y;
               StringOut(C, APosTextX - FHViewPos, APosTextY, LineText, OutputOptions);
               SelectLine(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos, False{SelectAll}, True{Hilight});
+              DrawMarker(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos);
               if Assigned(AStrings) then
                 AStrings.Add(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos);
 
@@ -2287,6 +2281,7 @@ begin
               APosTextY := DrawOffsetY + (i - 1) * FFontHeight;
               StringOut(C, APosTextX - FHViewPos, APosTextY, LineText, OutputOptions);
               SelectLine(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos, False{SelectAll}, True{Hilight});
+              DrawMarker(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos);
               if Assigned(AStrings) then
                 AStrings.Add(LineText, APosTextX - FHViewPos, APosTextY, FBufferPos + APos);
             end;
