@@ -1765,8 +1765,8 @@ var
       FRect:= Rect(AX + Dx[nStart], AY, AX + Dx[nEnd], AY + YHeight);
 
       // fix https://github.com/Alexey-T/CudaText/issues/5596
-      if IsModeUnicode then
-        FRect.Right := FRect.Left + FRect.Width div 2;
+      //if IsModeUnicode then
+      //  FRect.Right := FRect.Left + FRect.Width div 2;
 
       PrevColor := C.Brush.Color;
       C.Brush.Color := FTextColorMarker;
