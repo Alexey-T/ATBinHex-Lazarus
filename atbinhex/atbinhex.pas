@@ -4651,9 +4651,9 @@ begin
   begin
     if asoInSelection in AOptions then
     begin
-      MarkerStart := FSearch.FoundStart;
-      MarkerLength := FSearch.FoundLength;
-      Invalidate;
+      FMarkerStart := FSearch.FoundStart;
+      FMarkerLength := FSearch.FoundLength;
+      Scroll(FMarkerStart, FSearchIndentVert, FSearchIndentHorz);
     end
     else
       SetSelection(FSearch.FoundStart, FSearch.FoundLength, true);
@@ -4674,9 +4674,9 @@ begin
   begin
     if asoInSelection in FSearch.SavedOptions then
     begin
-      MarkerStart := FSearch.FoundStart;
-      MarkerLength := FSearch.FoundLength;
-      Invalidate;
+      FMarkerStart := FSearch.FoundStart;
+      FMarkerLength := FSearch.FoundLength;
+      Scroll(FMarkerStart, FSearchIndentVert, FSearchIndentHorz);
     end
     else
       SetSelection(FSearch.FoundStart, FSearch.FoundLength, true);
