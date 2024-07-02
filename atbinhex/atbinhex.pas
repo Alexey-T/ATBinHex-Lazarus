@@ -170,7 +170,7 @@ type
     FFileSourceType: TATFileSource;
 
     {$ifdef SEARCH}
-    FSearch,
+    FSearch: TATStreamSearch;
     FSearch2: TATStreamSearch;
     FSearchStarted: Boolean;
     {$endif}
@@ -4792,11 +4792,8 @@ end;
 procedure TATBinHex.ResetSearch;
 begin
   FSearchStarted := False;
-  if Assigned(FSearch) then
-  begin
-    FSearch.FoundStart := -1;
-    FSearch.FoundLength := 0;
-  end;
+  FSearch.FoundStart := -1;
+  FSearch.FoundLength := 0;
 end;
 
 procedure TATBinHex.SetTextOemSpecial(AValue: Boolean);
