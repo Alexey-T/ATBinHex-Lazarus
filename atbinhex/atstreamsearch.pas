@@ -585,6 +585,9 @@ var
   NForwardPos, NBackwardPos: Int64;
   NewOptions: TATStreamSearchOptions;
 begin
+  Assert(FFoundStart >= 0, 'TATStreamSearch.TextFindNext is called with FoundStart<0');
+  Assert(FFoundLength > 0, 'TATStreamSearch.TextFindNext is called with FoundLength=0');
+
   NForwardPos := FFoundStart + FCharSize;
   NBackwardPos := FFoundStart + (Length(FSavedText) - 2) * FCharSize;
 
