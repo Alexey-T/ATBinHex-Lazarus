@@ -257,6 +257,7 @@ type
     FTextColorGutter: TColor;
     FTextColorURL: TColor;
     FTextColorHi: TColor;
+    FTextColorMarker: TColor;
     FSearchIndentVert: Integer;
     FSearchIndentHorz: Integer;
     FTabSize: Integer;
@@ -647,6 +648,7 @@ type
     property TextColorGutter: TColor read FTextColorGutter write FTextColorGutter default clLtGray;
     property TextColorURL: TColor read FTextColorURL write FTextColorURL default clBlue;
     property TextColorHi: TColor read FTextColorHi write FTextColorHi default clYellow;
+    property TextColorMarker: TColor read FTextColorMarker write FTextColorMarker default clRed;
 
     property TextSearchIndentVert: Integer read FSearchIndentVert write SetSearchIndentVert default 5;
     property TextSearchIndentHorz: Integer read FSearchIndentHorz write SetSearchIndentHorz default 5;
@@ -1389,6 +1391,7 @@ begin
   FTextColorGutter := clLtGray;
   FTextColorURL := clBlue;
   FTextColorHi := clYellow;
+  FTextColorMarker := clRed;
   FSearchIndentVert := 5;
   FSearchIndentHorz := 5;
   FTabSize := 8;
@@ -1760,7 +1763,7 @@ var
 
       FRect:= Rect(AX + Dx[nStart], AY, AX + Dx[nEnd], AY + YHeight);
 
-      C.Brush.Color := clRed;
+      C.Brush.Color := FTextColorMarker;
       C.FillRect(
         FRect.Left,
         FRect.Bottom - FMarkerLineWidth,

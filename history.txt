@@ -1,5 +1,5 @@
 2024.07.01
-+ add: props MarkerStart, MarkerLength, MarkerLineWidth
++ add: props MarkerStart, MarkerLength, MarkerLineWidth, TextColorMarker
 
 2023.12.01
 * change: disabled selection with UTF8 encoding, to hide wrong selection with UTF8 
