@@ -1735,6 +1735,7 @@ var
     Len, YHeight: Integer;
     nStart, nEnd: Int64;
     FRect: TRect;
+    PrevColor: TColor;
   begin
     if FMarkerLength <= 0 then Exit;
 
@@ -1763,12 +1764,14 @@ var
 
       FRect:= Rect(AX + Dx[nStart], AY, AX + Dx[nEnd], AY + YHeight);
 
+      PrevColor := C.Brush.Color;
       C.Brush.Color := FTextColorMarker;
       C.FillRect(
         FRect.Left,
         FRect.Bottom - FMarkerLineWidth,
         FRect.Right,
         FRect.Bottom);
+      C.Brush.Color := PrevColor;
     end;
   end;
 
