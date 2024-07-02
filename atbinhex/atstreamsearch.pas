@@ -546,6 +546,7 @@ begin
         Exit
       end;
 
+    bContinue := True;
     DoProgress(BufPos, FStreamSize, bContinue);
     if not bContinue then Exit;
 
