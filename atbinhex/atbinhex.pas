@@ -4582,7 +4582,6 @@ begin
   Assert(SourceAssigned, 'Source not assigned: FindFirst');
   Result := False;
 
-  //Handle encoding:
   if IsModeUnicode then
   begin
     //if IsUnicodeBE then
@@ -4596,43 +4595,19 @@ begin
     NStreamEncoding := FTextEncoding;
   end;
 
+  NStartPos := AFromPos;
   if (asoBackward in AOptions) then
     NEndPos := 0
   else
     NEndPos := High(Int64);
 
-  //Handle "Origin" option:
   if (asoInSelection in AOptions) then
   begin
-    if (asoBackward in AOptions) then
-      begin
-        NStartPos := FSelStart+FSelLength;
-        NEndPos := FSelStart;
-      end
-    else
-      begin
-        NStartPos := FSelStart;
-        NEndPos := FSelStart+FSelLength;
-      end;
+    I64LimitMin(NStartPos, FSelStart);
+    I64LimitMax(NStartPos, FSelStart+FSelLength);
+    I64LimitMin(NEndPos, FSelStart);
+    I64LimitMax(NEndPos, FSelStart+FSelLength);
   end;
-
-  NStartPos := AFromPos;
-
-  {
-  else
-  if (asoFromPos in AOptions) and (AFromPos >= 0) then
-    NStartPos := AFromPos;
-  else
-  if not (asoFromPage in AOptions) then
-    NStartPos := 0 //0 is valid for both directions
-  else
-  begin
-    if not (asoBackward in AOptions) then
-      NStartPos := FViewPos //Forward: page start position
-    else
-      NStartPos := FViewPos + FViewPageSize; //Backward: page end position
-  end;
-  }
 
   try
     case FFileSourceType of
