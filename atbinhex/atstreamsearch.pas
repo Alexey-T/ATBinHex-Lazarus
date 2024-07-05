@@ -32,8 +32,6 @@ type
     asoBackward,
     {$IFDEF REGEX} asoRegEx, {$ENDIF}
     {$IFDEF REGEX} asoRegExMLine, {$ENDIF}
-    asoFromPage, //ATBinHex only, ignored in ATStreamSearch
-    asoFromPos, //ATBinHex only
     asoShowAll, //ATBinHex only
     asoInSelection //ATBinHex only
     );
@@ -114,7 +112,6 @@ type
       const AStartPos, AEndPos: Int64;
       AEncoding: TEncConvId;
       AOptions: TATStreamSearchOptions): Boolean;
-    function TextFindNext(AFindPrevious: Boolean = False): Boolean;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -130,13 +127,12 @@ type
     property SavedStartPos: Int64 read FSavedStartPos;
     property SavedEndPos: Int64 read FSavedEndPos;
 
-    function FindFirst(
+    function Find(
       const AText: string;
       const AStartPos, AEndPos: Int64;
       AEncoding: TEncConvId;
       ACharSize: integer;
       AOptions: TATStreamSearchOptions): Boolean;
-    function FindNext(AFindPrevious: Boolean = False): Boolean;
 
     property FoundStart: Int64 read FFoundStart write FFoundStart;
     property FoundLength: Int64 read FFoundLength write FFoundLength;
@@ -581,51 +577,11 @@ begin
     FFoundLength := 0;
 end;
 
-function TATStreamSearch.TextFindNext(AFindPrevious: Boolean = False): Boolean;
-var
-  NStartPos, NEndPos,
-  NForwardPos, NBackwardPos: Int64;
-  NewOptions: TATStreamSearchOptions;
-begin
-  Assert(FFoundStart >= 0, 'TATStreamSearch.TextFindNext is called with FoundStart<0');
-  Assert(FFoundLength > 0, 'TATStreamSearch.TextFindNext is called with FoundLength=0');
-
-  NForwardPos := FFoundStart + FCharSize;
-  NBackwardPos := FFoundStart + (Length(FSavedText) - 2) * FCharSize;
-
-  if (asoBackward in FSavedOptions) xor AFindPrevious then
-  begin
-    NStartPos := NBackwardPos;
-    NEndPos := FSavedStartPos;
-    I64LimitMin(NStartPos, NEndPos + FSavedTextLen - FCharSize);
-  end
-  else
-  begin
-    NStartPos := NForwardPos;
-    NEndPos := FSavedEndPos;
-    I64LimitMax(NStartPos, NEndPos - FSavedTextLen);
-  end;
-
-  NewOptions := FSavedOptions;
-  if AFindPrevious then
-    if (asoBackward in NewOptions) then
-      Exclude(NewOptions, asoBackward)
-    else
-      Include(NewOptions, asoBackward);
-
-  FFoundStart := TextFind(FSavedText, NStartPos, NEndPos, FSavedEncoding, NewOptions);
-  Result := FFoundStart >= 0;
-
-  if Result then
-    FFoundLength := FSavedTextLen
-  else
-    FFoundLength := 0;
-end;
 
 //-----------------------------------------------------------------
 // Combined search code
 
-function TATStreamSearch.FindFirst(
+function TATStreamSearch.Find(
   const AText: string;
   const AStartPos, AEndPos: Int64;
   AEncoding: TEncConvId;
@@ -655,21 +611,6 @@ begin
   else
   {$ENDIF}
     Result := TextFindFirst(AText, AStartPos, AEndPos, AEncoding, AOptions);
-end;
-
-function TATStreamSearch.FindNext(AFindPrevious: Boolean = False): Boolean;
-begin
-  Assert(FSavedText <> '', 'Search text is empty');
-
-  {$IFDEF REGEX}
-  if asoRegEx in FSavedOptions then
-  begin
-    Assert(AFindPrevious = False, 'FindPrevious not supported for Regex');
-    Result := RegexFindNext;
-  end
-  else
-  {$ENDIF}
-    Result := TextFindNext(AFindPrevious);
 end;
 
 procedure TATStreamSearch.SaveOptions;

@@ -172,7 +172,6 @@ type
     {$ifdef SEARCH}
     FSearch: TATStreamSearch;
     FSearch2: TATStreamSearch;
-    FSearchStarted: Boolean;
     {$endif}
 
     FLineSp: integer;
@@ -484,9 +483,6 @@ type
     procedure FindAll;
     function GetOnSearchProgress: TATStreamSearchProgress;
     procedure SetOnSearchProgress(AValue: TATStreamSearchProgress);
-    function GetSearchResultStart: Int64;
-    function GetSearchResultLength: Int64;
-    function GetSearchString: string;
     {$endif}
 
     procedure DoOptionsChange;
@@ -512,6 +508,11 @@ type
     procedure SetEnabled(AValue: Boolean); override;
 
   public
+    FoundStart: Int64;
+    FoundLength: Int64;
+    SearchString: string;
+    SearchStarted: Boolean;
+
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     //function Open(const AFileName: string; ARedraw: Boolean = True): Boolean;
@@ -520,13 +521,7 @@ type
     procedure ResetSearch;
 
     {$ifdef SEARCH}
-    function FindFirst(const AText: string; AOptions: TATStreamSearchOptions;
-      const AFromPos: Int64 = -1): Boolean;
-    function FindNext(AFindPrevious: Boolean = False): Boolean;
-    property SearchResultStart: Int64 read GetSearchResultStart;
-    property SearchResultLength: Int64 read GetSearchResultLength;
-    property SearchStarted: Boolean read FSearchStarted;
-    property SearchString: string read GetSearchString;
+    function Find(const AText: string; AOptions: TATStreamSearchOptions; AFromPos: Int64): Boolean;
     {$endif}
 
     procedure IncreaseFontSize(AIncrement: Boolean);
@@ -1448,7 +1443,6 @@ begin
   {$ifdef SEARCH}
   FSearch := TATStreamSearch.Create(Self);
   FSearch2 := TATStreamSearch.Create(Self);
-  FSearchStarted := False;
   {$endif}
 
   FFontFooter := TFont.Create;
@@ -3024,7 +3018,10 @@ begin
     vfSrcStream:
       FSearch.Stream := nil;
   end;
-  FSearchStarted := False;
+  SearchString := '';
+  SearchStarted := False;
+  FoundStart := 0;
+  FoundLength := 0;
   {$endif}
 
   if Assigned(FBuffer) then
@@ -4571,33 +4568,19 @@ procedure TATBinHex.SetOnSearchProgress(AValue: TATStreamSearchProgress);
 begin
   FSearch.OnProgress := AValue;
 end;
-
-function TATBinHex.GetSearchResultStart: Int64;
-begin
-  Result := FSearch.FoundStart;
-end;
-
-function TATBinHex.GetSearchResultLength: Int64;
-begin
-  Result := FSearch.FoundLength;
-end;
-
-function TATBinHex.GetSearchString: string;
-begin
-  Result := FSearch.SavedText;
-end;
 {$endif}
 
 {$ifdef SEARCH}
-function TATBinHex.FindFirst(
+function TATBinHex.Find(
   const AText: string;
   AOptions: TATStreamSearchOptions;
-  const AFromPos: Int64 = -1): Boolean;
+  AFromPos: Int64): Boolean;
 var
   NStreamEncoding: TEncConvId;
   NStartPos, NEndPos: Int64;
 begin
   Assert(SourceAssigned, 'Source not assigned: FindFirst');
+  Result := False;
 
   //Handle encoding:
   if IsModeUnicode then
@@ -4631,10 +4614,14 @@ begin
         NStartPos := FSelStart;
         NEndPos := FSelStart+FSelLength;
       end;
-  end
+  end;
+
+  NStartPos := AFromPos;
+
+  {
   else
   if (asoFromPos in AOptions) and (AFromPos >= 0) then
-    NStartPos := AFromPos
+    NStartPos := AFromPos;
   else
   if not (asoFromPage in AOptions) then
     NStartPos := 0 //0 is valid for both directions
@@ -4645,6 +4632,7 @@ begin
     else
       NStartPos := FViewPos + FViewPageSize; //Backward: page end position
   end;
+  }
 
   try
     case FFileSourceType of
@@ -4653,46 +4641,31 @@ begin
       vfSrcStream:
         FSearch.Stream := FStream;
     end;
-    FSearchStarted := True;
   except
     MsgOpenError;
-    Result := False;
     Exit;
   end;
 
-  Result := FSearch.FindFirst(AText, NStartPos, NEndPos, NStreamEncoding, CharSize, AOptions);
-
+  SearchString := AText;
+  SearchStarted := True;
+  Result := FSearch.Find(AText, NStartPos, NEndPos, NStreamEncoding, CharSize, AOptions);
   if Result then
   begin
+    FoundStart := FSearch.FoundStart;
+    FoundLength := FSearch.FoundLength;
     if asoInSelection in AOptions then
-      SetMarker(FSearch.FoundStart, FSearch.FoundLength)
+      SetMarker(FoundStart, FoundLength)
     else
     begin
       FMarkerStart := 0;
       FMarkerLength := 0;
-      SetSelection(FSearch.FoundStart, FSearch.FoundLength, True);
+      SetSelection(FoundStart, FoundLength, True);
     end;
-  end;
-end;
-{$endif}
-
-{$ifdef SEARCH}
-function TATBinHex.FindNext(AFindPrevious: Boolean = False): Boolean;
-begin
-  Assert(SourceAssigned, 'Source not assigned: FindNext');
-  Assert(FSearchStarted, 'Search not started: FindNext');
-  Result := FSearch.FindNext(AFindPrevious);
-
-  if Result then
+  end
+  else
   begin
-    if asoInSelection in FSearch.SavedOptions then
-      SetMarker(FSearch.FoundStart, FSearch.FoundLength)
-    else
-    begin
-      FMarkerStart := 0;
-      FMarkerLength := 0;
-      SetSelection(FSearch.FoundStart, FSearch.FoundLength, True);
-    end;
+    FoundStart := 0;
+    FoundLength := 0;
   end;
 end;
 {$endif}
@@ -4791,9 +4764,10 @@ end;
 
 procedure TATBinHex.ResetSearch;
 begin
-  FSearchStarted := False;
-  FSearch.FoundStart := -1;
-  FSearch.FoundLength := 0;
+  SearchString := '';
+  SearchStarted := False;
+  FoundStart := 0;
+  FoundLength := 0;
 end;
 
 procedure TATBinHex.SetTextOemSpecial(AValue: Boolean);
@@ -5154,7 +5128,7 @@ end;
 procedure TATBinHex.FindAll;
 var
   MS: TMemoryStream;
-  n: integer;
+  n: Integer;
   p, pp: Int64;
 begin
   FillChar(FFindArray, SizeOf(FFindArray), 0);
@@ -5175,19 +5149,21 @@ begin
     MS.WriteBuffer((@FBuffer[p])^, pp);
     FSearch2.Stream := MS;
 
-    if FSearch2.FindFirst(
-      FSearch.SavedText,
-      0,
-      High(Int64),
-      FSearch.SavedEncoding,
-      CharSize,
-      FSearch.SavedOptions - [asoBackward]) then
+    p := 0;
     repeat
+      if not FSearch2.Find(
+        FSearch.SavedText,
+        p,
+        High(Int64),
+        FSearch.SavedEncoding,
+        CharSize,
+        FSearch.SavedOptions - [asoBackward]) then Break;
       Inc(n);
       if n > High(FFindArray) then Break;
       FFindArray[n].FPos := FSearch2.FoundStart + FBufferPos + p;
       FFindArray[n].FLen := FSearch2.FoundLength div CharSize;
-    until not FSearch2.FindNext;
+      p := FSearch2.FoundStart + FSearch2.FoundLength div CharSize;
+    until False;
   finally
     MS.Free;
   end;
