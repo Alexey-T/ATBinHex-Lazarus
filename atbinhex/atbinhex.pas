@@ -5129,7 +5129,7 @@ begin
     if not FSearch2.Find(
       SearchString,
       NPos,
-      FBufferPos + FBufferAllocSize,
+      FViewPos+FViewPageSize+150, //FBufferPos + FBufferAllocSize,
       NStreamEncoding,
       CharSize,
       FSearch.SavedOptions - [asoBackward]) then Break;
