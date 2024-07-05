@@ -4601,7 +4601,7 @@ begin
   else
     NEndPos := High(Int64);
 
-  if (asoInSelection in AOptions) then
+  if (asoInSelection in AOptions) and (FSelLength>0) then
   begin
     I64LimitMin(NStartPos, FSelStart);
     I64LimitMax(NStartPos, FSelStart+FSelLength);
