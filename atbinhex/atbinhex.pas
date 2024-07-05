@@ -5102,9 +5102,9 @@ end;
 {$ifdef search}
 procedure TATBinHex.FindAll;
 var
-  NCount: Integer;
-  NPos: Int64;
+  NStartPos, NEndPos: Int64;
   NStreamEncoding: TEncConvId;
+  NCount: Integer;
 begin
   FillChar(FFindArray, SizeOf(FFindArray), 0);
 
@@ -5116,20 +5116,22 @@ begin
   FSearch2.Stream := FStream;
   NCount := 0;
 
-  NPos := FViewPos;
-  I64LimitMin(NPos, 0);
-
   if IsModeUnicode then
     NStreamEncoding := eidCP1252
   else
     NStreamEncoding := FTextEncoding;
 
+  NStartPos := FViewPos;
+  NEndPos := FViewPos+FViewPageSize+150;
+
+  NormalizePos(NStartPos);
+  NormalizePos(NEndPos);
+
   repeat
-    NormalizePos(NPos);
     if not FSearch2.Find(
       SearchString,
-      NPos,
-      FViewPos+FViewPageSize+150, //FBufferPos + FBufferAllocSize,
+      NStartPos,
+      NEndPos,
       NStreamEncoding,
       CharSize,
       FSearch.SavedOptions - [asoBackward]) then Break;
@@ -5137,7 +5139,9 @@ begin
     if NCount > High(FFindArray) then Break;
     FFindArray[NCount].FPos := FSearch2.FoundStart;
     FFindArray[NCount].FLen := FSearch2.FoundLength div CharSize;
-    NPos := FSearch2.FoundStart + FSearch2.FoundLength div CharSize;
+    NStartPos := FSearch2.FoundStart + FSearch2.FoundLength div CharSize;
+    NormalizePos(NStartPos);
+    if NStartPos >= NEndPos then Break;
   until False;
 end;
 {$endif}
