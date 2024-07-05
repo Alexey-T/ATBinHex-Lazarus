@@ -3592,6 +3592,8 @@ procedure TATBinHex.SetMarker(const AStart, ALength: Int64);
 begin
   FMarkerStart := AStart;
   FMarkerLength := ALength;
+  NormalizePos(FMarkerStart);
+  NormalizePos(FMarkerLength);
   Scroll(AStart, FSearchIndentVert, FSearchIndentHorz);
 end;
 
