@@ -5102,9 +5102,9 @@ end;
 {$ifdef search}
 procedure TATBinHex.FindAll;
 var
-  MS: TMemoryStream;
-  n: Integer;
-  p, pp: Int64;
+  NCount: Integer;
+  NPos: Int64;
+  NStreamEncoding: TEncConvId;
 begin
   FillChar(FFindArray, SizeOf(FFindArray), 0);
 
@@ -5113,35 +5113,32 @@ begin
   if FBuffer = nil then Exit;
   if FBufferAllocSize = 0 then Exit;
 
-  n := 0;
-  p := FViewPos - FBufferPos - cFindGap;
-  pp := LinesNum * FMaxLengths[FMode] + 2 * cFindGap;
-  I64LimitMin(p, 0);
-  I64LimitMax(pp, FBufferAllocSize - p);
+  FSearch2.Stream := FStream;
+  NCount := 0;
 
-  MS := TMemoryStream.Create;
-  try
-    MS.WriteBuffer((@FBuffer[p])^, pp);
-    FSearch2.Stream := MS;
+  NPos := FViewPos;
+  I64LimitMin(NPos, 0);
 
-    p := 0;
-    repeat
-      if not FSearch2.Find(
-        FSearch.SavedText,
-        p,
-        High(Int64),
-        FSearch.SavedEncoding,
-        CharSize,
-        FSearch.SavedOptions - [asoBackward]) then Break;
-      Inc(n);
-      if n > High(FFindArray) then Break;
-      FFindArray[n].FPos := FSearch2.FoundStart + FBufferPos + p;
-      FFindArray[n].FLen := FSearch2.FoundLength div CharSize;
-      p := FSearch2.FoundStart + FSearch2.FoundLength div CharSize;
-    until False;
-  finally
-    MS.Free;
-  end;
+  if IsModeUnicode then
+    NStreamEncoding := eidCP1252
+  else
+    NStreamEncoding := FTextEncoding;
+
+  repeat
+    NormalizePos(NPos);
+    if not FSearch2.Find(
+      SearchString,
+      NPos,
+      FBufferPos + FBufferAllocSize,
+      NStreamEncoding,
+      CharSize,
+      FSearch.SavedOptions - [asoBackward]) then Break;
+    Inc(NCount);
+    if NCount > High(FFindArray) then Break;
+    FFindArray[NCount].FPos := FSearch2.FoundStart;
+    FFindArray[NCount].FLen := FSearch2.FoundLength div CharSize;
+    NPos := FSearch2.FoundStart + FSearch2.FoundLength div CharSize;
+  until False;
 end;
 {$endif}
 
