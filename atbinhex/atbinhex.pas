@@ -3318,7 +3318,7 @@ begin
     SB_PAGEDOWN:
       PosPageDown;
 
-    SB_THUMBPOSITION,
+    //SB_THUMBPOSITION, //this message id comes after SB_LINEDOWN when I click down-arrow on v-scrollbar on Linux qt5
     SB_THUMBTRACK:
       begin
         //if scrolled to end, do PosEnd, to make OK on huge files
