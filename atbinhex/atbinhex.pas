@@ -2428,7 +2428,7 @@ begin
   begin
     AMax := GetVertScroll_MaxPos;
 
-    APos := AMax * FViewPos div FFileSize + FViewPageSize;
+    APos := AMax * FViewPos div FFileSize;
     I64LimitMax(APos, AMax);
 
     APage := AMax * APageSize div FFileSize;
