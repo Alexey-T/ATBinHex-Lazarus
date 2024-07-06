@@ -3300,11 +3300,14 @@ var
   ADisable: Boolean;
 begin
   case Message.ScrollCode of
+    {$if not defined(LCLQt5) and not defined(LCLQt6)}
+    //ignore SB_BOTTOM, which is coming if v-scrollbar thumb is touching the down-arrow and I click the down-arrow
     SB_TOP:
       PosBegin;
 
     SB_BOTTOM:
       PosEnd;
+    {$ifend}
 
     SB_LINEUP:
       PosLineUp;
