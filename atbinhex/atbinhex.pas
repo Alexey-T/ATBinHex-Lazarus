@@ -2428,7 +2428,7 @@ begin
   begin
     AMax := GetVertScroll_MaxPos;
 
-    APos := AMax * FViewPos div FFileSize;
+    APos := AMax * FViewPos div FFileSize + FViewPageSize;
     I64LimitMax(APos, AMax);
 
     APage := AMax * APageSize div FFileSize;
@@ -2940,14 +2940,14 @@ begin
   if IsFileEmpty then
     Result := 0
   else
-    Result := FViewPos * 100 div FFileSize;
+    Result := Min(100, (FViewPos + FViewPageSize) * 100 div FFileSize);
 end;
 
 procedure TATBinHex.SetPosPercent(APos: Integer);
 begin
   if APos <= 0 then PosBegin else
     if APos >= 100 then PosEnd else
-      SetPosOffset(FFileSize * APos div 100);
+      SetPosOffset(Max(FFileSize * APos div 100 - FViewPageSize, 0));
 end;
 
 function TATBinHex.GetPosOffset: Int64;
