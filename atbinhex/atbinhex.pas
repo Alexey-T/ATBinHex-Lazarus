@@ -3300,14 +3300,14 @@ var
   ADisable: Boolean;
 begin
   case Message.ScrollCode of
-    {$if not defined(LCLQt5) and not defined(LCLQt6)}
-    //ignore SB_BOTTOM, which is coming if v-scrollbar thumb is touching the down-arrow and I click the down-arrow
+    (*
+    //ignore SB_BOTTOM, it comes after SB_LINEDOWN if v-scrollbar thumb is touching the down-arrow and I click the down-arrow (linux qt5)
     SB_TOP:
       PosBegin;
 
     SB_BOTTOM:
       PosEnd;
-    {$ifend}
+    *)
 
     SB_LINEUP:
       PosLineUp;
@@ -3321,7 +3321,7 @@ begin
     SB_PAGEDOWN:
       PosPageDown;
 
-    //SB_THUMBPOSITION, //this message id comes after SB_LINEDOWN when I click down-arrow on v-scrollbar on Linux qt5
+    //SB_THUMBPOSITION, //ignore SB_THUMBPOSITION, it comes after SB_LINEDOWN when I click down-arrow on v-scrollbar (linux qt5)
     SB_THUMBTRACK:
       begin
         //if scrolled to end, do PosEnd, to make OK on huge files
