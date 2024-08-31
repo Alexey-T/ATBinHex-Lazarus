@@ -430,13 +430,6 @@ type
     function GetChar(const ACharPos: Int64): WideChar;
     function GetHex(const ACharPos: Int64): UnicodeString;
     function DecodeString(const S: UnicodeString): UnicodeString;
-    function CharSize: Integer;
-    function IsFileEmpty: Boolean;
-    function IsModeVariable: Boolean;
-    function IsModeUnicode: Boolean;
-    function IsUnicodeBE: Boolean;
-    procedure NormalizePos(var APos: Int64);
-    function NormalizedPos(const APos: Int64): Int64;
     procedure NextPos(var APos: Int64; ADir: TATDirection; AChars: Integer = 1);
     procedure SelectLineAtPos(const APos: Int64; ALineType: TATLineType);
     procedure ContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
@@ -591,6 +584,13 @@ type
     property FileSize: Int64 read FFileSize;
     property FileReadOK: Boolean read FFileOK;
     property FileUnicodeFormat: TATUnicodeFormat read FFileUnicodeFmt write SetFileUnicodeFmt;
+    function CharSize: Integer;
+    function IsFileEmpty: Boolean;
+    function IsModeVariable: Boolean;
+    function IsModeUnicode: Boolean;
+    function IsUnicodeBE: Boolean;
+    procedure NormalizePos(var APos: Int64);
+    function NormalizedPos(const APos: Int64): Int64;
 
     property TextEncoding: TEncConvId read FTextEncoding write SetTextEncoding;
     procedure TextEncodingsMenu(AX, AY: Integer);
