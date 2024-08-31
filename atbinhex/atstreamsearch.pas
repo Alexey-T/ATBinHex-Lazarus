@@ -461,6 +461,10 @@ begin
   BufPosMin := Min(AStartPos, AEndPos);
   BufPosMax := Max(AStartPos, AEndPos);
 
+  //fixing find-previous gives matches 1 char righter then needed, CudaText issue #5676
+  if (asoBackward in AOptions) then
+    Dec(BufPosMax);
+
   TotalMax := LastPos(FStreamSize, FCharSize);
   NormalizePos(TotalMax, FCharSize);
   if BufPosMax > TotalMax then
