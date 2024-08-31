@@ -462,7 +462,7 @@ begin
   BufPosMax := Max(AStartPos, AEndPos);
 
   //fixing find-previous gives matches 1 char righter then needed, CudaText issue #5676
-  if (asoBackward in AOptions) then
+  if asoBackward in AOptions then
     Dec(BufPosMax, FCharSize);
 
   TotalMax := LastPos(FStreamSize, FCharSize);
@@ -472,6 +472,8 @@ begin
 
   BufPos := AStartPos;
   NormalizePos(BufPos, FCharSize);
+  NormalizePos(BufPosMin, FCharSize);
+  NormalizePos(BufPosMax, FCharSize);
 
   if FCharSize=1 then
     TextInCodepage:= SCodepageFromUTF8(AText, AEncoding)
