@@ -463,7 +463,7 @@ begin
 
   //fixing find-previous gives matches 1 char righter then needed, CudaText issue #5676
   if (asoBackward in AOptions) then
-    Dec(BufPosMax);
+    Dec(BufPosMax, FCharSize);
 
   TotalMax := LastPos(FStreamSize, FCharSize);
   NormalizePos(TotalMax, FCharSize);
