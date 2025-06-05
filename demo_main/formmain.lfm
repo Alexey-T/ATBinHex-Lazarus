@@ -7,15 +7,15 @@ object fmMain: TfmMain
   ClientHeight = 533
   ClientWidth = 902
   Position = poScreenCenter
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   object PanelOpt: TPanel
     Left = 708
-    Height = 515
+    Height = 514
     Top = 0
     Width = 194
     Align = alRight
-    ClientHeight = 515
+    ClientHeight = 514
     ClientWidth = 194
     TabOrder = 0
     object btnOpen: TButton
@@ -95,7 +95,7 @@ object fmMain: TfmMain
     end
     object edBin: TSpinEdit
       Left = 10
-      Height = 33
+      Height = 34
       Top = 248
       Width = 59
       MaxValue = 160
@@ -174,7 +174,7 @@ object fmMain: TfmMain
     end
     object edTabsize: TSpinEdit
       Left = 10
-      Height = 33
+      Height = 34
       Top = 275
       Width = 59
       MaxValue = 12
@@ -222,8 +222,8 @@ object fmMain: TfmMain
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 18
-    Top = 515
+    Height = 19
+    Top = 514
     Width = 902
     Panels = <    
       item

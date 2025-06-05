@@ -62,6 +62,7 @@ type
     procedure bHexChange(Sender: TObject);
   private
     { private declarations }
+    FPrevSearchText: string;
     procedure OpenFile(const Filename: string);
     procedure ViewerOptionsChange(Sender: TObject);
     procedure ViewerScroll(Sender: TObject);
@@ -156,8 +157,10 @@ begin
   else
     NCharSize:= 1;
 
+  FPrevSearchText:= S;
+
   srch.Stream:= fs;
-  if not srch.FindFirst(S, 0, eidCP1252, NCharSize, []) then
+  if not srch.Find(S, 0, fs.Size, V.TextEncoding, NCharSize, []) then
     ShowMessage('Not found')
   else
     V.SetSelection(srch.FoundStart, srch.FoundLength, true);
@@ -166,8 +169,22 @@ begin
 end;
 
 procedure TfmMain.btnFindNextClick(Sender: TObject);
+var
+  NCharSize: integer;
 begin
-  if not srch.FindNext(false) then
+  if FPrevSearchText='' then
+  begin
+    ShowMessage('Use "Find first" before "Find next"');
+    exit;
+  end;
+
+  if V.Mode in [vbmodeUnicode, vbmodeUHex] then
+    NCharSize:= 2
+  else
+    NCharSize:= 1;
+
+  srch.Stream:= fs;
+  if not srch.Find(FPrevSearchText, srch.FoundStart+NCharSize, fs.Size, V.TextEncoding, NCharSize, []) then
     ShowMessage('Not found')
   else
     V.SetSelection(srch.FoundStart, srch.FoundLength, true);
