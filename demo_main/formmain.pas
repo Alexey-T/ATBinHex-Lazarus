@@ -68,9 +68,9 @@ type
     procedure ViewerScroll(Sender: TObject);
   public
     { public declarations }
-    V: TATBinHex;
-    fs: TFileStream;
-    srch: TATStreamSearch;
+    FViewer: TATBinHex;
+    FFileStream: TFileStream;
+    FSearch: TATStreamSearch;
   end;
 
 var
@@ -86,38 +86,38 @@ procedure TfmMain.FormCreate(Sender: TObject);
 var
   fn: string;
 begin
-  fs:= nil;
+  FFileStream:= nil;
 
-  V:= TATBinHex.Create(Self);
-  V.Parent:= Self;
-  V.Align:= alClient;
-  V.Font.Size:= 10;
-  V.OnScroll:=@ViewerScroll;
-  V.OnOptionsChange:=@ViewerOptionsChange;
+  FViewer:= TATBinHex.Create(Self);
+  FViewer.Parent:= Self;
+  FViewer.Align:= alClient;
+  FViewer.Font.Size:= 10;
+  FViewer.OnScroll:=@ViewerScroll;
+  FViewer.OnOptionsChange:=@ViewerOptionsChange;
 
-  V.TextGutter:= true;
-  V.TextGutterLinesStep:= 10;
+  FViewer.TextGutter:= true;
+  FViewer.TextGutterLinesStep:= 10;
 
   fn:= ExtractFilePath(Application.ExeName)+'formmain.pas';
   if FileExists(fn) then
     OpenFile(fn);
 
-  srch:= TATStreamSearch.Create(Self);
+  FSearch:= TATStreamSearch.Create(Self);
 end;
 
 procedure TfmMain.bTextChange(Sender: TObject);
 begin
-  V.Mode:= vbmodeText;
+  FViewer.Mode:= vbmodeText;
 end;
 
 procedure TfmMain.bBinChange(Sender: TObject);
 begin
-  V.Mode:= vbmodeBinary;
+  FViewer.Mode:= vbmodeBinary;
 end;
 
 procedure TfmMain.bHexChange(Sender: TObject);
 begin
-  V.Mode:= vbmodeHex;
+  FViewer.Mode:= vbmodeHex;
 end;
 
 procedure TfmMain.btnOpenClick(Sender: TObject);
@@ -136,12 +136,12 @@ begin
   if S='' then Exit;
   N:= StrToInt64Def('$'+S, -1);
   if N<0 then exit;
-  if N>fs.Size-10 then
+  if N>FFileStream.Size-10 then
   begin
-    ShowMessage('Too big pos, max is '+IntToStr(fs.Size));
+    ShowMessage('Too big pos, max is '+IntToStr(FFileStream.Size));
     Exit
   end;
-  V.PosAt(N);
+  FViewer.PosAt(N);
 end;
 
 procedure TfmMain.btnFindClick(Sender: TObject);
@@ -152,18 +152,18 @@ begin
   S:= InputBox('Find', 'String:', '');
   if S='' then exit;
 
-  if V.Mode in [vbmodeUnicode, vbmodeUHex] then
+  if FViewer.Mode in [vbmodeUnicode, vbmodeUHex] then
     NCharSize:= 2
   else
     NCharSize:= 1;
 
   FPrevSearchText:= S;
 
-  srch.Stream:= fs;
-  if not srch.Find(S, 0, fs.Size, V.TextEncoding, NCharSize, []) then
+  FSearch.Stream:= FFileStream;
+  if not FSearch.Find(S, 0, FFileStream.Size, FViewer.TextEncoding, NCharSize, []) then
     ShowMessage('Not found')
   else
-    V.SetSelection(srch.FoundStart, srch.FoundLength, true);
+    FViewer.SetSelection(FSearch.FoundStart, FSearch.FoundLength, true);
 
   btnFindNext.Enabled:= true;
 end;
@@ -178,104 +178,104 @@ begin
     exit;
   end;
 
-  if V.Mode in [vbmodeUnicode, vbmodeUHex] then
+  if FViewer.Mode in [vbmodeUnicode, vbmodeUHex] then
     NCharSize:= 2
   else
     NCharSize:= 1;
 
-  srch.Stream:= fs;
-  if not srch.Find(FPrevSearchText, srch.FoundStart+NCharSize, fs.Size, V.TextEncoding, NCharSize, []) then
+  FSearch.Stream:= FFileStream;
+  if not FSearch.Find(FPrevSearchText, FSearch.FoundStart+NCharSize, FFileStream.Size, FViewer.TextEncoding, NCharSize, []) then
     ShowMessage('Not found')
   else
-    V.SetSelection(srch.FoundStart, srch.FoundLength, true);
+    FViewer.SetSelection(FSearch.FoundStart, FSearch.FoundLength, true);
 end;
 
 procedure TfmMain.OpenFile(const Filename: string);
 begin
-  if Assigned(fs) then
+  if Assigned(FFileStream) then
   begin
-    V.OpenStream(nil);
-    FreeAndNil(fs);
+    FViewer.OpenStream(nil);
+    FreeAndNil(FFileStream);
   end;
 
-  fs:= TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);
-  V.OpenStream(fs);
+  FFileStream:= TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);
+  FViewer.OpenStream(FFileStream);
 end;
 
 procedure TfmMain.ViewerOptionsChange(Sender: TObject);
 begin
-  StatusBar1.Panels[1].Text:= cEncConvNames[V.TextEncoding];
+  StatusBar1.Panels[1].Text:= cEncConvNames[FViewer.TextEncoding];
 end;
 
 procedure TfmMain.ViewerScroll(Sender: TObject);
 begin
-  StatusBar1.Panels[0].Text:= IntToStr(V.PosPercent)+'%';
+  StatusBar1.Panels[0].Text:= IntToStr(FViewer.PosPercent)+'%';
 end;
 
 procedure TfmMain.bUniChange(Sender: TObject);
 begin
-  V.Mode:= vbmodeUnicode;
+  FViewer.Mode:= vbmodeUnicode;
 end;
 
 procedure TfmMain.bUniHexChange(Sender: TObject);
 begin
-  V.Mode:= vbmodeUHex;
+  FViewer.Mode:= vbmodeUHex;
 end;
 
 procedure TfmMain.btnFontClick(Sender: TObject);
 begin
   if FontDialog1.Execute then
   begin
-    V.Font:= FontDialog1.Font;
-    V.Invalidate;
+    FViewer.Font:= FontDialog1.Font;
+    FViewer.Invalidate;
   end;
 end;
 
 procedure TfmMain.chkEnChange(Sender: TObject);
 begin
-  V.Enabled:= chkEn.Checked;
-  V.Invalidate;
+  FViewer.Enabled:= chkEn.Checked;
+  FViewer.Invalidate;
 end;
 
 procedure TfmMain.chkEnSelChange(Sender: TObject);
 begin
-  V.TextEnableSel:= chkEnSel.Checked;
+  FViewer.TextEnableSel:= chkEnSel.Checked;
 end;
 
 procedure TfmMain.chkGutterChange(Sender: TObject);
 begin
-  V.TextGutter:= chkGutter.Checked;
-  V.Invalidate;
+  FViewer.TextGutter:= chkGutter.Checked;
+  FViewer.Invalidate;
 end;
 
 procedure TfmMain.chkUnprChange(Sender: TObject);
 begin
-  V.TextNonPrintable:= chkUnpr.Checked;
+  FViewer.TextNonPrintable:= chkUnpr.Checked;
 end;
 
 procedure TfmMain.chkUTF8Change(Sender: TObject);
 begin
   if chkUTF8.Checked then
-    V.TextEncoding:= eidUTF8
+    FViewer.TextEncoding:= eidUTF8
   else
-    V.TextEncoding:= eidCP1252;
+    FViewer.TextEncoding:= eidCP1252;
 end;
 
 procedure TfmMain.chkWrapChange(Sender: TObject);
 begin
-  V.TextWrap:= chkWrap.Checked;
+  FViewer.TextWrap:= chkWrap.Checked;
 end;
 
 procedure TfmMain.edBinChange(Sender: TObject);
 begin
-  V.TextWidth:= edBin.Value;
-  V.Invalidate;
+  FViewer.TextWidth:= edBin.Value;
+  FViewer.Invalidate;
 end;
 
 procedure TfmMain.edTabsizeChange(Sender: TObject);
 begin
-  V.TextTabSize:= edTabsize.Value;
-  V.Invalidate;
+  FViewer.TextTabSize:= edTabsize.Value;
+  FViewer.Invalidate;
 end;
 
 end.
