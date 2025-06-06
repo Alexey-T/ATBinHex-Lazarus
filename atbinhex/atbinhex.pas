@@ -2762,7 +2762,7 @@ begin
     FStream := AStream;
     Result := LoadStream;
     if Assigned(FStream) and DetectUTF8Encoding then
-      TextEncoding := eidUTF8BOM
+      TextEncoding := eidUTF8 //don't use eidUTF8BOM as it's not respected in other code parts
     else
       TextEncoding := eidCP1252;
     Invalidate;
