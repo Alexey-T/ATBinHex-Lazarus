@@ -28,6 +28,7 @@ function IsAccentChar(ch: WideChar): boolean;
 function BoolToPlusMinusOne(b: boolean): integer;
 
 function SSwapEndian(const S: UnicodeString): UnicodeString;
+function SGetIndentInChars(const S: atString): integer;
 function SGetIndentSize(const S: atString; ATabSize: integer): integer;
 
 procedure SCalcCharOffsets(C: TCanvas; const S: atString; var AList: array of integer);
@@ -105,14 +106,18 @@ begin
     Result:= Length(S);
 end;
 
-function SGetIndentSize(const S: atString; ATabSize: integer): integer;
-var
-  SIndent: atString;
+function SGetIndentInChars(const S: atString): integer;
 begin
   Result:= 0;
   while (Result<Length(S)) and IsSpaceChar(S[Result+1]) do
     Inc(Result);
-  SIndent:= Copy(S, 1, Result);
+end;
+
+function SGetIndentSize(const S: atString; ATabSize: integer): integer;
+var
+  SIndent: atString;
+begin
+  SIndent:= Copy(S, 1, SGetIndentInChars(S));
   Result:= Length(SExpandTabulations(SIndent, ATabSize));
 end;
 

@@ -1062,25 +1062,13 @@ begin
     (AnsiChar(Ord(ch)) in [' ', #9, '\', '.', ',', ';', ':', '-', '+', '*', '/', '<', '>', '=', '(', ')', '[', ']', '{', '}', '&', '!', '?']);
 end;
 
-function StringIndentInChars(const S: UnicodeString): Integer;
-var
-  i: Integer;
-begin
-  Result := 0;
-  for i := 1 to Length(S) do
-    if (S[i] = ' ') or (S[i] = #9) then
-      Inc(Result)
-    else
-      Break;
-end;
-
 function StringWrapPosition(
   const S: UnicodeString;
   AMaxLen: Integer): Integer;
 var
   NIndent, i: Integer;
 begin
-  NIndent := StringIndentInChars(S);
+  NIndent := SGetIndentInChars(S);
   for i := Min(AMaxLen + 1, Length(S)) downto NIndent+1 do
     if IsSeparator(S[i]) then
       begin Result := i; Exit end;
