@@ -308,6 +308,7 @@ type
     {$endif}
 
     procedure AllocBuffer;
+    function DetectUTF8Encoding: boolean;
     function GetVertScroll_MaxPos: Int64;
     function GetVertScroll_PageSize: Int64;
     function SourceAssigned: Boolean;
@@ -2749,6 +2750,22 @@ begin
 end;
 *)
 
+
+function TATBinHex.DetectUTF8Encoding: boolean;
+var
+  //UTF8 signature: EF BB BF
+  Buf: array[0..2] of byte;
+begin
+  Result := False;
+  if FStream.Size > 3 then
+  begin
+    FStream.Position := 0;
+    FStream.Read(Buf, SizeOf(Buf));
+    FStream.Position := 0;
+    Result := (Buf[0] = $EF) and (Buf[1] = $BB) and (Buf[2] = $BF);
+  end;
+end;
+
 function TATBinHex.OpenStream(AStream: TStream; ARedraw: Boolean = True): Boolean;
 begin
   Result := True;
@@ -2756,6 +2773,10 @@ begin
   begin
     FStream := AStream;
     Result := LoadStream;
+    if Assigned(FStream) and DetectUTF8Encoding then
+      TextEncoding := eidUTF8BOM
+    else
+      TextEncoding := eidCP1252;
     Invalidate;
   end;
 end;
