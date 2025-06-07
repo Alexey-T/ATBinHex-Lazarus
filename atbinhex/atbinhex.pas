@@ -4260,7 +4260,7 @@ begin
 
   if (ADir = vdirDown) and IsModeVariable and FTextWrap and (Result > 0) then
   begin
-    NMaxWidth := ClientWidth - FTextSize.X - DrawOffsetX;
+    NMaxWidth := ClientWidth - FTextSize.X * 2 - DrawOffsetX;
     if StringWidth(FActiveCanvas, ALine, OutputOptions) > NMaxWidth then
       if StringExtent(FActiveCanvas, ALine, Dx, OutputOptions) then
       begin
@@ -4272,10 +4272,11 @@ begin
               Break
             end;
         SetLength(ALine, Result);
-        SDelLastSpaceW(ALine);
 
         if IsUTF8 then
           Result := Length(UTF8Encode(ALine));
+
+        SDelLastSpaceW(ALine);
       end;
   end;
 end;
