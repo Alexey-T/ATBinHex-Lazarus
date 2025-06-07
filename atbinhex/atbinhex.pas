@@ -1059,8 +1059,12 @@ end;
 
 function IsSeparator(ch: WideChar): Boolean;
 begin
-  Result:= (Ord(ch)<=$FF) and
-    (AnsiChar(Ord(ch)) in [' ', #9, '\', '.', ',', ';', ':', '-', '+', '*', '/', '<', '>', '=', '(', ')', '[', ']', '{', '}', '&', '!', '?']);
+  if IsCharCJKText(ch) or IsCharCJKPunctuation(ch) then
+    Result := True
+  else
+    Result:=
+      (Ord(ch)<=$FF) and
+      (AnsiChar(Ord(ch)) in [' ', #9, '\', '.', ',', ';', ':', '-', '+', '*', '/', '<', '>', '=', '(', ')', '[', ']', '{', '}', '&', '!', '?']);
 end;
 
 function StringWrapPosition(

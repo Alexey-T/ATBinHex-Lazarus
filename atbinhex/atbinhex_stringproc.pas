@@ -25,6 +25,9 @@ const
 function IsWordChar(ch: atChar): boolean;
 function IsEolCode(N: Word): boolean;
 function IsAccentChar(ch: WideChar): boolean;
+function IsCharCJKText(ch: widechar): boolean; inline;
+function IsCharCJKPunctuation(ch: widechar): boolean; inline;
+
 function BoolToPlusMinusOne(b: boolean): integer;
 
 function SSwapEndian(const S: UnicodeString): UnicodeString;
@@ -147,6 +150,33 @@ begin
       Result:= true;
     else
       Result:= false;
+  end;
+end;
+
+function IsCharCJKText(ch: widechar): boolean; inline;
+begin
+  case Ord(ch) of
+    $4E00..$9FFF,
+    $3400..$4DBF,
+    $F900..$FAFF:
+      Result := true;
+    else
+      Result := false;
+  end;
+end;
+
+function IsCharCJKPunctuation(ch: widechar): boolean; inline;
+begin
+  case Ord(ch) of
+    $3002,
+    $ff01,
+    $ff0c,
+    $ff1a,
+    $ff1b,
+    $ff1f:
+      Result := true;
+    else
+      Result := false;
   end;
 end;
 
