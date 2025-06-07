@@ -4260,7 +4260,8 @@ begin
 
   if (ADir = vdirDown) and IsModeVariable and FTextWrap and (Result > 0) then
   begin
-    NMaxWidth := ClientWidth - FTextSize.X * 2 - DrawOffsetX;
+    NMaxWidth := ClientWidth - FTextSize.X  - DrawOffsetX
+                 {$ifdef windows} - FTextSize.X * 3 div 2 {$endif};
     if StringWidth(FActiveCanvas, ALine, OutputOptions) > NMaxWidth then
       if StringExtent(FActiveCanvas, ALine, Dx, OutputOptions) then
       begin
