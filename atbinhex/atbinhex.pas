@@ -4250,7 +4250,11 @@ begin
     NextPos(APos, ADir);
   end;
 
-  if FTextWrap and (Result > 0) then
+  //DecodeString before calculating word-wrap position,
+  //to fix CJK text filling only ~half of width in UTF8 encoding
+  ALine := DecodeString(ALine);
+
+  if IsModeVariable and FTextWrap and (Result > 0) then
   begin
     AMaxWidth := ClientWidth - FTextSize.X - DrawOffsetX;
     if StringWidth(FActiveCanvas, ALine, OutputOptions) > AMaxWidth then
@@ -4265,10 +4269,11 @@ begin
             end;
         SetLength(ALine, Result);
         SDelLastSpaceW(ALine);
+
+        if (not IsModeUnicode) and (TextEncoding=eidUTF8) then
+          Result := Length(UTF8Encode(ALine));
       end;
   end;
-
-  ALine := DecodeString(ALine);
 end;
 
 procedure TATBinHex.PosNextLineFrom(

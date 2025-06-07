@@ -33,7 +33,6 @@ function SGetIndentSize(const S: atString; ATabSize: integer): integer;
 
 procedure SCalcCharOffsets(C: TCanvas; const S: atString; var AList: array of integer);
 function SExpandTabulations(const S: atString; ATabSize: integer): atString;
-function SFindWordWrapPosition(C: TCanvas; const S: atString; APixelWidth: integer): integer;
 function SFindClickedPosition(C: TCanvas;
   const Str: atString;
   APixelsFromLeft, ACharSize, ATabSize: integer;
@@ -72,38 +71,7 @@ begin
   s:= '';
   for i:= Low(List) to High(List) do
     s:= s+IntToStr(List[i])+' ';
-  showmessage('Offsets'#13+s);
-end;
-
-function SFindWordWrapPosition(C: TCanvas; const S: atString; APixelWidth: integer): integer;
-var
-  N, NAvg: integer;
-  List: array of integer;
-begin
-  if S='' then
-    begin Result:= 0; Exit end;
-
-  SetLength(List, Length(S));
-  SCalcCharOffsets(C, S, List);
-
-  if List[High(List)]<=APixelWidth then
-  begin
-    Result:= Length(S);
-    Exit
-  end;
-
-  N:= Length(S)-1;
-  while (N>1) and (List[N]>APixelWidth+8) do Dec(N);
-  NAvg:= N;
-  while (N>1) and IsWordChar(S[N]) and IsWordChar(S[N+1]) do Dec(N);
-
-  if N>1 then
-    Result:= N
-  else
-  if NAvg>1 then
-    Result:= NAvg
-  else
-    Result:= Length(S);
+  ShowMessage('Offsets'#10+s);
 end;
 
 function SGetIndentInChars(const S: atString): integer;
