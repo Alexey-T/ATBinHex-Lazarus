@@ -1752,7 +1752,7 @@ var
       nEnd:= (FMarkerStart + FMarkerLength - AFilePos) div CharSize;
       I64LimitMax(nEnd, Length(ALine));
 
-      if TextEncoding=eidUTF8 then
+      if (not IsModeUnicode) and (TextEncoding=eidUTF8) then
       begin
         LineAnsi := UTF8Encode(ALine);
         nStart := UTF8Length(PChar(LineAnsi), nStart);
@@ -1817,7 +1817,7 @@ var
         I64LimitMax(nEnd, Length(ALine));
       end;
 
-      if TextEncoding=eidUTF8 then
+      if (not IsModeUnicode) and (TextEncoding=eidUTF8) then
       begin
         LineAnsi := UTF8Encode(ALine);
         nStart := UTF8Length(PChar(LineAnsi), nStart);
@@ -2526,7 +2526,7 @@ begin
 
   //we have problems with rendering selection in UTF8 encoding,
   //let's disable selection yet
-  TextEnableSel:= TextEncoding<>eidUTF8;
+  TextEnableSel:= IsModeUnicode or (TextEncoding<>eidUTF8);
 
   if DoubleBuffered then
   begin
