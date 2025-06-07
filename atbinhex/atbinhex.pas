@@ -4254,7 +4254,7 @@ begin
   //to fix CJK text filling only ~half of width in UTF8 encoding
   ALine := DecodeString(ALine);
 
-  if IsModeVariable and FTextWrap and (Result > 0) then
+  if (ADir = vdirDown) and IsModeVariable and FTextWrap and (Result > 0) then
   begin
     AMaxWidth := ClientWidth - FTextSize.X - DrawOffsetX;
     if StringWidth(FActiveCanvas, ALine, OutputOptions) > AMaxWidth then
