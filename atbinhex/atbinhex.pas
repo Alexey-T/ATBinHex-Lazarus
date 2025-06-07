@@ -590,6 +590,7 @@ type
     function IsModeVariable: Boolean;
     function IsModeUnicode: Boolean;
     function IsUnicodeBE: Boolean;
+    function IsUTF8: Boolean;
     procedure NormalizePos(var APos: Int64);
     function NormalizedPos(const APos: Int64): Int64;
 
@@ -1752,7 +1753,7 @@ var
       nEnd:= (FMarkerStart + FMarkerLength - AFilePos) div CharSize;
       I64LimitMax(nEnd, Length(ALine));
 
-      if (not IsModeUnicode) and (TextEncoding=eidUTF8) then
+      if IsUTF8 then
       begin
         LineAnsi := UTF8Encode(ALine);
         nStart := UTF8Length(PChar(LineAnsi), nStart);
@@ -1817,7 +1818,7 @@ var
         I64LimitMax(nEnd, Length(ALine));
       end;
 
-      if (not IsModeUnicode) and (TextEncoding=eidUTF8) then
+      if IsUTF8 then
       begin
         LineAnsi := UTF8Encode(ALine);
         nStart := UTF8Length(PChar(LineAnsi), nStart);
@@ -2524,9 +2525,8 @@ begin
     FActiveCanvas:= Canvas;
   FActiveCanvas.Font.Assign(Self.Font);
 
-  //we have problems with rendering selection in UTF8 encoding,
-  //let's disable selection yet
-  TextEnableSel:= IsModeUnicode or (TextEncoding<>eidUTF8);
+  //we have problems with rendering selection in UTF8 encoding, let's disable selection yet
+  TextEnableSel:= not IsUTF8;
 
   if DoubleBuffered then
   begin
@@ -4270,7 +4270,7 @@ begin
         SetLength(ALine, Result);
         SDelLastSpaceW(ALine);
 
-        if (not IsModeUnicode) and (TextEncoding=eidUTF8) then
+        if IsUTF8 then
           Result := Length(UTF8Encode(ALine));
       end;
   end;
@@ -4354,6 +4354,11 @@ end;
 function TATBinHex.IsUnicodeBE: Boolean;
 begin
   Result := FFileUnicodeFmt = vbUnicodeFmtBE;
+end;
+
+function TATBinHex.IsUTF8: Boolean;
+begin
+  Result := (not IsModeUnicode) and (TextEncoding = eidUTF8);
 end;
 
 procedure TATBinHex.NormalizePos(var APos: Int64);
