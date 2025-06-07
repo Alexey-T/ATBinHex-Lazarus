@@ -4226,8 +4226,8 @@ function TATBinHex.FindLineLength(
   ADir: TATDirection;
   var ALine: UnicodeString): Integer;
 var
-  AMaxWidth, i: Integer;
-  APos: Int64;
+  NMaxWidth, i: Integer;
+  NPos: Int64;
   Dx: TATStringExtent;
   wch: WideChar;
 begin
@@ -4235,23 +4235,23 @@ begin
   ALine := '';
   if (AStartPos < 0) then Exit;
 
-  APos := AStartPos;
-  NormalizePos(APos);
+  NPos := AStartPos;
+  NormalizePos(NPos);
 
   if (ADir = vdirUp) then
   begin
-    I64LimitMax(APos, PosLast);
-    if PosBad(APos) then Exit;
+    I64LimitMax(NPos, PosLast);
+    if PosBad(NPos) then Exit;
   end;
 
   for i := 1 to FMaxLength do
   begin
-    if PosBad(APos) then Break;
-    wch := GetChar(APos);
+    if PosBad(NPos) then Break;
+    wch := GetChar(NPos);
     if SCharCR(wch) then Break;
     ALine := ALine + wch;
     Inc(Result);
-    NextPos(APos, ADir);
+    NextPos(NPos, ADir);
   end;
 
   //DecodeString before calculating word-wrap position,
@@ -4260,13 +4260,13 @@ begin
 
   if (ADir = vdirDown) and IsModeVariable and FTextWrap and (Result > 0) then
   begin
-    AMaxWidth := ClientWidth - FTextSize.X - DrawOffsetX;
-    if StringWidth(FActiveCanvas, ALine, OutputOptions) > AMaxWidth then
+    NMaxWidth := ClientWidth - FTextSize.X - DrawOffsetX;
+    if StringWidth(FActiveCanvas, ALine, OutputOptions) > NMaxWidth then
       if StringExtent(FActiveCanvas, ALine, Dx, OutputOptions) then
       begin
         Result := 1;
         for i := Length(ALine) downto 1 do
-          if Dx[i] <= AMaxWidth then
+          if Dx[i] <= NMaxWidth then
             begin
               Result := StringWrapPosition(ALine, i);
               Break
