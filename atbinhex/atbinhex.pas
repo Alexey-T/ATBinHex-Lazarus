@@ -803,11 +803,11 @@ const
   cBitmapNiceScrollRadius = 16;     //NiceScroll mode: bitmap is actually a circle of specified radius
 
 const
-  crNiceScrollNone  = TCursor(-30); //NiceScroll mode: cursor IDs
-  crNiceScrollUp    = TCursor(-31);
-  crNiceScrollDown  = TCursor(-32);
-  crNiceScrollLeft  = TCursor(-33);
-  crNiceScrollRight = TCursor(-34);
+  crNiceScrollNone  = TCursor(-60); //NiceScroll mode: cursor IDs
+  crNiceScrollUp    = TCursor(-61);
+  crNiceScrollDown  = TCursor(-62);
+  crNiceScrollLeft  = TCursor(-63);
+  crNiceScrollRight = TCursor(-64);
 
 
 procedure BitmapResize(b: TBitmap; W, H: integer);
@@ -3824,6 +3824,8 @@ end;
 
 procedure TATBinHex.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
+  if csDesigning in ComponentState then Exit;
+
   //Show URL cursor (when not NiceScroll)
   if not MouseNiceScroll then
     if IsPosURL(MousePosition(X, Y, True{AStrict})) then
@@ -3938,6 +3940,8 @@ var
   Pnt: TPoint;
   SpeedX, SpeedY: Integer;
 begin
+  if csDesigning in ComponentState then Exit;
+
   Pnt := ScreenToClient(Mouse.CursorPos);
   Dec(Pnt.X, FMouseNiceScrollPos.X);
   Dec(Pnt.Y, FMouseNiceScrollPos.Y);
